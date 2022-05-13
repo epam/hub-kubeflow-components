@@ -1,0 +1,16 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: ${component.kubeflow.name}-gateway
+  namespace: ${component.kubeflow.namespace}
+spec:
+  selector:
+    app: "${component.istio.ingressGateway}"
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - '${component.kubeflow.name}.${dns.domain}'

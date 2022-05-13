@@ -1,0 +1,33 @@
+#!/bin/sh
+
+if test -z "$HUB_BACKUP_DIR"; then
+    echo "Error: HUB_BACKUP_DIR has not been defined"
+    exit 1
+fi
+
+kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE"
+
+labels="app.kubernetes.io/component=primary"
+labels="$labels,app.kubernetes.io/instance=$COMPONENT_NAME"
+labels="$labels,app.kubernetes.io/name=mysql"
+
+set -x
+pod=$($kubectl get pod -l "$labels" -o "name")
+
+if test -z "$pod"; then
+    echo "Error: cannot find pod with labels: $labels"
+    exit 1
+fi
+
+run_cmd="$kubectl exec $pod --"
+# shellcheck disable=SC2086
+$run_cmd mysqldump -u root -p$ROOT_PASSWORD --databases "$DB_NAME" \
+    | gzip > "$HUB_BACKUP_DIR/$COMPONENT_NAME.sql.gz"
+
+echo "Done!"
+
+cat <<EOF
+
+Outputs:
+hub.backup.file = $HUB_BACKUP_DIR/$COMPONENT_NAME.sql.gz
+EOF

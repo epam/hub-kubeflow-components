@@ -1,0 +1,60 @@
+---
+version: 1
+kind: component
+meta:
+  name: kubeflow-katib
+  title: Kubeflow Profiles
+  brief: Machine learning
+  description: >
+    Katib metadata service
+  category: AI and Machine Learning
+  version: 1.2.0
+  licence: Apache 2.0
+  source:
+    dir: ../../components/kubeflow-katib
+
+requires:
+  - kubernetes
+
+parameters:
+- name: dns.domain
+  env: DOMAIN_NAME
+- name: component.kubeflow
+  parameters:
+    - name: name
+    - name: namespace
+      env: NAMESPACE
+    - name: version
+      # value: master
+      value: "v1.2.0"
+      env: VERSION
+    - name: manifests.subpath
+      value: "v1.2.0"
+      env: VERSION
+    - name: katib.controller.image
+      value: docker.io/kubeflowkatib/katib-controller
+    - name: katib.controller.imageTag
+      value: v1beta1-a96ff59
+    - name: katib.ui.image
+      value: docker.io/kubeflowkatib/katib-ui
+    - name: katib.ui.imageTag
+      value: v1beta1-a96ff59
+    - name: katib.dbManager.image
+      value: docker.io/kubeflowkatib/katib-db-manager
+    - name: katib.dbManager.imageTag
+      value: v1beta1-a96ff59
+
+- name: component.mysql
+  parameters:
+  - name: host
+  - name: user
+  - name: port
+  - name: password
+  - name: database
+
+templates:
+  files:
+  # - "envs/*.template"
+  # - "resources/*.template"
+  # - "patches/*.template"
+  - "*.template"

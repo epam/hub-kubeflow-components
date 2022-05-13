@@ -1,0 +1,46 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- kustomize/base/cluster-role-binding.yaml
+- kustomize/base/cluster-role.yaml
+- kustomize/base/deployment.yaml
+- kustomize/base/service-account.yaml
+- kustomize/base/service.yaml
+namePrefix: notebook-controller-
+namespace: ${component.kubeflow.namespace}
+patchesStrategicMerge:
+- kustomize/overlays/istio/deployment.yaml
+commonLabels:
+  app: notebook-controller
+  kustomize.component: notebook-controller
+  app.kubernetes.io/component: notebook-controller
+  app.kubernetes.io/part-of: ${component.kubeflow.name}
+  app.kubernetes.io/version: "${component.kubeflow.version}"
+  app.kubernetes.io/managed-by: "superhub.io"
+images:
+- name: gcr.io/kubeflow-images-public/notebook-controller
+  newName: gcr.io/kubeflow-images-public/notebook-controller
+  newTag: vmaster-g6eb007d0
+configMapGenerator:
+- name: parameters
+  literals:
+  - POD_LABELS=
+  - USE_ISTIO=true
+  - ISTIO_GATEWAY=${component.kubeflow.namespace}/kubeflow-gateway
+generatorOptions:
+  disableNameSuffixHash: true
+vars:
+- fieldref:
+    fieldpath: data.USE_ISTIO
+  name: USE_ISTIO
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: parameters
+- fieldref:
+    fieldpath: data.ISTIO_GATEWAY
+  name: ISTIO_GATEWAY
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: parameters

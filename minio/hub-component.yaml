@@ -1,0 +1,127 @@
+---
+version: 1
+kind: component
+meta:
+  name: minio
+  title: Minio
+  brief: Private object storage
+  description: >
+    Minio is a high performance distributed object
+    storage server, designed for large-scale private cloud
+    infrastructure.
+
+    This is implementation of the component using Helm3. This is
+    backward incompatible with component `minio`
+  category: Storage
+  version: '2020-06-14'
+  maturity: beta
+  license: Apache 2.0
+  source:
+      dir: ../../components/minio
+
+requires:
+- kubernetes
+- helm
+
+provides:
+- bucket
+
+lifecycle:
+  verbs:
+  - deploy
+  - undeploy
+
+parameters:
+- name: hub.componentName
+  env:  COMPONENT_NAME
+- name: dns.domain
+  env:  DOMAIN_NAME
+- name: component.ingress.protocol
+  value: http
+  env: PROTOCOL
+- name: component.ingress.host
+  value: ${hub.componentName}.${dns.domain}
+
+- name: component.bucket
+  parameters:
+  - name: region
+    value: us-east-1
+  - name: name
+    value: backups
+  - name: policy
+    value: private
+
+- name: component.storage-class.name
+  value: default
+
+- name: component.minio
+  parameters:
+  - name: accessKey
+  - name: secretKey
+  - name: namespace
+    value: minio
+    env: NAMESPACE
+  - name: replicas
+    value: 4
+  - name: service.port
+    value: 9000
+  - name:  volumeType
+    value: gp2
+  - name:  existingClaim
+    empty: allow
+  - name: storageSize
+    value: 20Gi
+  - name: requests.memory
+    value: 4Gi
+
+  - name: helm
+    parameters:
+    - name: chart
+      value: minio-8.0.5.tgz
+      env: HELM_CHART
+
+  - name: docker
+    parameters:
+    - name: image
+      value: docker.io/minio/minio
+    - name: tag
+      value: RELEASE.2020-11-19T23-48-16Z
+    - name: mcImage
+      value: docker.io/minio/mc
+    - name: mcTag
+      value: RELEASE.2020-11-17T00-39-14Z
+    - name: jqImage
+      value: bskim45/helm-kubectl-jq
+    - name: jqTag
+      value: "3.1.0"
+    - name: baseValues
+      value: values.yaml
+      env: CHART_VALUES_FILE
+
+- name: component.ingress
+  parameters:
+  - name: protocol
+    value: http
+  - name: host
+    empty: allow
+    env: INGRESS_HOST
+  - name: fileSize
+    empty: allow
+    value: 640m
+  - name: class
+    empty: allow
+    env: INGRESS_CLASS
+
+outputs:
+- name: component.bucket.kind
+  value: minio
+- name: component.bucket.name
+- name: component.bucket.region
+- name: component.bucket.endpoint
+  value: ${component.ingress.protocol}://${component.ingress.host}
+templates:
+  files:
+  - "*.template"
+  extra:
+    - kind: go
+      files: ["*.gotemplate"]

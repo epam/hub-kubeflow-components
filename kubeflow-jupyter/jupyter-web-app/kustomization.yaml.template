@@ -1,0 +1,97 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# bases:
+# - ../../base
+resources:
+- kustomize/base/cluster-role-binding.yaml
+- kustomize/base/cluster-role.yaml
+- kustomize/base/deployment.yaml
+- kustomize/base/role-binding.yaml
+- kustomize/base/role.yaml
+- kustomize/base/service-account.yaml
+- kustomize/base/service.yaml
+- kustomize/overlays/application/application.yaml
+- kustomize/overlays/istio/virtual-service.yaml
+
+patchesStrategicMerge:
+- kustomize/base/deployment_patch.yaml
+namePrefix: jupyter-web-app-
+namespace: ${component.kubeflow.namespace}
+commonLabels:
+  app: jupyter-web-app
+  kustomize.component: jupyter-web-app
+  app.kubernetes.io/component: jupyter-web-app
+  app.kubernetes.io/part-of: ${component.kubeflow.name}
+  app.kubernetes.io/version: "${component.kubeflow.version}"
+  app.kubernetes.io/managed-by: "superhub.io"
+images:
+- name: gcr.io/kubeflow-images-public/jupyter-web-app
+  newName: ${component.kubeflow.jupyter.image}
+  newTag: ${component.kubeflow.jupyter.imageTag}
+# - name: gcr.io/kubeflow-images-public/jupyter-web-app
+#   newName: kftest/jupyter-web-app
+#   newTag: rewrite-v0.2.0
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: jupyter-web-app-config
+  files:
+  - spawner_ui_config.yaml
+- name: parameters
+  literals:
+  - UI=default
+  - ROK_SECRET_NAME=
+  - policy=IfNotPresent
+  - prefix=jupyter
+  - clusterDomain=cluster.local
+  - userid-header=kubeflow-userid
+  - userid-prefix=
+
+vars:
+- fieldref:
+    fieldPath: data.userid-prefix
+  name: userid-prefix
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: parameters
+- fieldref:
+    fieldPath: data.policy
+  name: policy
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: parameters
+- fieldref:
+    fieldPath: data.prefix
+  name: prefix
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: parameters
+- fieldref:
+    fieldPath: data.clusterDomain
+  name: clusterDomain
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: parameters
+- fieldref:
+    fieldPath: metadata.namespace
+  name: namespace
+  objref:
+    apiVersion: v1
+    kind: Service
+    name: service
+- fieldref:
+    fieldPath: data.userid-header
+  name: userid-header
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: parameters
+configurations:
+- params.yaml
+# - kustomize/base/params.yaml
+# - kustomize/overlays/istio/params.yaml

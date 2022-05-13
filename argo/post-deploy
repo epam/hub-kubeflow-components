@@ -1,0 +1,15 @@
+#!/bin/sh -e
+if test ! -f "$BACKUP_FILE"; then
+    echo "Nothing to restore..."
+    exit
+fi
+
+echo "Restoring from $BACKUP_FILE..."
+
+TEMP_DIR=$(mktemp -d)
+trap 'rm -rf $TEMP_DIR' EXIT
+
+tar -xvf "$BACKUP_FILE" -c "$TEMP_DIR"
+
+kubectl="kubectl --context=$DOMAIN_NAME" create -f "$TEMP_DIR"
+echo "Done!"

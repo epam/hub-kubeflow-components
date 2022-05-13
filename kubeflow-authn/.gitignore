@@ -1,0 +1,6 @@
+/kustomize
+/kustomization.yaml
+/oidc.yaml
+/authn-envoy-filter.json
+/intel-cabundle-sts.yaml
+/patches/pvc.yaml

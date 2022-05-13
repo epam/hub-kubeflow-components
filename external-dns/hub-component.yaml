@@ -1,0 +1,49 @@
+---
+version: 1
+kind: component
+meta:
+  name: external-dns
+  version: 6.1.2
+  source:
+    dir: components/external-dns
+
+requires:
+- helm
+
+parameters:
+- name: hub.deploymentId
+- name: hub.componentName
+  env: COMPONENT_NAME
+
+- name: projectId
+  env: PROJECT
+- name: component.gke.name
+  env: NAME
+- name: component.gke.zone
+  env: ZONE
+- name: dns.domain
+  env: DOMAIN_NAME
+
+- name: component.ingress.namespace
+  value: kube-system
+  env: NAMESPACE
+- name: component.externalDns
+  parameters:
+  - name: helm
+    parameters:
+    - name: repo
+      value: https://charts.bitnami.com/bitnami
+      env: HELM_REPO
+    - name: chart
+      env: HELM_CHART
+      value: "external-dns"
+    - name: version
+      value: 6.1.2
+      env: CHART_VERSION
+    - name: valuesFile
+      value: values.yaml
+      env: CHART_VALUES_FILE
+
+templates:
+  files:
+    - "*.template"

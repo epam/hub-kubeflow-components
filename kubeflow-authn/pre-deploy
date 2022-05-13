@@ -1,0 +1,15 @@
+#!/bin/sh -e
+../../bin/shell/download-manifests -o "$(pwd)/kustomize" -s "istio/oidc-authservice"
+
+printf "Checking presence CA bundle secret: "
+kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE"
+if $kubectl get secret "$AUTHN_CA_SECRET" -o "name" ; then
+    echo "Update CA bundle to in"
+    yq e -j "kustomization.yaml" \
+    | jq '. + {"patchesStrategicMerge": ["intel-cabundle-sts.yaml"]}' \
+    | yq e -P > "kustomization.yaml.tmp"
+
+    mv -f "kustomization.yaml.tmp" "kustomization.yaml"
+else
+    echo "Not an error... moving on!"
+fi

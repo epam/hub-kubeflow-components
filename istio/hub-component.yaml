@@ -1,0 +1,58 @@
+---
+version: 1
+kind: component
+meta:
+  name: istio
+  title: Istio
+  brief: Service mesh
+  description: >-
+    Service mesh for providing a uniform way
+    to integrate microservices, manage traffic
+    flow across microservices, enforce
+    policies and aggregate telemetry data.
+    Automatically integrates with Prometheus component
+    (configures scraping jobs, sets up Grafana dashboards
+    to display various Istio metrics).
+  category: Networking
+  version: 1.5.9
+  license: Apache 2.0
+  source:
+    dir: ../../components/istio
+
+requires:
+  - helm
+
+provides:
+  - istio
+
+parameters:
+- name: hub.componentName
+  env: COMPONENT_NAME
+- name: dns.domain
+  env: DOMAIN_NAME
+- name: component.ingress.protocol
+  value: http
+- name: component.istio
+  parameters:
+  - name: namespace
+    value: istio-system
+    env: NAMESPACE
+  - name: chart.name
+    value: "istio"
+    env: HELM_CHART
+  - name: version
+    value: 1.5.9
+    env: CHART_VERSION
+  # - name: helm
+  #   parameters:
+    # - name: repo
+    #   empty: allow
+    #   value: https://storage.googleapis.com/istio-release/releases/${component.isio.version}/charts/
+    #   env: HELM_REPO
+
+outputs:
+  - name: component.istio.namespace
+
+templates:
+  files:
+    - "*.template"

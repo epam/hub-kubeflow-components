@@ -1,0 +1,10 @@
+apiVersion: auth.agilestacks.com/v1alpha1
+kind: Oidc
+metadata:
+  name: ${component.kubeflow.name}-client
+spec:
+  id: ${component.kubeflow.authn.oidcClientId}
+  name: ${component.kubeflow.name}
+  secret: ${component.kubeflow.authn.oidcSecret}
+  redirectURIs:
+  - ${component.kubeflow.authn.oidcRedirectURI}

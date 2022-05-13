@@ -1,0 +1,31 @@
+[ req ]
+default_bits = 2048
+prompt = no
+default_md = sha256
+req_extensions = req_ext
+distinguished_name = dn
+
+[ dn ]
+C = LV
+ST = LV
+L = Riga
+O = Agile Stacks
+OU = ${component.kubeflow.name}
+CN = ${dns.domain}
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = ${hub.componentName}-service
+DNS.2 = ${hub.componentName}-service.${component.kubeflow.namespace}
+DNS.3 = ${hub.componentName}-service.${component.kubeflow.namespace}.svc
+DNS.4 = ${hub.componentName}-service.${component.kubeflow.namespace}.svc.cluster
+DNS.5 = ${hub.componentName}-service.${component.kubeflow.namespace}.svc.cluster.local
+
+[ v3_ext ]
+authorityKeyIdentifier=keyid,issuer:always
+basicConstraints=CA:FALSE
+keyUsage=keyEncipherment,dataEncipherment
+extendedKeyUsage=serverAuth,clientAuth
+subjectAltName=@alt_names

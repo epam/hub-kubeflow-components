@@ -1,0 +1,36 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin: "true"
+    rbac.authorization.kubeflow.org/aggregate-to-kubeflow-edit: "true"
+  name: ${component.kubeflow.name}-seldon-edit
+rules:
+- apiGroups: [ "machinelearning.seldon.io" ]
+  resources:
+  - seldondeployments
+  verbs: [ "create", "delete", "get", "list", "patch", "update", "watch" ]
+- apiGroups: [ "machinelearning.seldon.io" ]
+  resources:
+  - seldondeployments
+  verbs: [ "create", "delete", "get", "list", "patch", "update", "watch" ]
+- apiGroups: [ "machinelearning.seldon.io" ]
+  resources:
+  - seldondeployments/finalizers
+  - seldondeployments/status
+  verbs: [ "get", "patch", "update" ]
+- apiGroups: [ "networking.istio.io" ]
+  resources:
+  - destinationrules
+  - virtualservices
+  verbs: [ "create", "delete", "get", "list", "patch", "update", "watch" ]
+- apiGroups: [ "networking.istio.io" ]
+  resources:
+  - destinationrules/status
+  - virtualservices/status
+  verbs: [ "get", "patch", "update" ]
+
+- apiGroups: [""]
+  resources: ["configmaps"]
+  resourceNames: ["superhub"]
+  verbs: [ "get", "list" ]

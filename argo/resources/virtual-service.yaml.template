@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: "${hub.componentName}"
+spec:
+  gateways:
+  - kubeflow-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    # rewrite:
+    #   uri: /
+    # headers:
+    #   request:
+    #     add:
+    #       x-forwarded-prefix: "/${hub.componentName}"
+    route:
+    - destination:
+        host: "${hub.componentName}-server"
+        port:
+          number: 2746

@@ -1,0 +1,20 @@
+---
+version: 1
+kind: component
+meta:
+  name: kubeflow-rbac
+  title: Kubeflow RBAC
+  source:
+    dir: ../../components/kubeflow-rbac
+
+requires:
+  - kubernetes
+
+parameters:
+- name: dns.domain
+  env: DOMAIN_NAME
+- name: component.kubeflow.name
+
+templates:
+  files:
+    - "*.template"

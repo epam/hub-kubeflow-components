@@ -1,0 +1,36 @@
+#!/bin/sh
+if test -z "$COMPONENT_NAME" -o -z "$DOMAIN_NAME" -o -z "$NAMESPACE"; then
+    echo "COMPONENT_NAME, DOMAIN_NAME, NAMESPACE must be set"
+    exit 1
+fi
+
+helm3=helm
+if which helm3 >/dev/null; then helm3=helm3; fi
+
+export kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE"
+export helm="$helm3 --kube-context=$DOMAIN_NAME --namespace=$NAMESPACE"
+
+if $helm list --failed --pending -q | grep -E "^$COMPONENT_NAME\$"; then
+	  $helm uninstall "$COMPONENT_NAME-init"
+	  $helm uninstall "$COMPONENT_NAME"
+fi
+
+for v in charts/values.yaml values.yaml values-*.yaml; do
+    if test -f "$v"; then
+      echo "* Using values from: $v"
+      HELM_OPTS="$HELM_OPTS --values $v";
+    fi
+done
+set -x
+
+$helm upgrade "$COMPONENT_NAME-init" "charts/istio-init-$CHART_VERSION.tgz" \
+    --install --create-namespace --wait
+
+$kubectl wait job \
+    --for=condition=complete \
+    --timeout=300s \
+    -l "app.kubernetes.io/managed-by=Helm"
+
+# shellcheck disable=SC2086
+$helm upgrade "$COMPONENT_NAME" "charts/istio-$CHART_VERSION.tgz" \
+    --install --create-namespace --wait $HELM_OPTS

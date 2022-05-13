@@ -1,0 +1,248 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: ${component.kubeflow.namespace}
+commonLabels:
+#   kustomize.component: ${hub.componentName}
+  app.kubernetes.io/component: ${hub.componentName}
+  app.kubernetes.io/name: ${component.kubeflow.name}
+  app.kubernetes.io/version: "${component.kubeflow.version}"
+  app.kubernetes.io/managed-by: "superhub.io"
+resources:
+# server api
+- kustomize/upstream/base/pipeline/ml-pipeline-apiserver-deployment.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-apiserver-role.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-apiserver-rolebinding.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-apiserver-sa.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-apiserver-service.yaml
+- kustomize/installs/multi-user/api-service/cluster-role-binding.yaml
+# - kustomize/installs/multi-user/api-service/cluster-role.yaml
+- resources/ml-pipeline-api-service-cluster-role.yaml
+
+# ui
+- kustomize/upstream/base/pipeline/ml-pipeline-ui-deployment.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-ui-configmap.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-ui-role.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-ui-rolebinding.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-ui-sa.yaml
+# - kustomize/upstream/base/pipeline/ml-pipeline-ui-service.yaml
+# - kustomize/installs/generic/virtual-service.yaml
+- kustomize/pipelines-ui/base/service.yaml
+- kustomize/pipelines-ui/overlays/istio/virtual-service.yaml
+
+# metadata writer
+- kustomize/upstream/base/pipeline/metadata-writer/metadata-writer-sa.yaml
+- kustomize/installs/multi-user/metadata-writer/cluster-role.yaml
+- kustomize/installs/multi-user/metadata-writer/cluster-role-binding.yaml
+# - kustomize/upstream/base/pipeline/metadata-writer/metadata-writer-rolebinding.yaml
+# - kustomize/upstream/base/pipeline/metadata-writer/metadata-writer-role.yaml
+# HACK: we can only have one patch
+- kustomize/upstream/base/pipeline/metadata-writer/metadata-writer-deployment.yaml
+
+# persistent agent
+- kustomize/upstream/base/pipeline/ml-pipeline-persistenceagent-deployment.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-persistenceagent-role.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-persistenceagent-rolebinding.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-persistenceagent-sa.yaml
+- kustomize/installs/multi-user/persistence-agent/cluster-role.yaml
+- kustomize/installs/multi-user/persistence-agent/cluster-role-binding.yaml
+
+# scheduled workflow
+- kustomize/upstream/base/pipeline/ml-pipeline-scheduledworkflow-deployment.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-scheduledworkflow-role.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-scheduledworkflow-rolebinding.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-scheduledworkflow-sa.yaml
+- kustomize/installs/multi-user/scheduled-workflow/cluster-role.yaml
+- kustomize/installs/multi-user/scheduled-workflow/cluster-role-binding.yaml
+
+# viewer-controller
+- kustomize/upstream/base/pipeline/ml-pipeline-viewer-crd-role.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-viewer-crd-rolebinding.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-viewer-crd-deployment.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-viewer-crd-sa.yaml
+- kustomize/upstream/base/pipeline/viewer-sa.yaml
+- kustomize/installs/multi-user/viewer-controller/cluster-role.yaml
+- kustomize/installs/multi-user/viewer-controller/cluster-role-binding.yaml
+
+# pipeline visualization
+- kustomize/upstream/base/pipeline/ml-pipeline-visualization-deployment.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-visualization-sa.yaml
+- kustomize/upstream/base/pipeline/ml-pipeline-visualization-service.yaml
+
+# pipeline runner
+- kustomize/upstream/base/pipeline/pipeline-runner-role.yaml
+- kustomize/upstream/base/pipeline/pipeline-runner-rolebinding.yaml
+- kustomize/upstream/base/pipeline/pipeline-runner-sa.yaml
+
+# cache
+- kustomize/upstream/base/cache/cache-deployment.yaml
+- kustomize/upstream/base/cache/cache-service.yaml
+- kustomize/upstream/base/cache/cache-role.yaml
+- kustomize/upstream/base/cache/cache-rolebinding.yaml
+- kustomize/upstream/base/cache/cache-sa.yaml
+- kustomize/upstream/base/cache-deployer/cache-deployer-role.yaml
+- kustomize/upstream/base/cache-deployer/cache-deployer-rolebinding.yaml
+- kustomize/upstream/base/cache-deployer/cache-deployer-deployment.yaml
+- kustomize/upstream/base/cache-deployer/cluster-scoped/cache-deployer-clusterrole.yaml
+- kustomize/upstream/base/cache-deployer/cluster-scoped/cache-deployer-clusterrolebinding.yaml
+- kustomize/upstream/base/cache-deployer/cluster-scoped/cache-deployer-sa.yaml
+- kustomize/installs/multi-user/cache/cluster-role.yaml
+- kustomize/installs/multi-user/cache/cluster-role-binding.yaml
+
+# profile controller
+- kustomize/installs/multi-user/pipelines-profile-controller/service.yaml
+- kustomize/installs/multi-user/pipelines-profile-controller/deployment.yaml
+- kustomize/installs/multi-user/pipelines-profile-controller/composite-controller.yaml
+
+
+# misc
+- kustomize/upstream/base/pipeline/container-builder-sa.yaml
+- kustomize/installs/generic/application.yaml
+- resources/istio-authorization-config.yaml
+- resources/default-editor.yaml
+
+#
+# SubjectAccessReview authz fix
+# https://github.com/kubeflow/pipelines/blob/39203d5ffa8f1a1197a6db3f31d2f0729f85364a/manifests/kustomize/base/pipeline/multi-user/view-edit-roles.yaml
+#
+- resources/ml-pipeline-view-edit-roles.yaml
+# TDOO: repalce this with aggregated role for kubeflow-viewer
+- resources/pipeline-ui-clusterrole.yaml
+- resources/pipeline-ui-clusterrolebinding.yaml
+
+configMapGenerator:
+- name: kubeflow-config
+  envs:
+  - envs/params-kubeflow.env
+- name: pipeline-install-config
+  envs:
+  - envs/params-install-config.env
+- name: pipeline-api-server-config
+  envs:
+  - envs/params-api-service.env
+- name: pipeline-upstream-install-config
+  envs:
+  - envs/params-install-config.env
+- name: ml-pipeline-ui-config
+  envs:
+  - envs/params-pipeline-ui.env
+- name: kubeflow-pipelines-profile-controller-code
+  files:
+  - kustomize/installs/multi-user/pipelines-profile-controller/sync.py
+- name: kubeflow-pipelines-profile-controller-env
+  envs:
+  - kustomize/installs/multi-user/pipelines-profile-controller/params.env
+
+secretGenerator:
+- name: mlpipeline-minio-artifact
+  envs:
+  - envs/secrets-artifact.env
+- name: mysql-secret
+  envs:
+  - ./envs/secrets-db.env
+
+generatorOptions:
+  # mlpipeline-minio-artifact needs to be referred by exact name
+  disableNameSuffixHash: true
+
+
+patchesStrategicMerge:
+- patches/pipeline-ui-deployment.yaml
+- kustomize/installs/multi-user/api-service/deployment-patch.yaml
+- kustomize/installs/multi-user/pipelines-ui/configmap-patch.yaml
+- kustomize/installs/multi-user/scheduled-workflow/deployment-patch.yaml
+- kustomize/installs/multi-user/persistence-agent/deployment-patch.yaml
+- kustomize/installs/multi-user/viewer-controller/deployment-patch.yaml
+- kustomize/installs/multi-user/metadata-writer/deployment-patch.yaml
+- kustomize/installs/multi-user/cache/deployment-patch.yaml
+
+vars:
+- name: kfp-ui-namespace
+  objref:
+    kind: Service
+    name: ml-pipeline-ui
+    apiVersion: v1
+  fieldref:
+    fieldpath: metadata.namespace
+- name: kfp-app-version
+  objref:
+    kind: ConfigMap
+    name: pipeline-install-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.appVersion
+- name: clusterDomain
+  objref:
+    kind: ConfigMap
+    name: kubeflow-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.clusterDomain
+- name: ui-namespace
+  objref:
+    kind: Service
+    name: ml-pipeline-ui
+    apiVersion: v1
+  fieldref:
+    fieldpath: metadata.namespace
+- name: ui-clusterDomain
+  objref:
+    kind: ConfigMap
+    name: kubeflow-config
+    version: v1
+  fieldref:
+    fieldpath: data.uiClusterDomain
+- name: service
+  objref:
+    kind: Service
+    name: ml-pipeline-ui
+    apiVersion: v1
+  fieldref:
+    fieldpath: metadata.name
+- name: tensorboard-service
+  objref:
+    kind: Service
+    name: ml-pipeline-tensorboard-ui
+    apiVersion: v1
+  fieldref:
+    fieldpath: metadata.name
+configurations:
+- kustomize/installs/generic/params.yaml
+
+patchesJson6902:
+- path: kustomize/installs/multi-user/application-patch.json
+  target:
+    group: app.k8s.io
+    version: v1beta1
+    kind: Application
+    name: kubeflow-pipelines
+- path: patches/metadata-writer-role.yaml
+  target:
+    group: rbac.authorization.k8s.io/v1
+    version: v1
+    kind: ClusterRole
+    name: kubeflow-pipelines-metadata-writer-role
+
+images:
+# metadata writer
+- name: gcr.io/ml-pipeline/metadata-writer
+  # newTag: "${component.kubeflow.version}"
+  newTag: "1.5.1"
+# generic
+- name: gcr.io/ml-pipeline/api-server
+  newTag: "${component.kubeflow.version}"
+- name: gcr.io/ml-pipeline/persistenceagent
+  newTag: "${component.kubeflow.version}"
+- name: gcr.io/ml-pipeline/scheduledworkflow
+  newTag: "${component.kubeflow.version}"
+- name: gcr.io/ml-pipeline/frontend
+  newTag: "${component.kubeflow.version}"
+- name: gcr.io/ml-pipeline/viewer-crd-controller
+  newTag: "${component.kubeflow.version}"
+- name: gcr.io/ml-pipeline/visualization-server
+  newTag: "${component.kubeflow.version}"
+- name: gcr.io/ml-pipeline/cache-server
+  newTag: "1.5.1"
+  # newTag: "${component.kubeflow.version}"
+- name: gcr.io/ml-pipeline/cache-deployer
+  newTag: "1.5.1"
+  # newTag: "${component.kubeflow.version}"

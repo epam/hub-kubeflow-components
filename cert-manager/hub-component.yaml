@@ -1,0 +1,50 @@
+version: 1
+kind: component
+
+requires:
+  - helm
+provides:
+  - cert-manager
+
+parameters:
+  - name: projectId
+    env: PROJECT
+  - name: dns.domain
+    env: DOMAIN_NAME
+  - name: component.gke
+    parameters:
+    - name: zone
+      env: ZONE
+    - name: name
+      env: NAME    
+  - name: component.certmanager
+    parameters:
+      - name: version
+        value: v1.3.1
+        env: CHART_VERSION
+      - name: namespace
+        value: kube-system
+        env: NAMESPACE
+      - name: clusterIssuer
+        value: "letsencrypt-superhub-io"
+      - name: helm
+        parameters:
+          - name: repo
+            value: https://charts.jetstack.io
+            env: HELM_REPO
+          - name: chart
+            env: HELM_CHART
+            value: "cert-manager"
+          - name: crd
+            env: CRD
+            value: https://github.com/jetstack/cert-manager/releases/download/${component.certmanager.version}/cert-manager.crds.yaml
+        # - name: version
+        #   value: v1.3.1
+        #   env: CHART_VERSION
+
+outputs:
+  - name: component.certmanager.clusterIssuer
+
+templates:
+  files:
+    - "*.template"

@@ -1,0 +1,313 @@
+kiali:
+  enabled: false
+  tag: v1.4
+  contextPath: /
+  ingress:
+    enabled: true
+    hosts:
+    - istio.${dns.domain}
+  createDemoSecret: false
+  security:
+    enabled: false
+  dashboard:
+    auth:
+      strategy: anonymous
+gateways:
+  enabled: false
+  # istio-ingressgateway:
+  #   enabled: true
+  #   sds:
+  #     enabled: true
+  #   labels:
+  #     app: istio-ingressgateway
+  #     istio: ingressgateway
+
+sidecarInjectorWebhook:
+  enabled: true
+galley:
+  enabled: true
+mixer:
+  policy:
+    enabled: true
+  telemetry:
+    enabled: false
+pilot:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+security:
+  enabled: true
+
+nodeagent:
+  enabled: false
+grafana:
+  enabled: false
+prometheus:
+  enabled: false
+tracing:
+  enabled: false
+certmanager:
+  enabled: false
+istio_cni:
+  enabled: false
+istiocoredns:
+  enabled: false
+global:
+  hub: docker.io/istio
+  tag: ${component.istio.version}
+  logging:
+    level: "default:info"
+  monitoringPort: 15014
+  k8sIngress:
+    enabled: false
+    gatewayName: ingressgateway
+    enableHttps: false
+
+  proxy:
+    image: proxyv2
+    clusterDomain: "cluster.local"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 16Mi
+      limits:
+        cpu: 2000m
+        memory: 1024Mi
+    concurrency: 2
+    accessLogFile: ""
+    accessLogFormat: ""
+    accessLogEncoding: TEXT
+    envoyAccessLogService:
+      enabled: false
+      host: # example: accesslog-service.istio-system
+      port: # example: 15000
+      tlsSettings:
+        mode: DISABLE # DISABLE, SIMPLE, MUTUAL, ISTIO_MUTUAL
+        clientCertificate: # example: /etc/istio/als/cert-chain.pem
+        privateKey:        # example: /etc/istio/als/key.pem
+        caCertificates:    # example: /etc/istio/als/root-cert.pem
+        sni:               # example: als.somedomain
+        subjectAltNames: []
+        # - als.somedomain
+      tcpKeepalive:
+        probes: 3
+        time: 10s
+        interval: 10s
+    logLevel: ""
+    componentLogLevel: ""
+    dnsRefreshRate: 300s
+    outlierLogPath: # example: /dev/stdout
+    protocolDetectionTimeout: 100ms
+    privileged: false
+    enableCoreDump: false
+    enableCoreDumpImage: ubuntu:xenial
+    statusPort: 15020
+    readinessInitialDelaySeconds: 1
+    readinessPeriodSeconds: 2
+    readinessFailureThreshold: 30
+    includeIPRanges: "*"
+    excludeIPRanges: ""
+    excludeOutboundPorts: ""
+    kubevirtInterfaces: ""
+    # examples:
+    #     Redirect no inbound traffic to Envoy:    --includeInboundPorts=""
+    #     Redirect all inbound traffic to Envoy:   --includeInboundPorts="*"
+    #     Redirect only selected ports:            --includeInboundPorts="80,8080"
+    includeInboundPorts: "*"
+    excludeInboundPorts: ""
+    autoInject: enabled
+    envoyStatsd:
+      # If enabled is set to true, host and port must also be provided. Istio no longer provides a statsd collector.
+      enabled: false
+      host: # example: statsd-svc.istio-system
+      port: # example: 9125
+
+    envoyMetricsService:
+      enabled: false
+      host: # example: metrics-service.istio-system
+      port: # example: 15000
+      tlsSettings:
+        mode: DISABLE # DISABLE, SIMPLE, MUTUAL, ISTIO_MUTUAL
+        clientCertificate: # example: /etc/istio/ms/cert-chain.pem
+        privateKey:        # example: /etc/istio/ms/key.pem
+        caCertificates:    # example: /etc/istio/ms/root-cert.pem
+        sni:               # example: ms.somedomain
+        subjectAltNames: []
+        # - ms.somedomain
+      tcpKeepalive:
+        probes: 3
+        time: 10s
+        interval: 10s
+    tracer: "zipkin"
+  proxy_init:
+    image: proxyv2
+    resources:
+      limits:
+        cpu: 100m
+        memory: 50Mi
+      requests:
+        cpu: 10m
+        memory: 10Mi
+
+  imagePullPolicy: IfNotPresent
+  controlPlaneSecurityEnabled: false
+  disablePolicyChecks: true
+  policyCheckFailOpen: false
+  enableTracing: true
+  tracer:
+    lightstep:
+      address: ""                # example: lightstep-satellite:443
+      accessToken: ""            # example: abcdefg1234567
+      secure: true               # example: true|false
+      cacertPath: ""             # example: /etc/lightstep/cacert.pem
+    zipkin:
+      address: ""
+    datadog:
+      address: "$(HOST_IP):8126"
+    stackdriver:
+      debug: false
+      maxNumberOfAttributes: 200
+      maxNumberOfAnnotations: 200
+      maxNumberOfMessageEvents: 200
+
+  # Default mtls policy. If true, mtls between services will be enabled by default.
+  mtls:
+    enabled: false
+    auto: true
+
+  # Lists the secrets you need to use to pull Istio images from a private registry.
+  imagePullSecrets: []
+    # - private-registry-key
+  arch:
+    amd64: 2
+    s390x: 2
+    ppc64le: 2
+  oneNamespace: false
+  defaultNodeSelector: {}
+  defaultTolerations: []
+  configValidation: true
+  meshExpansion:
+    enabled: false
+    useILB: false
+
+  multiCluster:
+    enabled: false
+    clusterName: ""
+
+  defaultResources:
+    requests:
+      cpu: 10m
+    #   memory: 128Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+  defaultPodDisruptionBudget:
+    enabled: true
+    # The values aren't mutable due to a current PodDisruptionBudget limitation
+    # minAvailable: 1
+  priorityClassName: ""
+  useMCP: true
+  trustDomain: ""
+  trustDomainAliases: []
+  meshID: ""
+  outboundTrafficPolicy:
+    mode: ALLOW_ANY
+
+  sds:
+    enabled: false
+    udsPath: ""
+    token:
+      aud: istio-ca
+
+  # meshNetworks:
+  #   network1:
+  #     endpoints:
+  #     - fromCidr: "192.168.0.1/24"
+  #     gateways:
+  #     - address: 1.1.1.1
+  #       port: 80
+  #   network2:
+  #     endpoints:
+  #     - fromRegistry: reg1
+  #     gateways:
+  #     - registryServiceName: istio-ingressgateway.istio-system.svc.cluster.local
+  #       port: 443
+  #
+  meshNetworks: {}
+  network: ""
+
+  # localityLbSetting:
+  #   enabled: true
+  #   distribute:
+  #   - from: "us-central1/*"
+  #     to:
+  #       "us-central1/*": 80
+  #       "us-central2/*": 20
+  #
+  # localityLbSetting:
+  #   enabled: true
+  #   failover:
+  #   - from: us-east
+  #     to: eu-west
+  #   - from: us-west
+  #     to: us-east
+  localityLbSetting:
+    enabled: true
+  enableHelmTest: false
+  certificates: []
+  operatorManageWebhooks: false
+
+
+# sidecarInjectorWebhook:
+#   enabled: true
+
+# grafana:
+#   enabled: false
+# prometheus:
+#   enabled: false
+# tracing:
+#   enabled: false
+
+# kiali:
+#   tag: v1.4
+#   contextPath: /
+#   enabled: true
+#   ingress:
+#     enabled: true
+#     hosts:
+#     - istio.${dns.domain}
+#   createDemoSecret: false
+#   security:
+#     enabled: false
+#   dashboard:
+#     auth:
+#       strategy: anonymous
+
+# certmanager:
+#   enabled: false
+
+# global:
+#   hub: docker.io/istio
+#   tag: 1.5.9
+
+#   k8sIngress:
+#     enabled: false
+#     gatewayName: ingressgateway
+#     enableHttps: false
+
+#   sds:
+#     enabled: false
+
+# gateways:
+#   enabled: true
+
+#   istio-ingressgateway:
+#     enabled: true
+#     sds:
+#       enabled: true
+#     labels:
+#       app: istio-ingressgateway
+#       istio: ingressgateway

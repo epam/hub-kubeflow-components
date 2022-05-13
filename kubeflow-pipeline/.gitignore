@@ -1,0 +1,4 @@
+/kustomize
+/kustomization.yaml
+/envs/*.env
+/resources/default-editor.yaml

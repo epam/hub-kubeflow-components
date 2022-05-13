@@ -1,0 +1,5 @@
+/kustomize
+/kustomization.yaml
+/role-binding.yaml
+/clusterrole-binding.yaml
+/params.env

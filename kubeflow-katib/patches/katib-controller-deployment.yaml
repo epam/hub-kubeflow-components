@@ -1,0 +1,9 @@
+- op: replace
+  path: /spec/template/spec/containers/0/args
+  value:
+    - "--webhook-port=8443"
+    - "--trial-resources=Job.v1.batch"
+    - "--trial-resources=TFJob.v1.kubeflow.org"
+    # - "--trial-resources=PyTorchJob.v1.kubeflow.org"
+    # - "--trial-resources=MPIJob.v1.kubeflow.org"
+    # - "--trial-resources=PipelineRun.v1beta1.tekton.dev"

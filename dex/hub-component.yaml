@@ -1,0 +1,89 @@
+---
+version: 1
+kind: component
+meta:
+  name: dex
+  title: Dex
+  brief: Dex OIDC and OAuth2 provider
+  description: >
+    Dex is an identity service that uses OpenID Connect to drive authentication
+    for other apps. Dex is NOT a user-management system, but acts as a portal
+    to other identity providers through "connectors";
+    This lets dex defer authentication to LDAP servers, SAML providers,
+    or established identity providers like GitHub, Google, and Active Directory.
+    Clients write their authentication logic once to talk to dex,
+    then dex handles the protocols for a given backend.
+  category: Edge Proxy
+  version: 2.26.0
+  maturity: ga
+  license: Apache 2.0
+  source:
+    dir: ../../components/dex
+
+requires:
+  - kubernetes
+
+parameters:
+  - name: component.ingress.protocol
+    value: https
+    env: INGRESS_PROTOCOL
+  - name: component.ingress.class
+    value: nginx
+  - name: component.ingress.ssoUrlPrefix
+    value: dex
+  - name: dns.domain
+    env: DOMAIN_NAME
+  - name: component.dex.name
+    value: dex
+    env: COMPONENT_NAME
+  - name: component.dex.oidcIssuerFqdn
+    value: auth.${dns.domain}
+  - name: component.dex.namespace
+    value: kube-system
+    env: NAMESPACE
+  - name: component.dex.image
+    value: dexidp/dex:v2.26.0
+  - name: component.dex.passwordDb
+    empty: allow
+    parameters:
+    - name: email
+    - name: password
+  - name: component.dex.ldap
+    empty: allow
+    parameters:
+    - name: host
+    - name: dn
+    - name: usernamePrompt
+      value: Username
+    - name: password
+    - name: search.dn
+    - name: search.usernameAttr
+      value: uid
+    - name: search.filter
+      value: (objectClass=user)
+    - name: search.idAttr
+      value: uid
+    - name: groupSearch.dn
+      value: ${component.dex.ldap.search.dn}
+  - name: component.dex.authproxy.image
+    value: agilestacks/oauth2_proxy:v2.3
+  - name: component.dex.authOperator.image
+    value: agilestacks/auth-operator:0.1.1
+  - name: component.dex.authproxy.emailDomain
+    value: "'*'"
+  - name: component.dex.authproxy.cookieExpire
+    value: "'12h0m0s'"
+
+outputs:
+  - name: component.dex.issuer
+    # value: http://dex.${component.dex.namespace}.svc.cluster.local:5556
+    value: ${component.ingress.protocol}://${component.dex.oidcIssuerFqdn}
+  # - name: component.dex.namespace
+
+templates:
+  files:
+    - "kubernetes/*.template"
+  extra:
+    - kind: go
+      files:
+        - "kubernetes/*.gotemplate"

@@ -1,0 +1,51 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+- kustomize/base
+resources:
+- oidc.yaml
+
+patchesJSON6902:
+- target:
+    version: v1
+    kind: PersistentVolumeClaim
+    name: authservice-pvc
+  patch: |-
+    - op: replace
+      path: /spec/resources/requests/storage
+      value: ${component.kubeflow.authn.volumeSize}
+
+commonLabels:
+  kustomize.component: kubeflow-authn
+  app.kubernetes.io/component: ${hub.componentName}
+  app.kubernetes.io/name: ${component.kubeflow.name}
+  app.kubernetes.io/version: "${component.kubeflow.version}"
+  app.kubernetes.io/managed-by: "superhub.io"
+  app.kubernetes.io/part-of: kubeflow
+  superhub.io/dns.domain: ${dns.domain}
+
+namespace: ${component.istio.namespace}
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+images:
+- name: gcr.io/arrikto/kubeflow/oidc-authservice
+  newName: gcr.io/arrikto/kubeflow/oidc-authservice
+  # CA_BUNDLE support introduced since version: 2cb5bf6
+  newTag: 2cb5bf6
+
+configMapGenerator:
+- name: oidc-authservice-parameters
+  behavior: replace
+  literals:
+  - client_id=${component.kubeflow.authn.oidcClientId}
+  - oidc_provider=${component.kubeflow.authn.oidcProvider}
+  - oidc_redirect_uri=${component.kubeflow.authn.oidcRedirectURI}
+  - oidc_auth_url=${component.dex.issuer}/auth
+  - application_secret=${component.kubeflow.authn.oidcSecret}
+  - skip_auth_uri=${component.dex.issuer}
+  - userid-header=kubeflow-userid
+  - userid-prefix=
+  - namespace=${component.istio.namespace}
+  - gatewaySelector=${component.istio.ingressGateway}

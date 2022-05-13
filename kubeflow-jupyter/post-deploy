@@ -1,0 +1,11 @@
+#!/bin/sh -e
+echo "Restoring profiles from $BACKUP_FILE..."
+if test ! -f "$BACKUP_FILE"; then
+    echo "Nothing to restore..."
+    exit
+fi
+
+kubectl="kubectl --context=$DOMAIN_NAME"
+set +e
+gunzip -c "$BACKUP_FILE" | $kubectl create -f -
+echo "Done!"

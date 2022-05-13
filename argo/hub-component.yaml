@@ -1,0 +1,95 @@
+---
+version: 1
+kind: component
+
+requires:
+- kubernetes
+- helm
+
+provides:
+- argo-workflows
+
+lifecycle:
+  verbs:
+  - deploy
+  - undeploy
+  - backup
+
+parameters:
+- name: dns.domain
+  env:  DOMAIN_NAME
+- name: component.dex.issuer
+  empty: allow
+- name: component.ingress
+  parameters:
+  - name: protocol
+    value: http
+  - name: host
+- name: component.argo
+  parameters:
+  - name: namespace
+    value: kubeflow
+    env: NAMESPACE
+  - name: workflowNamespace
+    value: ${component.argo.namespace}
+  - name: workflowRBAC
+    value: true
+  - name: version
+    value: v3.3.2
+  - name: oidc.clientSecret
+    empty: allow
+  - name: oidc.redirectUrl
+    value: ${component.ingress.protocol}://${component.ingress.host}/oauth2/callback
+  - name: helm
+    parameters:
+    - name: repo 
+      env: HELM_REPO
+      value: https://argoproj.github.io/argo-helm
+    - name: chart
+      value: argo-workflows
+      env: HELM_CHART
+    - name: chartVersion
+      value: "0.14.1"
+      env: HELM_CHART_VERSION
+    - name: valuesFile
+      value: values.yaml
+      env: CHART_VALUES_FILE
+  - name: docker.repository
+    value: docker.io/argoproj
+  - name: containerRuntimeExecutor
+    value: k8sapi
+
+- name: component.mysql
+  empty: allow
+  parameters:
+  - name: host
+  - name: user
+  - name: port
+    value: "3306"
+  - name: password
+  - name: database
+
+- name: component.bucket
+  parameters:
+  - name: host
+  - name: port
+  - name: region
+  - name: accessKey
+  - name: secretKey
+  - name: name
+
+- name: hub.backup.file
+  empty: allow
+  env: BACKUP_FILE
+
+- name: networking.caBundle
+  empty: allow
+  env: CA_BUNDLE_PATH
+
+templates:
+  files:
+  - "*.template"
+  - "resources/*.template"
+  extra:
+    - kind: go
+      files: ["resources/*.gotemplate"]

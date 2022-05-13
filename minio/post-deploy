@@ -1,0 +1,10 @@
+#!/bin/sh -xe
+kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE"
+
+if test -n "$INGRESS_HOST" && ! $kubectl get -f ingress.yaml > /dev/null; then
+  $kubectl apply -f ingress.yaml
+  if test -n "$INGRESS_CLASS"; then
+    $kubectl annotate ingress --overwrite "$COMPONENT_NAME" "kubernetes.io/ingress.class" "$INGRESS_CLASS" \
+    || echo "Moving on..."
+  fi
+fi

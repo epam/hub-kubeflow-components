@@ -1,0 +1,129 @@
+images:
+  namespace: "${component.argo.docker.repository}"
+  controller: workflow-controller
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+  tag: "${component.argo.version}"
+
+fullnameOverride: argo
+createAggregateRoles: true
+singleNamespace: false
+
+controller:
+  workflowNamespaces:
+    - ${component.argo.workflowNamespace}
+  image:
+    tag: "${component.argo.version}"
+  containerRuntimeExecutor: "${component.argo.containerRuntimeExecutor}"  
+
+  persistence: {}
+  #   clusterName: "${hub.componentName}"
+  #   mysql:
+  #     host: "${component.mysql.host}"
+  #     port: ${component.mysql.port}
+  #     database: "${hub.componentName}"
+  #     tableName: ${hub.componentName}_workflows
+  #     userNameSecret:
+  #       name: ${hub.componentName}-database
+  #       key: username
+  #     passwordSecret:
+  #       name: ${hub.componentName}-database
+  #       key: password
+
+  extraEnv:
+  - name: LEADER_ELECTION_DISABLE
+    value: "0"
+  - name: LEADER_ELECTION_IDENTITY
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
+  replicas: 1
+  pdb:
+    enabled: false
+    # minAvailable: 1
+    # maxUnavailable: 1
+
+executor:
+  image:
+    # Overrides .images.tag if defined.
+    tag: "${component.argo.version}"
+  env: {}
+
+server:
+  enabled: true
+  baseHref: "/"
+  # baseHref: "/${hub.componentName}/"
+  image:
+    tag: "${component.argo.version}"
+  replicas: 1
+  pdb:
+    enabled: false
+    # minAvailable: 1
+    # maxUnavailable: 1
+
+  ingress:
+    enabled: false
+
+  extraArgs:
+  # this enables service HTTP protocol
+  - "--secure=false"
+  - "--auth-mode=server"
+  - "--auth-mode=client"
+  # - "--auth-mode=sso"
+
+  clusterWorkflowTemplates:
+    enableEditing: true
+  sso:
+    issuer: "${component.dex.issuer}"
+    redirectUrl: "${component.argo.oidc.redirectUrl}"
+    clientId:
+      name: ${hub.componentName}-sso
+      key: client-id
+    clientSecret:
+      name: ${hub.componentName}-sso
+      key: client-secret
+    scopes:
+    - groups
+    - email
+    rbac:
+      enabled: false
+
+# Influences the creation of the ConfigMap for the workflow-controller itself.
+useDefaultArtifactRepo: true
+useStaticCredentials: true
+artifactRepository:
+  archiveLogs: false
+  s3:
+    accessKeySecret:
+      name: ${hub.componentName}-artifacts
+      key: accesskey
+    secretKeySecret:
+      name: ${hub.componentName}-artifacts
+      key: secretkey
+    insecure: true
+    bucket: ${component.bucket.name}
+    endpoint: ${component.bucket.host}:${component.bucket.port}
+    region: ${component.bucket.region}
+  # gcs: {}
+  # bucket: <project>-argo
+  # keyFormat: "{{workflow.namespace}}/{{workflow.name}}/{{pod.name}}"
+  # serviceAccountKeySecret is a secret selector.
+  # It references the k8s secret named 'my-gcs-credentials'.
+  # This secret is expected to have have the key 'serviceAccountKey',
+  # containing the base64 encoded credentials
+  # to the bucket.
+  #
+  # If it's running on GKE and Workload Identity is used,
+  # serviceAccountKeySecret is not needed.
+  # serviceAccountKeySecret:
+  # name: my-gcs-credentials
+  # key: serviceAccountKey
+
+workflow: 
+  serviceAccount:
+    create: ${component.argo.workflowRBAC}
+    annotations: {}
+    name: ${component.argo.workflowNamespace}-workflow
+  rbac:
+    create: ${component.argo.workflowRBAC}   

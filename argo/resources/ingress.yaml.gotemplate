@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+{{if eq .component.ingress.protocol "https"}}
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    kubernetes.io/tls-acme: "true"
+{{end}}
+  name: "{{.hub.componentName}}"
+spec:
+  rules:
+  - host: "{{.component.ingress.host}}"
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{.hub.componentName}}-server
+            port:
+              number: 2746
+        path: /
+        pathType: Prefix
+{{if eq .component.ingress.protocol "https"}}
+  tls:
+    - hosts:
+      - "{{.component.ingress.host}}"
+      secretName: "{{.hub.componentName}}-tls"
+{{end}}

@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: "${component.certmanager.clusterIssuer}"
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: viktorso@google.com
+    privateKeySecretRef:
+      name: "${component.certmanager.clusterIssuer}"
+    solvers:
+    # first try DNS solver selected explicitly via label
+    - dns01:
+        cloudDNS:
+          project: ${projectId}

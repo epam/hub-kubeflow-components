@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: "${hub.componentName}-gateway"
+spec:
+  selector:
+    istio: "${component.istio.ingressGateway}"
+  servers:
+  - hosts:
+    - "${component.ingress.host}"
+    - "${component.istio.ingressGateway}.${component.istio.namespace}.svc.cluster.local"
+    port:
+      name: http
+      number: 80
+      protocol: HTTP

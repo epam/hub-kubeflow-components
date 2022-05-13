@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: authservice
+spec:
+  template:
+    spec:
+      volumes:
+      - name: cacerts
+        secret:
+          secretName: "${component.kubeflow.authn.caSecret}"
+          optional: true
+      containers:
+      - name: authservice
+        env:
+        - name: SESSION_MAX_AGE
+          value: "${component.kubeflow.authn.sessionMaxAge}"
+        - name: CA_BUNDLE
+          value: /etc/ssl/certs/cacerts.pem
+        - name: USERID_CLAIM
+          value: name
+        volumeMounts:
+        - name: cacerts
+          mountPath: /etc/ssl/certs

@@ -1,0 +1,37 @@
+---
+version: 1
+kind: component
+meta:
+  name: kubeflow-base
+  title: Kubeflow Common components
+  brief: Machine learning
+  description: >
+    This is a base component for kubeflow
+  category: AI and Machine Learning
+  version: 1.2.0
+  licence: Apache 2.0
+  source:
+    dir: ../../components/kubeflow-centraldashboard
+
+requires:
+  - kubernetes
+
+parameters:
+- name: dns.domain
+  env: DOMAIN_NAME
+- name: component.dex.issuer
+- name: component.ingress.protocol
+- name: component.istio.namespace
+- name: component.istio.ingressGateway
+- name: component.kubeflow
+  parameters:
+  - name: name
+  - name: namespace
+    env: NAMESPACE
+  - name: version
+    value: v1.2.0
+    env: VERSION
+
+templates:
+  files:
+  - "*.template"

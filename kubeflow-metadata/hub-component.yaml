@@ -1,0 +1,48 @@
+---
+version: 1
+kind: component
+meta:
+  name: kubeflow-profiles
+  title: Kubeflow Profiles
+  brief: Machine learning
+  description: >
+    Profiles Controller for Kubeflow
+  category: AI and Machine Learning
+  version: 1.2.0
+  maturity: alpha
+  licence: Apache 2.0
+  source:
+    dir: ../../components/kubeflow-centraldashboard
+
+requires:
+  - kubernetes
+
+parameters:
+- name: dns.domain
+  env: DOMAIN_NAME
+- name: component.kubeflow
+  parameters:
+    - name: name
+    - name: namespace
+      env: NAMESPACE
+    - name: version
+      # value: master
+      value: v1.2.0
+      env: VERSION
+- name: component.mysql
+  parameters:
+  - name: host
+  - name: user
+    value: root
+  - name: password
+    empty: allow
+  - name: port
+    value: "3306"
+  - name: database
+    value: metadb
+  - name: emptyPassword
+    value: '#{size(component.mysql.password) == 0}'
+
+templates:
+  files:
+  - "*.template"

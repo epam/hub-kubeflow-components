@@ -1,0 +1,7 @@
+/notebook-controller/kustomize
+/notebook-controller/kustomization.yaml
+/notebook-controller/params.env
+/jupyter-web-app/kustomize
+/jupyter-web-app/kustomization.yaml
+/jupyter-web-app/params.env
+/jupyter-web-app/spawner_ui_config.yaml

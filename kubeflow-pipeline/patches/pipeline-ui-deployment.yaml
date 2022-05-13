@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-pipeline-ui
+spec:
+  template:
+    spec:
+      volumes:
+      - name: config-volume
+        configMap:
+          name: ml-pipeline-ui-configmap
+      containers:
+      - name: ml-pipeline-ui
+        envFrom:
+        - configMapRef:
+            name: ml-pipeline-ui-config
+        env:
+        - name: MINIO_NAMESPACE
+          $patch: "delete"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+          readOnly: true

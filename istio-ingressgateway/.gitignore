@@ -1,0 +1,9 @@
+/.helm
+!/values-01-global.yaml
+/values-02-defaults.yaml
+/values-03-overrides.yaml
+/.workdir
+/values.yaml
+/values-*.yaml
+/ingress.yaml
+/ingress-tls.yaml

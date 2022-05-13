@@ -1,0 +1,73 @@
+namePrefix: metadata-
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+commonLabels:
+  # app: metadata
+  kustomize.component: ${hub.componentName}
+  app.kubernetes.io/component: ${hub.componentName}
+  app.kubernetes.io/name: ${component.kubeflow.name}  
+  app.kubernetes.io/version: "${component.kubeflow.version}"
+  app.kubernetes.io/managed-by: "superhub.io"   
+configMapGenerator:
+- name: ui-parameters
+  envs:
+  - kustomize/base/params.env
+- name: grpc-configmap
+  envs:
+  - kustomize/base/grpc-params.env
+- name: metadata-db-parameters
+  envs:
+  - db-params.env
+secretGenerator:
+- name: metadata-db-secrets
+  envs:
+  - db-secrets.env  
+generatorOptions:
+  # TFX pipelines use metadata-grpc-configmap for finding grpc server host and
+  # port at runtime. Because they don't know the suffix, we have to disable it.
+  disableNameSuffixHash: true
+resources:
+- kustomize/base/metadata-deployment.yaml
+- kustomize/base/metadata-service.yaml
+- kustomize/base/metadata-envoy-deployment.yaml
+- kustomize/base/metadata-envoy-service.yaml
+- kustomize/overlays/application/application.yaml
+- kustomize/overlays/istio/virtual-service-metadata-grpc.yaml
+patchesStrategicMerge:
+- kustomize/overlays/external-mysql/metadata-deployment.yaml
+namespace: ${component.kubeflow.namespace}
+vars:
+- name: metadata-namespace
+  objref:
+    kind: Service
+    name: envoy-service
+    apiVersion: v1
+  fieldref:
+    fieldpath: metadata.namespace
+- name: ui-clusterDomain
+  objref:
+    kind: ConfigMap
+    name: ui-parameters
+    version: v1
+  fieldref:
+    fieldpath: data.uiClusterDomain
+- name: metadata-envoy-service
+  objref:
+    kind: Service
+    name: envoy-service
+    apiVersion: v1
+  fieldref:
+    fieldpath: metadata.name
+images:
+- name: gcr.io/kubeflow-images-public/metadata
+  newName: gcr.io/kubeflow-images-public/metadata
+  newTag: v0.1.11
+- name: gcr.io/tfx-oss-public/ml_metadata_store_server
+  newName: gcr.io/tfx-oss-public/ml_metadata_store_server
+  newTag: v0.21.1
+- name: gcr.io/ml-pipeline/envoy
+  newName: gcr.io/ml-pipeline/envoy
+  newTag: metadata-grpc
+configurations:
+- kustomize/overlays/istio/params.yaml
+- kustomize/v3/params.yaml

@@ -1,0 +1,45 @@
+---
+version: 1
+kind: component
+meta:
+  name: kubeflow-profiles
+  version: 1.3.0
+  source:
+    dir: ../../components/kubeflow-centraldashboard
+
+requires:
+  - kubernetes
+
+parameters:
+- name: dns.domain
+  env: DOMAIN_NAME
+- name: component.kubeflow
+  parameters:
+    - name: name
+    - name: namespace
+      env: NAMESPACE
+    - name: version
+      # value: master
+      value: v1.2.0
+      env: VERSION
+    - name: kustomize.tarball.url
+      value: https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz
+      env: HUB_KUSTOMIZE_TARBALL_URL
+    - name: kustomize.tarball.subpath
+      value: profiles
+      env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+- name: component.dex.passwordDb.email
+  value: bdaml
+- name: hub.backup.file
+  empty: allow
+  env: BACKUP_FILE
+
+templates:
+  files:
+  - "*.template"
+
+lifecycle:
+  verbs:
+  - deploy
+  - undeploy
+  - backup

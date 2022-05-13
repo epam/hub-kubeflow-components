@@ -1,0 +1,40 @@
+image:
+  repository: ${component.minio.docker.image}
+  tag: ${component.minio.docker.tag}
+  pullPolicy: IfNotPresent
+
+mcImage:
+  repository: ${component.minio.docker.mcImage}
+  tag: ${component.minio.docker.mcTag}
+  pullPolicy: IfNotPresent
+
+helmKubectlJqImage:
+  repository: ${component.minio.docker.jqImage}
+  tag: ${component.minio.docker.jqTag}
+  pullPolicy: IfNotPresent
+
+## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
+mode: standalone
+
+
+accessKey: "${component.minio.accessKey}"
+secretKey: "${component.minio.secretKey}"
+replicas: ${component.minio.replicas}
+persistence:
+  enabled: true
+  existingClaim: "${component.minio.existingClaim}"
+  storageClass: "${component.storage-class.name}"
+  VolumeName: ""
+  accessMode: ReadWriteOnce
+  size: ${component.minio.storageSize}
+
+service:
+  port: ${component.minio.service.port}
+resources:
+  requests:
+    memory: ${component.minio.requests.memory}
+defaultBucket:
+  enabled: false
+  name: ${component.bucket.name}
+  policy: ${component.bucket.policy}
+

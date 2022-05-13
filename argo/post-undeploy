@@ -1,0 +1,10 @@
+#!/bin/sh
+
+kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE --ignore-not-found=true"
+$kubectl delete -f "resources/bucket-creds.yaml"
+# $kubectl delete -f "resources/virtual-service.yaml"
+$kubectl delete -f "resources/ingress.yaml"
+$kubectl delete -f "resources/oidc.yaml"
+$kubectl delete -f "resources/database-secret.yaml"
+$kubectl delete secret "$COMPONENT_NAME-ca"
+echo "Done!"

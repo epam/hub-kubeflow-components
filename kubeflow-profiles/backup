@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if test -z "$HUB_BACKUP_DIR"; then
+    echo "Error: HUB_BACKUP_DIR has not been defined"
+    exit 1
+fi
+
+kubectl="kubectl --context=$DOMAIN_NAME"
+$kubectl get "profiles.kubeflow.org" -o json \
+| jq -cM '. | del(.items[].metadata.creationTimestamp) | del(.items[].metadata.deletionTimestamp)' \
+| jq -cM '. | del(.items[].metadata.selfLink) | del(.items[].metadata.resourceVersion)' \
+| jq -cM '. | del(.items[].status)  | del(.items[].metadata.uid)' \
+| gzip > "$HUB_BACKUP_DIR/$COMPONENT_NAME.json.gz"
+
+cat <<EOF
+
+Outputs:
+hub.backup.file = $HUB_BACKUP_DIR/$COMPONENT_NAME.json.gz
+EOF

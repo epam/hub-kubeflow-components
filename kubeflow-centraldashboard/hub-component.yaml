@@ -1,0 +1,46 @@
+---
+version: 1
+kind: component
+meta:
+  name: kubeflow-centraldashboard
+  title: Kubeflow Central Dashboard
+  brief: Machine learning
+  description: >
+    Central Dashboard web application for Kubeflow
+  category: AI and Machine Learning
+  version: 1.2.0
+  maturity: alpha
+  licence: Apache 2.0
+  source:
+    dir: ../../components/kubeflow-centraldashboard
+
+requires:
+  - kubernetes
+
+parameters:
+- name: dns.domain
+  env: DOMAIN_NAME
+- name: component.kubeflow
+  parameters:
+    - name: name
+    - name: namespace
+      env: NAMESPACE
+    - name: version
+      # value: master
+      value: v1.2.0
+      env: VERSION
+
+    - name: dashboard.image
+      value: gcr.io/kubeflow-images-public/centraldashboard
+    - name: dashboard.imageTag
+      value: vmaster-g8097cfeb
+    - name: dashboard.contributorFormat
+      brief: A regular expression to validate a contributor
+      value: ^.+$
+    - name: dashboard.contributorValidationMessage
+      brief: Feedback message on ivalid contributor format
+      value: Contributor should be non empty string
+
+templates:
+  files:
+  - "*.template"

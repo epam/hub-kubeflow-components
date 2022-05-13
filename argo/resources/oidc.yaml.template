@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: ${hub.componentName}-sso
+stringData:
+  client-id: "${hub.componentName}-sso"
+  client-secret: "${component.argo.oidc.clientSecret}"
+---
+apiVersion: auth.agilestacks.com/v1alpha1
+kind: Oidc
+metadata:
+  name: ${hub.componentName}-sso
+spec:
+  id: ${hub.componentName}-sso
+  name: ${hub.componentName}-sso
+  secret: "${component.argo.oidc.clientSecret}"
+  redirectURIs:
+  - "${component.argo.oidc.redirectUrl}"

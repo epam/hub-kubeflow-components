@@ -1,0 +1,54 @@
+---
+version: 1
+kind: component
+meta:
+  name: kubeflow-jupyter
+  version: 1.2.0
+  source:
+    dir: ../../components/kubeflow-jupyter
+
+requires:
+  - kubernetes
+provides:
+  - notebooks
+
+parameters:
+- name: dns.domain
+- name: component.kubeflow
+  parameters:
+    - name: name
+    - name: namespace
+      env: NAMESPACE
+    - name: version
+      # value: master
+      value: v1.2.0
+      env: VERSION
+    - name: jupyter.image
+      value: gcr.io/kubeflow-images-public/jupyter-web-app
+    - name: jupyter.imageTag
+      value: latest
+    - name: jupyter.workspaceVolume.storageClass
+      # see: https://github.com/kubeflow/manifests/blob/v1.1.0/jupyter/jupyter-web-app/base/configs/spawner_ui_config.yaml#L68
+      value: '{none}'
+    - name: jupyterApiMock.image
+      value: python
+    - name: jupyterApiMock.imageTag
+      value: 3-slim
+- name: component.istio
+  parameters:
+  - name: namespace
+  - name: ingressGateway
+- name: hub.backup.file
+  empty: allow
+  env: BACKUP_FILE
+
+templates:
+  files:
+  - "jupyter-web-app/*.template"
+  - "notebook-controller/*.template"
+
+lifecycle:
+  verbs:
+  - deploy
+  - undeploy
+  - backup

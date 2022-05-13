@@ -1,0 +1,26 @@
+#!/bin/sh
+kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE"
+
+if test -n "$CA_BUNDLE_PATH"; then
+    if test ! -f "$CA_BUNDLE_PATH"; then
+        echo "Error: CA file not found $CA_BUNDLE_PATH"
+        exit 1
+    fi
+
+    echo -n "Checking secret/$COMPONENT_NAME-ca: "
+    if $kubectl get secret "$COMPONENT_NAME-ca" -o name 2>/dev/null; then
+        echo "already exists"
+    else
+        echo "creating $CA_BUNDLE_PATH"
+        # /etc/ssl/certs/ca-certificates.crt
+        $kubectl create secret generic "$COMPONENT_NAME-ca" --from-file="ca-certificates.crt=$CA_BUNDLE_PATH"
+    fi
+else
+    echo "Skipping creation of secret/$COMPONENT_NAME-ca due to CA_BUNDLE_PATH has not been defined"
+fi
+
+$kubectl apply -f "resources/bucket-creds.yaml"
+# $kubectl apply -f "resources/virtual-service.yaml"
+# $kubectl apply -f "resources/ingress.yaml"
+$kubectl apply -f "resources/oidc.yaml"
+$kubectl apply -f "resources/database-secret.yaml"

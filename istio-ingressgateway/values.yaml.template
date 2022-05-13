@@ -1,0 +1,86 @@
+global:
+  omitSidecarInjectorConfigMap: true
+  istioNamespace: ${component.istio.namespace}
+  hub: ${component.istio.docker.repository}
+  tag: ${component.istio.version}
+  proxy:
+    image: proxyv2
+    tracer: "zipkin"
+    envoyStatsd:
+      enabled: false
+      # host: # example: statsd-svc.istio-system
+      # port: # example: 9125
+    envoyMetricsService:
+      enabled: false
+    envoyAccessLogService:
+      enabled: false
+  meshExpansion:
+    enabled: false
+  k8sIngress:
+    enabled: false
+  multiCluster:
+    enabled: false
+  defaultPodDisruptionBudget:
+    enabled: false
+  logging:
+    level: "default:info"
+  tracer:
+    zipkin:
+      address: ""
+    lightstep:
+      address: ""                # example: lightstep-satellite:443
+      accessToken: ""            # example: abcdefg1234567
+      secure: true               # example: true|false
+      cacertPath: ""             # example: /etc/lightstep/cacert.pem
+    datadog:
+      # Host:Port for submitting traces to the Datadog agent.
+      address: "$(HOST_IP):8126"
+    stackdriver:
+      debug: false
+      maxNumberOfAttributes: 200
+      maxNumberOfAnnotations: 200
+      maxNumberOfMessageEvents: 200
+  mtls:
+    enabled: false
+    auto: true
+  sds:
+    enabled: false
+  imagePullSecrets: []
+  arch:
+    amd64: 2
+    s390x: 2
+    ppc64le: 2
+
+# # all other components are disabled except the gateways
+# security:
+#   enabled: false
+
+# sidecarInjectorWebhook:
+#   enabled: false
+
+# galley:
+#   enabled: false
+
+# mixer:
+#   policy:
+#     enabled: false
+#   telemetry:
+#     enabled: false
+
+# pilot:
+#   enabled: false
+
+# grafana:
+#   enabled: false
+
+# prometheus:
+#   enabled: false
+
+# tracing:
+#   enabled: false
+
+# kiali:
+#   enabled: false
+
+# certmanager:
+#   enabled: false

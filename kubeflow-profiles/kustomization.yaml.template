@@ -1,0 +1,70 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- kustomize/base/cluster-role-binding.yaml
+# - crd.yaml
+- kustomize/base/deployment.yaml
+- kustomize/base/service.yaml
+- kustomize/base/service-account.yaml
+- kustomize/overlays/application/application.yaml
+- kustomize/overlays/istio/virtual-service.yaml
+namePrefix: profiles-
+namespace: ${component.kubeflow.namespace}
+commonLabels:
+  kustomize.component: profiles
+  app.kubernetes.io/component: profiles
+  app.kubernetes.io/name: ${component.kubeflow.name}
+  app.kubernetes.io/version: "${component.kubeflow.version}"
+  app.kubernetes.io/managed-by: "superhub.io"
+configMapGenerator:
+- name: profiles-parameters
+  literals:
+  - admin=${component.dex.passwordDb.email}
+  - userid-header=kubeflow-userid
+  - gcp-sa=
+  - userid-prefix=
+images:
+- name: gcr.io/kubeflow-images-public/kfam
+  newName: gcr.io/kubeflow-images-public/kfam
+  newTag: vmaster-g9f3bfd00
+- name: gcr.io/kubeflow-images-public/profile-controller
+  newName: gcr.io/kubeflow-images-public/profile-controller
+  newTag: vmaster-ga49f658f
+vars:
+- fieldref:
+    fieldPath: data.admin
+  name: admin
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: profiles-parameters
+- fieldref:
+    fieldPath: data.gcp-sa
+  name: gcp-sa
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: profiles-parameters
+- fieldref:
+    fieldPath: data.userid-header
+  name: userid-header
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: profiles-parameters
+- fieldref:
+    fieldPath: data.userid-prefix
+  name: userid-prefix
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: profiles-parameters
+- fieldref:
+    fieldPath: metadata.namespace
+  name: namespace
+  objref:
+    apiVersion: v1
+    kind: Service
+    name: kfam
+configurations:
+- params.yaml

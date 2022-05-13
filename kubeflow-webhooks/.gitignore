@@ -1,0 +1,10 @@
+kustomize
+kustomization.yaml
+params.env
+/role-binding.yaml
+/clusterrole-binding.yaml
+/selfsigned/csr.conf
+/selfsigned/*.key
+/selfsigned/*.crt
+/selfsigned/*.csr
+/selfsigned/*.srl

@@ -1,0 +1,41 @@
+---
+version: 1
+kind: component
+meta:
+  name: kubeflow-tensorboard
+  title: Kubeflow Profiles
+  brief: Machine learning
+  description: >
+    Tensorboard operator for Kubeflow
+  category: AI and Machine Learning
+  version: 1.2.0
+  maturity: alpha
+  licence: Apache 2.0
+  source:
+    dir: ../../components/kubeflow-tensorboard
+
+requires:
+  - kubernetes
+
+parameters:
+- name: dns.domain
+  env: DOMAIN_NAME
+- name: component.kubeflow
+  parameters:
+    - name: name
+    - name: namespace
+      env: NAMESPACE
+    - name: version
+      # value: master
+      value: "v1.2.0"
+      env: VERSION
+    - name: manifests.subpath
+      value: "v1.2.0"
+      env: VERSION
+
+templates:
+  files:
+  # - "envs/*.template"
+  # - "resources/*.template"
+  # - "patches/*.template"
+  - "*.template"
