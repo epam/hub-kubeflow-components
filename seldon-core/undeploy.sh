@@ -18,5 +18,8 @@ export helm="$helm3 --kube-context=$DOMAIN_NAME --namespace=$NAMESPACE"
 
 if $helm list --deployed --failed --pending -q | grep -E "^$COMPONENT_NAME\$"; then
   $helm uninstall "$COMPONENT_NAME"
+fi
+
+if $kubectl get -f istio-gateway.yaml > /dev/null; then
   $kubectl delete -f istio-gateway.yaml
 fi
