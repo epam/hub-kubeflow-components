@@ -1,4 +1,1 @@
-#!/bin/sh -xe
-../../bin/shell/download-manifests -o "$(pwd)/kustomize/application" -s "application"
-../../bin/shell/download-manifests -o "$(pwd)/kustomize/kubeflow-roles" -s "kubeflow-roles/base"
-../../bin/shell/download-manifests -o "$(pwd)/kustomize/istio" -s "istio/istio/base"
+pre-deploy

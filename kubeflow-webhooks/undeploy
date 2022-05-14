@@ -4,8 +4,8 @@ files download-tar "$URL" "webhook/kustomize" --tar-subpath "admission-webhook/w
 
 kubectl="kubectl --namespace=$NAMESPACE --context=$DOMAIN_NAME"
 
-$kubectl delete -k "bootstrap"
-$kubectl delete -k "webhook"
+$kubectl delete --ignore-not-found=true -k "bootstrap"
+$kubectl delete --ignore-not-found=true -k "webhook"
 
 if $kubectl get secret "webhook-certs" -o name; then
     $kubectl delete secret "webhook-certs"
