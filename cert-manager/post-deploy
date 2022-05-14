@@ -1,3 +1,0 @@
-#!/bin/sh -xe
-
-kubectl --context="$DOMAIN_NAME" apply -f "issuer-le-gcp.yaml"
