@@ -1,14 +1,15 @@
-#!/bin/sh -ex
-../../bin/shell/download-manifests -o "$(pwd)/jupyter-web-app/kustomize" -s "jupyter/jupyter-web-app"
-../../bin/shell/download-manifests -o "$(pwd)/notebook-controller/kustomize" -s "jupyter/notebook-controller"
+#!/bin/sh -e
 
 kubectl="kubectl -n $NAMESPACE --context=$HUB_DOMAIN_NAME"
 if ! $kubectl get "notebooks.kubeflow.org" > /dev/null; then
   $kubectl create -f "crds/notebook.yaml"
 fi
 
-kustomize build "notebook-controller" | $kubectl apply -f -
-kustomize build "jupyter-web-app" | $kubectl apply -f -
+files download-tar "$URL" "notebook-controller/kustomize" --tar-subpath "jupyter/notebook-controller"
+files download-tar "$URL" "jupyter-web-app/kustomize" --tar-subpath "jupyter/jupyter-web-app"
+
+$kubectl apply -k "notebook-controller"
+$kubectl apply -k "jupyter-web-app"
 
 if test -f "$BACKUP_FILE"; then
   set +e

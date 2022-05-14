@@ -1,25 +1,9 @@
 ---
 version: 1
 kind: component
-meta:
-  name: istio
-  title: Istio
-  brief: Service mesh
-  description: >-
-    Service mesh for providing a uniform way
-    to integrate microservices, manage traffic
-    flow across microservices, enforce
-    policies and aggregate telemetry data.
-    Automatically integrates with Prometheus component
-    (configures scraping jobs, sets up Grafana dashboards
-    to display various Istio metrics).
-  category: Networking
-  version: 1.5.9
-  license: Apache 2.0
-  source:
-    dir: ../../components/istio
 
 requires:
+  - kubernetes
   - helm
 
 provides:

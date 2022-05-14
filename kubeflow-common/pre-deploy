@@ -1,4 +1,4 @@
-#!/bin/sh -xe
-../../bin/shell/download-manifests -o "$(pwd)/kustomize/application" -s "application"
-../../bin/shell/download-manifests -o "$(pwd)/kustomize/kubeflow-roles" -s "kubeflow-roles/base"
-../../bin/shell/download-manifests -o "$(pwd)/kustomize/istio" -s "istio/istio/base"
+#!/bin/sh -e
+files download-tar "$URL" "kustomize/application" --tar-subpath "application"
+files download-tar "$URL" "kustomize/kubeflow-roles" --tar-subpath "kubeflow-roles/base"
+files download-tar "$URL" "kustomize/istio" --tar-subpath "istio/istio/base"

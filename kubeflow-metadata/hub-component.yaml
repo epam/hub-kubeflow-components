@@ -1,18 +1,6 @@
 ---
 version: 1
 kind: component
-meta:
-  name: kubeflow-profiles
-  title: Kubeflow Profiles
-  brief: Machine learning
-  description: >
-    Profiles Controller for Kubeflow
-  category: AI and Machine Learning
-  version: 1.2.0
-  maturity: alpha
-  licence: Apache 2.0
-  source:
-    dir: ../../components/kubeflow-centraldashboard
 
 requires:
   - kubernetes
@@ -29,6 +17,9 @@ parameters:
       # value: master
       value: v1.2.0
       env: VERSION
+    - name: tarball
+      value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
+      env: URL      
 - name: component.mysql
   parameters:
   - name: host

@@ -1,18 +1,6 @@
 ---
 version: 1
 kind: component
-meta:
-  name: mysql
-  title: MySQL
-  brief: Relational Database
-  description: >
-    MySQL is a popular, well known open source relational database
-  category: Storage
-  version: '8.0.22'
-  maturity: beta
-  license: GNU
-  source:
-      dir: ../../components/mysql
 
 requires:
   - kubernetes

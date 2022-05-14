@@ -1,2 +1,2 @@
-#!/bin/sh -xe
-../../bin/shell/download-manifests -o "$(pwd)/kustomize" -s "tf-training/tf-job-operator"
+#!/bin/sh -e
+files download-tar "$URL" "kustomize" --tar-subpath "tf-training/tf-job-operator"

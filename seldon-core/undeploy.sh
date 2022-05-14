@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 if test -z "$DOMAIN_NAME" -o -z "$NAMESPACE"; then
     echo "COMPONENT_NAME, DOMAIN_NAME, NAMESPACE must be set"
@@ -17,7 +17,6 @@ export kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE"
 export helm="$helm3 --kube-context=$DOMAIN_NAME --namespace=$NAMESPACE"
 
 if $helm list --deployed --failed --pending -q | grep -E "^$COMPONENT_NAME\$"; then
-  set -x
   $helm uninstall "$COMPONENT_NAME"
   $kubectl delete -f istio-gateway.yaml
 fi

@@ -1,20 +1,8 @@
-#!/bin/sh -x
-
-echo "Deploying $COMPONENT_NAME..."
+#!/bin/sh -e
 
 if test -z "$DOMAIN_NAME" -o -z "$NAMESPACE"; then
     echo "COMPONENT_NAME, DOMAIN_NAME, NAMESPACE, must be set"
     exit 1
-fi
-
-if test -z "$COMPONENT_NAME"; then
-  COMPONENT_NAME="$(basename "$(dirname "$0")")"
-  echo "* Using chart name: $COMPONENT_NAME"
-fi
-
-if test ! -f $HELM_CHART; then
-  echo "Error: cannot find file $HELM_CHART"
-  exit 2
 fi
 
 helm3=helm

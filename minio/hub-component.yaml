@@ -1,23 +1,6 @@
 ---
 version: 1
 kind: component
-meta:
-  name: minio
-  title: Minio
-  brief: Private object storage
-  description: >
-    Minio is a high performance distributed object
-    storage server, designed for large-scale private cloud
-    infrastructure.
-
-    This is implementation of the component using Helm3. This is
-    backward incompatible with component `minio`
-  category: Storage
-  version: '2020-06-14'
-  maturity: beta
-  license: Apache 2.0
-  source:
-      dir: ../../components/minio
 
 requires:
 - kubernetes

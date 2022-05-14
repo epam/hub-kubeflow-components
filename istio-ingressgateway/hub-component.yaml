@@ -1,22 +1,10 @@
 ---
 version: 1
 kind: component
-meta:
-  category: Networking
-  name: istio-ingressgateway
-  title: Istio Ingress Gateway
-  description: >
-    Ingress gateway for Istio provides Kuberntes deployment and
-    associated with it service via helm chart
-  version: '1.5.9'
-  license: Apache 2.0
-  source:
-      dir: ../../components/istio-ingressgateway
 
 requires:
   - kubernetes
   - helm
-  # - tiller
 
 provides:
   - ingressgateway

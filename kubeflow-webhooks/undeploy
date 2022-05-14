@@ -1,11 +1,11 @@
 #!/bin/sh -xe
-../../bin/shell/download-manifests -o "$(pwd)/bootstrap/kustomize" -s "admission-webhook/bootstrap"
-../../bin/shell/download-manifests -o "$(pwd)/webhook/kustomize"   -s "admission-webhook/webhook"
+files download-tar "$URL" "bootstrap/kustomize" --tar-subpath "admission-webhook/bootstrap"
+files download-tar "$URL" "webhook/kustomize" --tar-subpath "admission-webhook/webhook"
 
 kubectl="kubectl --namespace=$NAMESPACE --context=$DOMAIN_NAME"
 
-kustomize build "bootstrap" | $kubectl delete -f -
-kustomize build "webhook"   | $kubectl delete -f -
+$kubectl delete -k "bootstrap"
+$kubectl delete -k "webhook"
 
 if $kubectl get secret "webhook-certs" -o name; then
     $kubectl delete secret "webhook-certs"

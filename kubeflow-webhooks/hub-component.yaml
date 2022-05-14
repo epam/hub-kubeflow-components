@@ -1,17 +1,6 @@
 ---
 version: 1
 kind: component
-meta:
-  name: kubeflow-webhooks
-  title: Kubeflow Admission Webhooks
-  brief: Machine learning
-  description: >
-    Kubeflow admission webhooks to provide pod defaults for jupyter notebooks
-  category: AI and Machine Learning
-  version: 1.2.0
-  licence: Apache 2.0
-  source:
-    dir: ../../components/kubeflow-webhook
 
 requires:
   - kubernetes
@@ -28,6 +17,9 @@ parameters:
       # value: master
       value: v1.2.0
       env: VERSION
+    - name: tarball
+      value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
+      env: URL      
     - name: webhook.cert
       value: ${hub.componentName}
       env: TLS_SECRET

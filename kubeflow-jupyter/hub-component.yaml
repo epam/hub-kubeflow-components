@@ -1,11 +1,6 @@
 ---
 version: 1
 kind: component
-meta:
-  name: kubeflow-jupyter
-  version: 1.2.0
-  source:
-    dir: ../../components/kubeflow-jupyter
 
 requires:
   - kubernetes
@@ -23,6 +18,9 @@ parameters:
       # value: master
       value: v1.2.0
       env: VERSION
+    - name: tarball
+      value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
+      env: URL      
     - name: jupyter.image
       value: gcr.io/kubeflow-images-public/jupyter-web-app
     - name: jupyter.imageTag

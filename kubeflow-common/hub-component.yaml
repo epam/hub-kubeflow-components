@@ -1,17 +1,6 @@
 ---
 version: 1
 kind: component
-meta:
-  name: kubeflow-base
-  title: Kubeflow Common components
-  brief: Machine learning
-  description: >
-    This is a base component for kubeflow
-  category: AI and Machine Learning
-  version: 1.2.0
-  licence: Apache 2.0
-  source:
-    dir: ../../components/kubeflow-centraldashboard
 
 requires:
   - kubernetes
@@ -30,7 +19,9 @@ parameters:
     env: NAMESPACE
   - name: version
     value: v1.2.0
-    env: VERSION
+  - name: tarball
+    value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
+    env: URL
 
 templates:
   files:

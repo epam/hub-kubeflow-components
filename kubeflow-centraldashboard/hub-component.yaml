@@ -1,18 +1,6 @@
 ---
 version: 1
 kind: component
-meta:
-  name: kubeflow-centraldashboard
-  title: Kubeflow Central Dashboard
-  brief: Machine learning
-  description: >
-    Central Dashboard web application for Kubeflow
-  category: AI and Machine Learning
-  version: 1.2.0
-  maturity: alpha
-  licence: Apache 2.0
-  source:
-    dir: ../../components/kubeflow-centraldashboard
 
 requires:
   - kubernetes
@@ -29,7 +17,9 @@ parameters:
       # value: master
       value: v1.2.0
       env: VERSION
-
+    - name: tarball
+      value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
+      env: URL
     - name: dashboard.image
       value: gcr.io/kubeflow-images-public/centraldashboard
     - name: dashboard.imageTag
@@ -40,6 +30,7 @@ parameters:
     - name: dashboard.contributorValidationMessage
       brief: Feedback message on ivalid contributor format
       value: Contributor should be non empty string
+
 
 templates:
   files:

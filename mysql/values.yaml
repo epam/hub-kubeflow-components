@@ -37,7 +37,7 @@ primary:
     pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
   persistence:
     enabled: true
-    storageClass: "standard"
+    storageClass: "standard-rwo"
     accessModes:
       - ReadWriteOnce
     size: 8Gi

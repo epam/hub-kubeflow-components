@@ -1,6 +1,6 @@
 #!/bin/sh -xe
-../../bin/shell/download-manifests -o "$(pwd)/bootstrap/kustomize" -s "admission-webhook/bootstrap"
-../../bin/shell/download-manifests -o "$(pwd)/webhook/kustomize"   -s "admission-webhook/webhook"
+files download-tar "$URL" "bootstrap/kustomize" --tar-subpath "admission-webhook/bootstrap"
+files download-tar "$URL" "webhook/kustomize" --tar-subpath "admission-webhook/webhook"
 
 kubectl="kubectl --namespace=$NAMESPACE --context=$DOMAIN_NAME"
 
@@ -8,5 +8,5 @@ if ! $kubectl get crd "poddefaults.kubeflow.org" -o name; then
     $kubectl create -f crds/poddefaults.yaml
 fi
 
-kustomize build "bootstrap" | $kubectl apply -f -
-kustomize build "webhook"   | $kubectl apply -f -
+$kubectl apply -k "bootstrap"
+$kubectl apply -k "webhook"

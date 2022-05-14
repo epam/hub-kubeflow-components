@@ -1,20 +1,6 @@
 ---
 version: 1
 kind: component
-meta:
-  name: seldon
-  title: Seldon
-  brief: Seldon Operator
-  description: >
-    Seldon core converts your ML models (Tensorflow, Pytorch, H2o, etc.)
-    or language wrappers (Python, Java, etc.) into production REST/GRPC
-    microservices.
-
-  category: ML
-  version: '1.5.0'
-  license: Apache 2.0
-  source:
-      dir: ../../components/seldon-core
 
 requires:
 - kubernetes

@@ -1,11 +1,6 @@
 ---
 version: 1
 kind: component
-meta:
-  name: kubeflow-rbac
-  title: Kubeflow RBAC
-  source:
-    dir: ../../components/kubeflow-rbac
 
 requires:
   - kubernetes

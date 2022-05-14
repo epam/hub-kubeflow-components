@@ -4,7 +4,7 @@ auth:
   rootPassword: "hardtoguess"
   database: "metadb"
   username: "mysql"
-  password: "gardtoguess"
+  password: "hardtoguess"
 
   ## ref: https://github.com/bitnami/bitnami-docker-mysql#setting-up-a-replication-cluster
   replicationUser: replicator

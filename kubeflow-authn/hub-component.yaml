@@ -1,15 +1,6 @@
 ---
 version: 1
 kind: component
-meta:
-  name: kubeflow-authn
-  title: Kubeflow Auth
-  brief: Machine learning
-  category: AI and Machine Learning
-  version: 1.2.0
-  licence: Apache 2.0
-  source:
-    dir: ../../components/kubeflow-authn
 
 requires:
   - kubernetes
@@ -45,7 +36,9 @@ parameters:
     value: 86400
   - name: authn.volumeSize
     value: 10Gi
-
+  - name: tarball
+    value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
+    env: URL
 
 templates:
   files:

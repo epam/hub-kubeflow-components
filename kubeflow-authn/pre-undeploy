@@ -1,5 +1,5 @@
 #!/bin/sh -e
-../../bin/shell/download-manifests -o "$(pwd)/kustomize" -s "istio/oidc-authservice"
+files download-tar "$URL" "kustomize" --tar-subpath "istio/oidc-authservice"
 
 printf "Checking presence CA bundle secret: "
 kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE"
