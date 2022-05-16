@@ -29,9 +29,6 @@ parameters:
   - name: authn.oidcClientId
     value: ${component.kubeflow.name}-client
   - name: authn.oidcSecret
-  - name: authn.caSecret
-    env: AUTHN_CA_SECRET
-    empty: allow
   - name: authn.sessionMaxAge
     value: 86400
   - name: authn.volumeSize

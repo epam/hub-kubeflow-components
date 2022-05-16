@@ -32,7 +32,6 @@ generatorOptions:
 images:
 - name: gcr.io/arrikto/kubeflow/oidc-authservice
   newName: gcr.io/arrikto/kubeflow/oidc-authservice
-  # CA_BUNDLE support introduced since version: 2cb5bf6
   newTag: 2cb5bf6
 
 configMapGenerator:

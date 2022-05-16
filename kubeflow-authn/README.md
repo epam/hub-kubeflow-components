@@ -35,7 +35,6 @@ Parameters to configure dex integration
 | `component.dex.issuer` | OIDC auth URL (Dex) | `http://auth.${domain.name}`
 | `component.kubeflow.authn.oidcProvider` | Kubeflow OIDC auth URL | `https://kubeflow.${dns.domain}/login/oidc`
 | `component.kubeflow.authn.oidcSecret` | Hard to guess OIDC secret passphrase between Kubeflow and Dex (recommended: randomly generated string) |
-| `component.kubeflow.authn.caSecret` | If not empty then name of Kubernetes secret with where CA bundle can be found. If empty value, then CA bundle will be ignored |
 | `component.kubeflow.authn.sessionMaxAge` | Max age (in seconds) for user session | `86400`
 
 ### Istio parameters (HTTP filter)
