@@ -1,2 +1,3 @@
 # kubeflow-components
-Components for Kubeflow
+
+Library for Kubeflow components
