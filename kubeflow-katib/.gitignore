@@ -2,3 +2,4 @@
 /kustomization.yaml
 /secrets.env
 /.certs
+/.srl

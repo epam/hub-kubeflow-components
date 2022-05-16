@@ -1,4 +1,4 @@
-#!/bin/sh -xe
+#!/bin/sh -e
 kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE"
 
 if test -n "$INGRESS_HOST" && ! $kubectl get -f ingress.yaml > /dev/null; then
