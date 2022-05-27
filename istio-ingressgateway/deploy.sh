@@ -36,7 +36,6 @@ if $helm list --failed --pending -q | grep -E "^$COMPONENT_NAME\$"; then
 	$helm uninstall "$COMPONENT_NAME"
 fi
 
-set -x
 rm -rf "$HELM_CHART_DIR"
 mkdir -p "$HELM_CHART_DIR"
 tar -C "$HELM_CHART_DIR" -xzf "$HELM_CHART"
@@ -57,8 +56,4 @@ $helm upgrade \
 
 if test -n "$INGRESS_HOST" && ! $kubectl get -f ingress.yaml > /dev/null; then
   $kubectl apply -f ingress.yaml
-  if test -n "$INGRESS_CLASS"; then
-    $kubectl annotate ingress --overwrite "$COMPONENT_NAME" "kubernetes.io/ingress.class" "$INGRESS_CLASS" \
-    || echo "Moving on..."
-  fi
 fi
