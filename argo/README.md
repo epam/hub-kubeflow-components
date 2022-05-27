@@ -21,7 +21,8 @@ The Argo Workflows Component has the following directory structure:
 ├── post-undeploy               # script that is executed after undeploy of the current component
 ├── pre-deploy                  # script that is executed before deploy of the current component
 ├── charts/                     # directory for Helm Chart sources
-└── resources/                  # component custom resource descriptors          
+├── resources/                  # component custom resource descriptors
+└── backup                      # shell script that contains backup routines
 ```
 
 The component uses an offical [Helm Chart](https://artifacthub.io/packages/helm/argo/argo-workflows/0.9.4) to provision Argo Forkflows.
