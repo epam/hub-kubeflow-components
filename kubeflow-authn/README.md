@@ -8,29 +8,19 @@ The component has the following directory structure:
 
 ```text
 ./
-├── patches                             # Kustomize patches
 ├── authn-envoy-filter.json.template    # HTTP filter configuration
 ├── hub-component.yaml                  # Component definition
-├── intel-cabundle-sts.yaml.template    # CA bundle defined here
 ├── kustomization.yaml.template         # Kustomize config
-├── oidc.yaml.template                  # Integration with Dex
-├── pre-deploy                          # Script to download tarball from kubeflow distribution website
-└── pre-undeploy -> pre-deploy
+└── oidc.yaml.template                  # Custom resource template for dex integration
 ```
 
-The component uses an offical Kubeflow distribution Kustomize [scripts]("https://github.com/kubeflow/manifests/") as a and applies patches and additiona resources described in [kustomize.yaml](kustomize.yaml.template) file.
-
-Where [pre-deploy](pre-deploy) script has been responsible for download tarball from Kubeflow official distribution website.
-
-The following component level parameters has been defined `hub-component.yaml`:
 
 ### Dex parameters
 
-Parameters to configure dex integration
+The following component level parameters has been defined `hub-component.yaml`:
 
 | Name      | Description | Default Value
 | --------- | ---------   | ---------
-| `component.ingress.protocol` | HTTP or HTTPS schema | `https`
 | `component.ingress.protocol` | HTTP or HTTPS schema | `https`
 | `component.dex.issuer` | OIDC auth URL (Dex) | `http://auth.${domain.name}`
 | `component.kubeflow.authn.oidcProvider` | Kubeflow OIDC auth URL | `https://kubeflow.${dns.domain}/login/oidc`
