@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: "${hub.componentName}"
   namespace: "${component.dex.namespace}"
+  annotations:
+    kubernetes.io/ingress.class: "${component.ingress.class}"
 spec:
   rules:
     - host: "${component.dex.oidcIssuerFqdn}"

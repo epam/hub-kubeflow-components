@@ -6,6 +6,7 @@ metadata:
   annotations:
     agilestacks.com/stack-component: dex
     kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "${component.ingress.class}"
 spec:
   rules:
     - host: "${component.dex.oidcIssuerFqdn}"
