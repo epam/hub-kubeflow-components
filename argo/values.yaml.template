@@ -14,7 +14,7 @@ controller:
     - ${component.argo.workflowNamespace}
   image:
     tag: "${component.argo.version}"
-  containerRuntimeExecutor: "${component.argo.containerRuntimeExecutor}"  
+  containerRuntimeExecutor: "${component.argo.executor}"  
 
   persistence: {}
   #   clusterName: "${hub.componentName}"
