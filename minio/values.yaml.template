@@ -15,7 +15,7 @@ helmKubectlJqImage:
   pullPolicy: IfNotPresent
 
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
-mode: distributed
+mode: ${component.minio.mode}
 
 replicas: ${component.minio.replicas}
 persistence:
@@ -35,4 +35,8 @@ buckets:
 - name: ${component.bucket.name}
   policy: none
   purge: false
-  versioning: false
+  # versioning: false
+
+resources:
+  requests:
+    memory: "${component.minio.requests.ram}"

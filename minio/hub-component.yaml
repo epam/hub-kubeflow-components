@@ -44,8 +44,6 @@ parameters:
     env: NAMESPACE
   - name: replicas
     value: 4
-  - name: service.port
-    value: 9000
   - name:  volumeType
     value: gp2
   - name:  existingClaim
@@ -54,14 +52,15 @@ parameters:
     value: 20Gi
   - name: requests.memory
     value: 4Gi
+  - name: mode
+    value: distributed
+  - name: requests.ram
+    value: 1Gi
 
   - name: helm
     parameters:
-    # - name: chart
-    #   value: minio-8.0.5.tgz
-    #   env: HELM_CHART
     - name: repo
-      value: https://charts.bitnami.com/bitnami
+      value: https://charts.min.io/
       env: HELM_REPO
     - name: chart
       env: HELM_CHART
