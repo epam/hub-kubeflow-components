@@ -1,3 +1,4 @@
+# see all values here: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
 image:
   repository: ${component.minio.docker.image}
   tag: ${component.minio.docker.tag}
@@ -14,11 +15,8 @@ helmKubectlJqImage:
   pullPolicy: IfNotPresent
 
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
-mode: standalone
+mode: distributed
 
-
-accessKey: "${component.minio.accessKey}"
-secretKey: "${component.minio.secretKey}"
 replicas: ${component.minio.replicas}
 persistence:
   enabled: true
@@ -28,13 +26,13 @@ persistence:
   accessMode: ReadWriteOnce
   size: ${component.minio.storageSize}
 
-service:
-  port: ${component.minio.service.port}
-resources:
-  requests:
-    memory: ${component.minio.requests.memory}
-defaultBucket:
-  enabled: false
-  name: ${component.bucket.name}
-  policy: ${component.bucket.policy}
+users:
+- accessKey: "${component.minio.accessKey}"
+  secretKey: "${component.minio.secretKey}"
+  policy: consoleAdmin
 
+buckets:
+- name: ${component.bucket.name}
+  policy: none
+  purge: false
+  versioning: false

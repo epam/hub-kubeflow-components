@@ -30,9 +30,7 @@ parameters:
   - name: region
     value: us-east-1
   - name: name
-    value: backups
-  - name: policy
-    value: private
+    value: default
 
 - name: component.storage-class.name
   value: default
@@ -59,27 +57,38 @@ parameters:
 
   - name: helm
     parameters:
+    # - name: chart
+    #   value: minio-8.0.5.tgz
+    #   env: HELM_CHART
+    - name: repo
+      value: https://charts.bitnami.com/bitnami
+      env: HELM_REPO
     - name: chart
-      value: minio-8.0.5.tgz
       env: HELM_CHART
+      value: minio
+    - name: version
+      value: 4.0.2
+      env: CHART_VERSION
+    - name: baseValuesFile
+      value: values.yaml
+      env: CHART_VALUES_FILE
+    - name: logLevel
+      value: info      
 
   - name: docker
     parameters:
     - name: image
-      value: docker.io/minio/minio
+      value: quay.io/minio/minio
     - name: tag
-      value: RELEASE.2020-11-19T23-48-16Z
+      value: RELEASE.2022-05-08T23-50-31Z
     - name: mcImage
-      value: docker.io/minio/mc
+      value: quay.io/minio/mc
     - name: mcTag
-      value: RELEASE.2020-11-17T00-39-14Z
+      value: RELEASE.2022-05-09T04-08-26Z
     - name: jqImage
       value: bskim45/helm-kubectl-jq
     - name: jqTag
       value: "3.1.0"
-    - name: baseValues
-      value: values.yaml
-      env: CHART_VALUES_FILE
 
 - name: component.ingress
   parameters:
@@ -91,6 +100,7 @@ parameters:
   - name: fileSize
     empty: allow
     value: 640m
+    env: FILE_SIZE
   - name: class
     empty: allow
     env: INGRESS_CLASS

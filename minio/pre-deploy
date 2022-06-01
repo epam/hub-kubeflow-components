@@ -1,0 +1,31 @@
+#!/bin/sh -e
+
+if test -n "$INGRESS_HOST"; then
+    echo "Generating ingress configuration for: $INGRESS_HOST"
+    cat << EOF > values-gen-ingress.yaml
+consoleIngress:
+  enabled: true
+  annotations: 
+    kubernetes.io/ingress.class: "$INGRESS_CLASS"
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+
+    nginx.ingress.kubernetes.io/proxy-body-size: "$FILE_SIZE"
+    nginx.org/client-max-body-size: "$FILE_SIZE"
+    nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "256m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "1800"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "1800"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
+  path: /
+  hosts:
+    - "$INGRESS_HOST"
+  tls:
+    - hosts:
+      - "$INGRESS_HOST"
+      secretName: "$COMPONENT_NAME-tls"  
+EOF
+else 
+    rm -rf "values-gen-ingress.yaml"
+fi
