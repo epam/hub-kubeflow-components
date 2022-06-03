@@ -79,7 +79,7 @@ parameters:
     - name: image
       value: quay.io/minio/minio
     - name: tag
-      value: RELEASE.2022-05-08T23-50-31Z
+      value: RELEASE.2022-06-02T02-11-04Z
     - name: mcImage
       value: quay.io/minio/mc
     - name: mcTag
