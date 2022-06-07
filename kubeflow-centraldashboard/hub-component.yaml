@@ -1,4 +1,3 @@
----
 version: 1
 kind: component
 
@@ -6,32 +5,24 @@ requires:
   - kubernetes
 
 parameters:
-- name: dns.domain
-  env: DOMAIN_NAME
 - name: component.kubeflow
   parameters:
     - name: name
     - name: namespace
       env: NAMESPACE
     - name: version
-      # value: master
-      value: v1.2.0
+      value: v1.5.0
       env: VERSION
-    - name: tarball
-      value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
-      env: URL
-    - name: dashboard.image
-      value: gcr.io/kubeflow-images-public/centraldashboard
-    - name: dashboard.imageTag
-      value: vmaster-g8097cfeb
-    - name: dashboard.contributorFormat
-      brief: A regular expression to validate a contributor
-      value: ^.+$
-    - name: dashboard.contributorValidationMessage
-      brief: Feedback message on ivalid contributor format
-      value: Contributor should be non empty string
-
-
-templates:
-  files:
-  - "*.template"
+    - name: centraldashboard.kustomize.tarball
+      value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
+      env: HUB_KUSTOMIZE_TARBALL_URL
+    - name: centraldashboard.kustomize.subpath
+      value: apps/centraldashboard/upstream
+      env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+# - name: component.istio
+#   parameters:
+#   - name: namespace
+#   - name: ingressGateway
+# - name: hub.backup.file
+#   empty: allow
+#   env: BACKUP_FILE
