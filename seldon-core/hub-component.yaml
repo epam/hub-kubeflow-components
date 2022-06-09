@@ -16,106 +16,25 @@ lifecycle:
 
 parameters:
 - name: hub.componentName
-  env:  COMPONENT_NAME
-- name: dns.domain
-  env:  DOMAIN_NAME
 - name: component.seldon
   parameters:
   - name: namespace
     value: seldon-system
     env: NAMESPACE
   - name: version
-    value: 1.5.0
-
-  - name: executor
+    value: v1.13.1
+    env: HELM_CHART_VERSION
+  - name: helm
     parameters:
-    - name: resources.cpuLimit
-      value: 500m
-    - name: resources.cpuRequest
-      value: 500m
-    - name: resources.memoryLimit
-      value: 512Mi
-    - name: resources.memoryRequest
-      value: 512Mi
-
-  - name: manager
-    parameters:
-    - name: cpuLimit
-      value: 500m
-    - name: cpuRequest
-      value: 100m
-    - name: memoryLimit
-      value: 300Mi
-    - name: memoryRequest
-      value: 200Mi
-
-  - name: storageInitializer
-    parameters:
-    - name: cpuLimit
-      value: "1"
-    - name: cpuRequest
-      value: 100m
-    - name: memoryLimit
-      value: 1Gi
-    - name: memoryRequest
-      value: 100Mi
-
-  - name: engine
-    parameters:
-    - name: resources.cpuLimit
-      value: 500m
-    - name: resources.cpuRequest
-      value: 500m
-    - name: resources.memoryLimit
-      value: 512Mi
-    - name: resources.memoryRequest
-      value: 512Mi
-
-- name: component.seldon.docker
-  parameters:
-  - name: registry
-    value: docker.io
-  - name: operator.repository
-    value: seldonio/seldon-core-operator
-  - name: executor.repository
-    value: seldonio/seldon-core-executor
-  - name: engine.repository
-    value: seldonio/engine
-  - name: mlflow.image
-    value: seldonio/mlflowserver
-  - name: mlflow.tag
-    value: "${component.seldon.version}"
-  - name: sklearn.image
-    value: seldonio/sklearnserver
-  - name: sklearn.tag
-    value: "${component.seldon.version}"
-  - name: kfserving.image
-    value: seldonio/mlserver
-  - name: kfserving.tag
-    value: 0.1.1
-  - name: tfServingProxy.image
-    value: seldonio/tfserving-proxy
-  - name: tfServingProxy.tag
-    value: "${component.seldon.version}"
-  - name: tfServing.image
-    value: tensorflow/serving
-  - name: tfServing.tag
-    value: 2.1.0
-  - name: xgboost.image
-    value: seldonio/xgboostserver
-  - name: xgboost.tag
-    value: "${component.seldon.version}"
-  - name: alibiExplainer.image
-    value: seldonio/alibiexplainer
-  - name: alibiExplainer.tag
-    value: "${component.seldon.version}"
-
-# - name: component.bucket
-#   parameters:
-#   - name: accessKey
-#     empty: allow
-#   - name: secretKey
-#     empty: allow
+    - name: chart
+      value: seldon-core-operator
+      env: HELM_CHART
+    - name: repo
+      value: https://storage.googleapis.com/seldon-charts
+      env: HELM_REPO
+    - name: baseValuesFile
+      value: values.yaml
+      env: CHART_VALUES_FILE
 
 - name: component.istio
   parameters:
@@ -123,8 +42,13 @@ parameters:
     value: istio-system
   - name: ingressGateway
     value: istio-ingressgateway
-- name: component.ingress.host
-  empty: allow
+    env: INGRESS_GATEWAY
+  - name: gateway.name
+    value: "${hub.componentName}"
+  - name: gateway.hosts
+    env: HOSTS
+    value: |
+      ${component.istio.ingressGateway}.${component.istio.namespace}.svc.cluster.local
 
 outputs:
 - name: component.seldon.istioGateway

@@ -1,147 +1,20 @@
+# see: https://github.com/SeldonIO/seldon-core/blob/master/helm-charts/seldon-core-operator/values.yaml
+kubeflow: true
 ambassador:
   enabled: true
   singleNamespace: false
 istio:
   enabled: true
   gateway: ${component.seldon.namespace}/${hub.componentName}-gateway
-  # gateway: ${component.istio.namespace}/${component.istio.ingressGateway}
-  tlsMode: ""
 keda:
   enabled: false
 certManager:
   enabled: false
-controllerId: ""
-managerCreateResources: false
-defaultUserID: "8888"
-executor:
-  enabled: true
-  port: 8000
-  metricsPortName: metrics
-  image:
-    pullPolicy: IfNotPresent
-    registry: ${component.seldon.docker.registry}
-    repository: ${component.seldon.docker.executor.repository}
-    tag: ${component.seldon.version}
-  resources:
-    cpuLimit: ${component.seldon.executor.resources.cpuLimit}
-    cpuRequest: ${component.seldon.executor.resources.cpuRequest}
-    memoryLimit: ${component.seldon.executor.resources.memoryLimit}
-    memoryRequest: ${component.seldon.executor.resources.memoryRequest}
-  prometheus:
-    path: /prometheus
-  serviceAccount:
-    name: default
-  user: 8888
-  requestLogger:
-    defaultEndpoint: 'http://default-broker'
-image:
-  pullPolicy: IfNotPresent
-  registry: ${component.seldon.docker.registry}
-  repository: ${component.seldon.docker.operator.repository}
-  tag: ${component.seldon.version}
-manager:
-  cpuLimit: ${component.seldon.manager.cpuLimit}
-  cpuRequest: ${component.seldon.manager.cpuRequest}
-  memoryLimit: ${component.seldon.manager.memoryLimit}
-  memoryRequest: ${component.seldon.manager.memoryRequest}
-rbac:
-  configmap:
-    create: true
-  create: true
-serviceAccount:
-  create: true
-  name: seldon-manager
-singleNamespace: false
-storageInitializer:
-  image: gcr.io/kfserving/storage-initializer:v0.4.0
-  cpuLimit: ${component.seldon.storageInitializer.cpuLimit}
-  cpuRequest: ${component.seldon.storageInitializer.cpuRequest}
-  memoryLimit: ${component.seldon.storageInitializer.memoryLimit}
-  memoryRequest: ${component.seldon.storageInitializer.memoryRequest}
-usageMetrics:
-  enabled: false
-webhook:
-  port: 443
+
+crd:
+  create: false
 
 predictiveUnit:
-  port: 9000
-  metricsPortName: metrics
-  defaultEnvSecretRefName: ""
-predictor_servers:
-  MLFLOW_SERVER:
-    protocols:
-      seldon:
-        defaultImageVersion: "${component.seldon.docker.mlflow.tag}"
-        image: ${component.seldon.docker.mlflow.image}
-  SKLEARN_SERVER:
-    protocols:
-      seldon:
-        defaultImageVersion: "${component.seldon.docker.sklearn.tag}"
-        image: ${component.seldon.docker.sklearn.image}
-      kfserving:
-        defaultImageVersion: "${component.seldon.docker.kfserving.tag}"
-        image: ${component.seldon.docker.kfserving.image}
-  TENSORFLOW_SERVER:
-    protocols:
-      seldon:
-        defaultImageVersion: "${component.seldon.docker.tfServingProxy.tag}"
-        image: ${component.seldon.docker.tfServingProxy.image}
-      tensorflow:
-        defaultImageVersion: "${component.seldon.docker.tfServing.tag}"
-        image:  ${component.seldon.docker.tfServing.image}
-  XGBOOST_SERVER:
-    protocols:
-      seldon:
-        defaultImageVersion: "${component.seldon.docker.xgboost.tag}"
-        image: ${component.seldon.docker.xgboost.image}
-      kfserving:
-        defaultImageVersion: "${component.seldon.docker.kfserving.tag}"
-        image: ${component.seldon.docker.kfserving.image}
-  TRITON_SERVER:
-    protocols:
-      kfserving:
-        defaultImageVersion: "20.08-py3"
-        image: nvcr.io/nvidia/tritonserver
-crd:
-  create: true
-  # Whether to force the use of the v1beta1 or v1 CRD.
-  forceV1: false
-  forceV1beta1: false
-
-credentials:
-  gcs:
-    gcsCredentialFileName: gcloud-application-credentials.json
-  s3:
-    s3AccessKeyIDName: awsAccessKeyID
-    s3SecretAccessKeyName: awsSecretAccessKey
-
-kubeflow: true
-
-# ## Engine parameters
-# Warning: Engine is being depricated in favour of Orchestrator
-# FOr more information please read the Upgrading section in the documentation
-engine:
-  grpc:
-    port: 5001
-  image:
-    pullPolicy: IfNotPresent
-    registry: ${component.seldon.docker.registry}
-    repository: ${component.seldon.docker.engine.repository}
-    tag: "${component.seldon.version}"
-  resources:
-    cpuLimit: ${component.seldon.engine.resources.cpuLimit}
-    cpuRequest: ${component.seldon.engine.resources.cpuRequest}
-    memoryLimit: ${component.seldon.engine.resources.memoryLimit}
-    memoryRequest: ${component.seldon.engine.resources.memoryRequest}
-  logMessagesExternally: false
-  port: 8000
-  prometheus:
-    path: /prometheus
-  serviceAccount:
-    name: default
-  user: 8888
-
-
-# Explainer image
-explainer:
-  image: "${component.seldon.docker.alibiExplainer.image}:${component.seldon.docker.alibiExplainer.tag}"
+  defaultEnvSecretRefName: "argo-artifacts"
+usageMetrics:
+  enabled: false
