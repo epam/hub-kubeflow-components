@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+generatorOptions:
+  disableNameSuffixHash: true
+
+namespace: "${component.kubeflow.namespace}"
+
+bases:
+- kustomize/overlays/kubeflow
+
+images:
+- name: kserve/models-web-app
+  newName: gcr.io/superhub/kserve/models-web-app
+  newTag: latest
+
+configMapGenerator:
+- name: kserve-models-web-app-config
+  behavior: merge
+  literals:
+  - USERID_HEADER=kubeflow-userid
+  - APP_DISABLE_AUTH="True"
+
+patchesJson6902:
+- target:
+    group: networking.istio.io
+    version: v1beta1
+    kind: VirtualService
+    name: kserve-models-web-app
+    namespace: kserve
+  path: kustomize/overlays/kubeflow/patches/web-app-vsvc.yaml
