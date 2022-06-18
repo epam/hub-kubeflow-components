@@ -1,9 +1,3 @@
 #!/bin/sh -e
-files download-tar "$URL" "kustomize" --tar-subpath "katib"
-
-if test ! -d ".certs"; then
-    bin/self-signed-ca.sh \
-        --namespace "$NAMESPACE" \
-        --service "katib-controller" \
-        --output-dir ".certs"
-fi
+echo "Overriding manifests in kustomize directory"
+cp -fRv overrides/. kustomize

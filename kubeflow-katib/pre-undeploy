@@ -1,9 +1,1 @@
-#!/bin/sh -e
-../../bin/shell/download-manifests -o "$(pwd)/kustomize" -s "katib"
-
-if test ! -d ".certs"; then
-    bin/self-signed-ca.sh \
-        --namespace "$NAMESPACE" \
-        --service "katib-controller" \
-        --output-dir ".certs"
-fi
+pre-deploy

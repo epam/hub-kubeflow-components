@@ -6,8 +6,6 @@ requires:
   - kubernetes
 
 parameters:
-- name: dns.domain
-  env: DOMAIN_NAME
 - name: component.kubeflow
   parameters:
     - name: name
@@ -15,23 +13,14 @@ parameters:
       env: NAMESPACE
     - name: version
       # value: master
-      value: "v1.2.0"
+      value: "v1.5.0"
       env: VERSION
     - name: tarball
       value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
-      env: URL      
-    - name: katib.controller.image
-      value: docker.io/kubeflowkatib/katib-controller
-    - name: katib.controller.imageTag
-      value: v1beta1-a96ff59
-    - name: katib.ui.image
-      value: docker.io/kubeflowkatib/katib-ui
-    - name: katib.ui.imageTag
-      value: v1beta1-a96ff59
-    - name: katib.dbManager.image
-      value: docker.io/kubeflowkatib/katib-db-manager
-    - name: katib.dbManager.imageTag
-      value: v1beta1-a96ff59
+      env: HUB_KUSTOMIZE_TARBALL_URL
+    - name: tarball.subpath
+      value: "apps/katib/upstream"
+      env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 - name: component.mysql
   parameters:

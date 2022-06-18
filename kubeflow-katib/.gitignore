@@ -1,5 +1,2 @@
-/kustomize
 /kustomization.yaml
-/secrets.env
-/.certs
-/.srl
+/kustomize
