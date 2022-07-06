@@ -21,7 +21,9 @@ metadata:
 {{end}}
 {{end}}
 spec:
+{{if ne .component.ingress.class ""}}
   ingressClassName: "{{.component.ingress.class}}"
+{{end}}
   rules:
   - host: "{{.component.ingress.host}}"
     http:
