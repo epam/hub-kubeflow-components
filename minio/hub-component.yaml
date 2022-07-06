@@ -9,16 +9,7 @@ requires:
 provides:
 - bucket
 
-lifecycle:
-  verbs:
-  - deploy
-  - undeploy
-
 parameters:
-- name: hub.componentName
-  env:  COMPONENT_NAME
-- name: dns.domain
-  env:  DOMAIN_NAME
 - name: component.ingress.protocol
   value: http
   env: PROTOCOL
@@ -95,14 +86,11 @@ parameters:
     value: http
   - name: host
     empty: allow
-    env: INGRESS_HOST
   - name: fileSize
     empty: allow
     value: 640m
-    env: FILE_SIZE
   - name: class
     empty: allow
-    env: INGRESS_CLASS
 
 outputs:
 - name: component.bucket.kind
@@ -111,9 +99,11 @@ outputs:
 - name: component.bucket.region
 - name: component.bucket.endpoint
   value: ${component.ingress.protocol}://${component.ingress.host}
+
 templates:
   files:
   - "*.template"
   extra:
-    - kind: go
-      files: ["*.gotemplate"]
+  - kind: go
+    files:
+    - "*.gotemplate"

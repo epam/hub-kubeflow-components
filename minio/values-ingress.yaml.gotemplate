@@ -1,0 +1,32 @@
+{{if ne .component.ingress.host ""}}
+consoleIngress:
+  enabled: true
+  annotations: 
+{{if eq .component.ingress.protocol "https"}}
+    kubernetes.io/tls-acme: "true"
+{{end}}
+{{if ne .component.ingress.class ""}}
+    kubernetes.io/ingress.class: "{{.component.ingress.class}}"
+{{end}}
+{{if eq .component.ingress.class "nginx"}}
+{{if eq .component.ingress.protocol "https"}}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+{{end}}
+    nginx.org/client-max-body-size: "{{.component.ingress.maxUploadSize}}"
+    nginx.org/websocket-services: "{{.hub.componentName}}"
+    nginx.ingress.kubernetes.io/proxy-body-size: "{{.component.ingress.maxUploadSize}}"
+    nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "256m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{.component.ingress.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "{{.component.ingress.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "{{.component.ingress.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "{{.component.ingress.readTimeout}}"
+{{end}}
+  path: /
+  hosts: ["{{.component.ingress.host}}"]
+{{if eq .component.ingress.protocol "https"}}
+  tls:
+    - hosts: ["{{.component.ingress.host}}"]
+      secretName: "{{.hub.componentName}}-tls"
+{{end}}
+{{end}}
