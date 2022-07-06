@@ -2,23 +2,26 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{.hub.componentName}}"
+{{if or (eq .component.ingress.protocol "https") (eq .component.ingress.class "nginx")}}
   annotations:
-    kubernetes.io/ingress.class: "{{.component.ingress.class}}"
 {{if eq .component.ingress.protocol "https"}}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
     kubernetes.io/tls-acme: "true"
 {{end}}
 {{if eq .component.ingress.class "nginx"}}
-    nginx.ingress.kubernetes.io/proxy-body-size: "{{.component.ingress.maxUploadSize}}"
     nginx.org/client-max-body-size: "{{.component.ingress.maxUploadSize}}"
+    nginx.org/websocket-services: "{{.hub.componentName}}"
+    nginx.ingress.kubernetes.io/proxy-body-size: "{{.component.ingress.maxUploadSize}}"
     nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "256m"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{.component.ingress.uploadTimeout}}"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "{{.component.ingress.uploadTimeout}}"
     nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "{{.component.ingress.uploadTimeout}}"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "{{.component.ingress.readTimeout}}"
 {{end}}
+{{end}}
 spec:
+  ingressClassName: "{{.component.ingress.class}}"
   rules:
   - host: "{{.component.ingress.host}}"
     http:
