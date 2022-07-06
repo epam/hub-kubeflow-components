@@ -33,9 +33,12 @@ parameters:
     value: 86400
   - name: authn.volumeSize
     value: 10Gi
-  - name: tarball
+  - name: kustomize.tarball
     value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
-    env: URL
+    env: HUB_KUSTOMIZE_TARBALL_URL
+  - name: kustomize.subpath
+    value: istio/oidc-authservice
+    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 templates:
   files:
