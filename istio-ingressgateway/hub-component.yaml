@@ -24,8 +24,7 @@ parameters:
   - name: ingressGateway.replicas
     value: 1
   - name: ingressGateway.serviceType
-    # value: ClusterIP
-    value: LoadBalancer
+    value: ClusterIP
   - name: docker.repository
     value: docker.io/istio
   - name: helm
