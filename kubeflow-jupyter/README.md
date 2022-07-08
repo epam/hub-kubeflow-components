@@ -1,4 +1,6 @@
-# Kubeflow Jupyter Notebook
+# Notebooks
+
+## Overview of the Kubeflow Notebooks service
 
 A web application to allow user to create, update and delete Jupyter Notebooks inside their profile. This application can work as a standalone application, however by default it wll be opened from Kubeflow Central dashboard via iframe.
 
@@ -6,14 +8,14 @@ A web application to allow user to create, update and delete Jupyter Notebooks i
 
 - Requires [kustomize](https://kustomize.io) CLI. Doesn't work with `kubectl -k ...`
 
-## Implementation Details & Parameters
+## Implementation Details
 
-This component will deploy two services of the Jupyter notebbok
+This component will deploy two services of the Jupyter notebooks:
 
-* [jupyter-web-app](jupyter-web-app) - a web application
-* [notebook-controller](notebook-controller) - a BFF (backend-for-frontend) of this applicaiton.
+- [jupyter-web-app](https://github.com/agilestacks/kubeflow-components/tree/main/kubeflow-jupyter/jupyter-web-app) - a web application
+- [notebook-controller](https://github.com/agilestacks/kubeflow-components/tree/main/kubeflow-jupyter/notebook-controller) - a BFF (backend-for-frontend) of this applicaiton.
 
-Notebook creation form can be customized in [jupyter-web-app/spawner_ui_config.yaml](components/kubeflow-jupyter/jupyter-web-app/spawner_ui_config.yaml.template) file.
+Notebook creation form can be customized in [jupyter-web-app/spawner_ui_config.yaml](https://github.com/agilestacks/kubeflow-components/tree/main/kubeflow-jupyter/jupyter-web-appspawner_ui_config.yaml.template) file.
 
 > There was a special update to the notebook to allow user select GPUs from a dropdown.
 
@@ -39,21 +41,23 @@ The component has the following directory structure:
 ├── post-deploy                          # Special addon to hook a optional restore from backup script
 └── undeploy.sh                          # Undeployment script for both kustomze applicaitons
 ```
- 
-The component uses an offical Kubeflow distribution Kustomize [scripts]("https://github.com/kubeflow/manifests/") as a and applies patches and additiona resources described in [kustomize.yaml](kustomize.yaml.template) file.
 
-Where [pre-deploy](pre-deploy) script has been responsible for download tarball from Kubeflow official distribution website.
+The component uses an offical Kubeflow distribution Kustomize [scripts](https://github.com/kubeflow/manifests/) and applies patches and additional resources described in `kustomize.yaml.template` file for each service.
 
-The following component level parameters has been defined `hub-component.yaml`:
+Where [deploy](https://github.com/agilestacks/kubeflow-components/blob/main/kubeflow-jupyter/deploy.sh) script has been responsible for download tarball from Kubeflow official distribution website and deploy it.
 
-| Name      | Description | Default Value
-| --------- | ---------   | ---------
-| `component.kubeflow.namespace` | Target Kubernetes namespace for this component | `kubeflow`
-| `component.kubeflow.dashboard.image` | Central dashboard docker image configuration | `gcr.io/kubeflow-images-public/centraldashboard`
-| `component.kubeflow.dashboard.imageTag` | Central dashboard docker image configuration | `vmaster-g8097cfeb`
-| `component.kubeflow.dashboard.contributorFormat` | REGEX to configure validation for profiles congtributor | `^.+$`
-| `component.kubeflow.dashboard.contributorValidationMessage` | Custom error message for contributor validation | `^.+$`
+## Parameters
+
+The following component level parameters has been defined `hub-component.yaml`
+
+| Name | Description | Default Value |
+| :--- | :---        | :---          |
+| `component.kubeflow.namespace` | Target Kubernetes namespace for this component | `kubeflow` |
+| `component.kubeflow.dashboard.image` | Central dashboard docker image configuration | `gcr.io/kubeflow-images-public/centraldashboard` |
+| `component.kubeflow.dashboard.imageTag` | Central dashboard docker image configuration | `vmaster-g8097cfeb` |
+| `component.kubeflow.dashboard.contributorFormat` | REGEX to configure validation for profiles congtributor | `^.+$` |
+| `component.kubeflow.dashboard.contributorValidationMessage` | Custom error message for contributor validation | `^.+$` |
 
 ## See Also
 
-* Central Dashboard on Kubeflow [website](https://www.kubeflow.org/docs/components/central-dash/overview/)
+- Central Dashboard on Kubeflow [website](https://www.kubeflow.org/docs/components/notebooks/overview/)
