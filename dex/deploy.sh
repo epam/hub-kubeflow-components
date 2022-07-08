@@ -1,10 +1,10 @@
-#!/bin/sh -e
-echo "Deploying $COMPONENT_NAME..."
-
+#!/bin/sh -ex
 kubectl="$(which kubectl) --context=$DOMAIN_NAME --namespace=$NAMESPACE"
 
-$kubectl get -f kubernetes/namespace.yaml || \
-  $kubectl apply -f kubernetes/namespace.yaml
+if ! $kubectl get namespace "$NAMESPACE" > /dev/null; then 
+  $kubectl create namespace "$NAMESPACE"
+fi
+
 $kubectl apply -f kubernetes/grpc-client-secret.yaml
 $kubectl apply -f kubernetes/grpc-server-secret.yaml
 

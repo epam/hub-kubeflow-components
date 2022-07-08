@@ -1,15 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: dex-ingress
-  namespace: ${component.dex.namespace}
+  name: "{{.hub.componentName}}"
   annotations:
-    agilestacks.com/stack-component: dex
+{{if eq .component.ingress.protocol "https"}}
     kubernetes.io/tls-acme: "true"
+{{end}}
+{{if ne .component.ingress.class ""}}
     kubernetes.io/ingress.class: "${component.ingress.class}"
+{{end}}
 spec:
   rules:
-    - host: "${component.dex.oidcIssuerFqdn}"
+    - host: "{{.component.dex.oidcIssuerFqdn}}"
       http:
         paths:
           - backend:
@@ -19,7 +21,8 @@ spec:
                   number: 5556
             path: /
             pathType: Prefix
+{{if eq .component.ingress.protocol "https"}}
   tls:
-    - hosts:
-      - ${component.dex.oidcIssuerFqdn}
-      secretName: dex-ingress-tls
+    - hosts: ["{{.component.dex.oidcIssuerFqdn}}"]
+      secretName: "{{.hub.componentName}}-tls"
+{{end}}

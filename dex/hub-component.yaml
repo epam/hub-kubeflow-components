@@ -11,7 +11,7 @@ parameters:
     value: https
     env: INGRESS_PROTOCOL
   - name: component.ingress.class
-    value: nginx
+    empty: allow
   - name: component.ingress.ssoUrlPrefix
     value: dex
   - name: dns.domain
