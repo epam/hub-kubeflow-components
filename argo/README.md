@@ -1,6 +1,6 @@
-# Argo Workflows Component #
+# Argo Workflows
 
-## Description
+## Overview of Argo Workflows
 
 Argo Workflows is an open source container-native workflow engine for orchestrating parallel jobs on Kubernetes. Argo Workflows is implemented as a Kubernetes CRD.
 
@@ -9,7 +9,7 @@ Argo Workflows is an open source container-native workflow engine for orchestrat
 * Easily run compute intensive jobs for machine learning or data processing in a fraction of the time using Argo Workflows on Kubernetes.
 * Run CI/CD pipelines natively on Kubernetes without configuring complex software development products.
 
-## Implementation Details & Parameters
+## Implementation Details
 
 The Argo Workflows Component has the following directory structure:
 
@@ -29,16 +29,18 @@ The component uses an offical [Helm Chart](https://artifacthub.io/packages/helm/
 
 To make configuration more flexible, ingress object for Argo workflow dashboard and IAM is configured outside the Helm in `post-deploy` script.
 
+## Parameters
+
 The following component level parameters can be set in `hub-component.yaml`:
 
-| Name      | Description | Default Value 
-| --------- | ---------   | ---------
-| component.argo.namespace       | Kubernetes namespace where Argo is provisioned            | kubeflow
-| component.argo.workflowNamespace      | Kubernetes namespace where workflow workloads are created            | kubeflow
-| component.argo.workflowRBAC      | Flag that enables k8s Role and RoleBinding creation in the workflowNamespace with required permissions to run workflow workloads            | true
-| component.argo.version      | Argo version     | v2.12.3
-| component.argo.containerRuntimeExecutor      | Container runtime, read more [here](https://argoproj.github.io/argo-workflows/workflow-executors/)     | k8sapi
-| component.argo.helm.chart      | Helm Chart version    | argo-workflows-0.9.4.tgz
+| Name | Description | Default Value |
+| :--- | :---        | :---          |
+| `component.argo.namespace` | Kubernetes namespace where Argo is provisioned | `kubeflow` |
+| `component.argo.workflowNamespace` | Kubernetes namespace where workflow workloads are created | `kubeflow` |
+| `component.argo.workflowRBAC` | Flag that enables k8s Role and RoleBinding creation in the workflowNamespace with required permissions to run workflow workloads | `true` |
+| `component.argo.version` | Argo version | `v2.12.3` |
+| `component.argo.containerRuntimeExecutor` | Container runtime, read more [here](https://argoproj.github.io/argo-workflows/workflow-executors/) | `k8sapi` |
+| `component.argo.helm.chart` | Helm Chart version | `argo-workflows-0.9.4.tgz` |
 
 ## Dependencies
 
@@ -48,4 +50,3 @@ Argo Component does not depend on any other component in the stack
 
 * [Argo Workflows](https://argoproj.github.io/argo-workflows/)
 * [Helm](https://helm.sh/docs/intro/install/)
-
