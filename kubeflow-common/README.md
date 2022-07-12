@@ -1,39 +1,58 @@
-# Kubeflow Central Dashboard
+# Kubeflow Common
 
-This is a HTTP filter for Istio (Envoy) that validates User session and redirects to dex for authentication (if invalid).
+## Overview of the Kubeflow Common
 
-## Implementation Details & Parameters
+This component perform 3 operations.
+
+### Default Kubeflow ClusterRoles
+
+This [manifest package](https://github.com/kubeflow/manifests/tree/v1.2-branch/kubeflow-roles) contains the default ClusterRoles Kubeflow uses for defining roles for Kubeflow user Profiles.
+These roles are currently assigned to users by Profiles (profile-controller and kfam) Service with the help of Manage Users page in Central Dashboard.
+
+### Istio Gateway Custom Resource
+
+Creates istio gateway custom resource from `gateway.yaml.template`.
+
+### Application controller
+
+[Application](https://github.com/kubernetes-sigs/application) that aggregates all kubeflow applications.
+
+## Implementation Details
 
 The component has the following directory structure:
 
 ```text
 ./
-├── deployment_patch.yaml               # Kustomize patch that adds extra env vars for pod
+├── crds               # Directory contains kubernetes CRDs manifests
+├── gateway.yaml.template         # Istio gateway definition template
 ├── hub-component.yaml                  # Parameters definitions
 ├── kustomization.yaml.template         # Kustomize file for ths component
-├── links-config.json                   # Configuration for splash screen
-├── params.env.template                 # Configuration for environment variables of a central-dashboard pod
-├── params.yaml                         # Config for Kustomize varibles
 ├── pre-deploy                          # Script to download tarball from kubeflow distribution website
-├── pre-undeploy -> pre-deploy
-├── clusterrole-binding.yaml.template   # RBAC for cluster role bindings
-└── role-binding.yaml.template          # RBAC for role bindings
+└── pre-undeploy -> pre-deploy
 ```
 
 The component uses an offical Kubeflow distribution Kustomize [scripts]("https://github.com/kubeflow/manifests/") as a and applies patches and additiona resources described in [kustomize.yaml](kustomize.yaml.template) file.
 
 Where [pre-deploy](pre-deploy) script has been responsible for download tarball from Kubeflow official distribution website.
 
+## Parameters
+
 The following component level parameters has been defined `hub-component.yaml`:
 
 | Name      | Description | Default Value
 | --------- | ---------   | ---------
-| `component.kubeflow.namespace` | Target Kubernetes namespace for this component | `kubeflow`
-| `component.kubeflow.dashboard.image` | Central dashboard docker image configuration | `gcr.io/kubeflow-images-public/centraldashboard`
-| `component.kubeflow.dashboard.imageTag` | Central dashboard docker image configuration | `vmaster-g8097cfeb`
-| `component.kubeflow.dashboard.contributorFormat` | REGEX to configure validation for profiles congtributor | `^.+$`
-| `component.kubeflow.dashboard.contributorValidationMessage` | Custom error message for contributor validation | `^.+$`
+| `dns.domain` | Domain name of the kubeflow stack | |
+| `component.dex.issuer` | OIDC auth URL (Dex) | |
+| `component.ingress.protocol` | HTTP or HTTPS schema | |
+| `component.istio.namespace` | Kubernetes namespace for Istio | |
+| `component.istio.ingressGateway` | Name of Istio ingress gateway service | |
+| `component.kubeflow.name` | Target Kubernetes resources name for this component | |
+| `component.kubeflow.namespace` | Target Kubernetes namespace for this component | |
+| `component.kubeflow.version` | Version of Kubeflow | `v1.2.0` |
+| `component.kubeflow.tarball` | URL to kubeflow tarball archive | `https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz` |
 
-## See Also
+## See also
 
-* Central Dashboard on Kubeflow [website](https://www.kubeflow.org/docs/components/central-dash/overview/)
+- [Default Kubeflow ClusterRoles](https://github.com/kubeflow/manifests/tree/v1.2-branch/kubeflow-roles)
+- [Kubernetes Application controller](https://github.com/kubernetes-sigs/application)
+- [Istio Ingress Gateways](https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/)
