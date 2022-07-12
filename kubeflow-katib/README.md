@@ -53,7 +53,7 @@ The following component level parameters has been defined `hub-component.yaml`
 | `component.mysql.port` | MySQL database port | |
 | `component.mysql.user` | MySQL database user | |
 | `component.mysql.password` | MySQL database password | |
-| `component.mysql.database` | MySQL database database | |
+| `component.mysql.database` | MySQL database name | |
 
 ## See Also
 
