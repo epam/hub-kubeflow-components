@@ -1,7 +1,8 @@
 {{if ne .component.ingress.host ""}}
 consoleIngress:
   enabled: true
-  annotations: 
+{{if or (eq .component.ingress.protocol "https") .component.ingress.class}}
+  annotations:
 {{if eq .component.ingress.protocol "https"}}
     kubernetes.io/tls-acme: "true"
 {{end}}
@@ -21,6 +22,7 @@ consoleIngress:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "{{.component.ingress.uploadTimeout}}"
     nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "{{.component.ingress.uploadTimeout}}"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "{{.component.ingress.readTimeout}}"
+{{end}}
 {{end}}
   path: /
   hosts: ["{{.component.ingress.host}}"]
