@@ -7,8 +7,9 @@ requires:
 
 parameters:
 - name: dns.domain
-  env: DOMAIN_NAME
-- name: component.dex.issuer
+  env: HUB_DOMAIN_NAME
+- name: dex.api.endpoint
+- name: dex.issuer
   value: ${component.ingress.protocol}://auth.${dns.domain}
 - name: component.ingress.protocol
   value: https
@@ -23,7 +24,7 @@ parameters:
     value: v1.2.0
     env: VERSION
   - name: authn.oidcProvider
-    value: ${component.ingress.protocol}://auth.${dns.domain}
+    value: ${dex.issuer}
   - name: authn.oidcRedirectURI
     value: https://${component.kubeflow.name}.${dns.domain}/login/oidc
   - name: authn.oidcClientId

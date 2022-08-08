@@ -1,5 +1,5 @@
 #!/bin/sh
-kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE"
+kubectl="kubectl --context=$HUB_DOMAIN_NAME --namespace=$NAMESPACE"
 
 if test -n "$CA_BUNDLE_PATH"; then
     if test ! -f "$CA_BUNDLE_PATH"; then

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE --ignore-not-found=true"
+kubectl="kubectl --context=$HUB_DOMAIN_NAME --namespace=$NAMESPACE --ignore-not-found=true"
 $kubectl delete -f "resources/bucket-creds.yaml"
 # $kubectl delete -f "resources/virtual-service.yaml"
 $kubectl delete -f "resources/ingress.yaml"

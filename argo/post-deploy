@@ -11,5 +11,5 @@ trap 'rm -rf $TEMP_DIR' EXIT
 
 tar -xvf "$BACKUP_FILE" -c "$TEMP_DIR"
 
-kubectl="kubectl --context=$DOMAIN_NAME" create -f "$TEMP_DIR"
+kubectl="kubectl --context=$HUB_DOMAIN_NAME" create -f "$TEMP_DIR"
 echo "Done!"

@@ -7,66 +7,89 @@ requires:
   - helm
 
 parameters:
-  - name: component.ingress.protocol
-    value: https
-    env: INGRESS_PROTOCOL
-  - name: component.ingress.class
-    empty: allow
-  - name: component.ingress.ssoUrlPrefix
-    value: dex
+  - name: component.ingress
+    parameters:
+      - name: protocol
+        value: https
+        env: INGRESS_PROTOCOL
+      - name: class
+        empty: allow
+      - name: ssoUrlPrefix
+        value: dex
+
   - name: dns.domain
-    env: DOMAIN_NAME
-  - name: component.dex.name
-    value: dex
-    env: COMPONENT_NAME
-  - name: component.dex.oidcIssuerFqdn
-    value: auth.${dns.domain}
-  - name: component.dex.namespace
-    value: kube-system
-    env: NAMESPACE
-  - name: component.dex.image
-    value: dexidp/dex:v2.26.0
-  - name: component.dex.passwordDb
-    empty: allow
+    env: HUB_DOMAIN_NAME
+
+  - name: dex
     parameters:
-    - name: email
-    - name: password
-  - name: component.dex.ldap
-    empty: allow
-    parameters:
-    - name: host
-    - name: dn
-    - name: usernamePrompt
-      value: Username
-    - name: password
-    - name: search.dn
-    - name: search.usernameAttr
-      value: uid
-    - name: search.filter
-      value: (objectClass=user)
-    - name: search.idAttr
-      value: uid
-    - name: groupSearch.dn
-      value: ${component.dex.ldap.search.dn}
-  - name: component.dex.authproxy.image
-    value: agilestacks/oauth2_proxy:v2.3
-  - name: component.dex.authOperator.image
-    value: agilestacks/auth-operator:0.1.1
-  - name: component.dex.authproxy.emailDomain
-    value: "'*'"
-  - name: component.dex.authproxy.cookieExpire
-    value: "'12h0m0s'"
+      - name: name
+        value: dex
+        env: COMPONENT_NAME
+      - name: namespace
+        value: kube-system
+        env: NAMESPACE
+      - name: issuerFqdn
+        value: auth.${dns.domain}
+
+      - name: helm
+        parameters:
+          - name: repo
+            value: https://charts.dexidp.io
+            env: HELM_REPO
+          - name: chart
+            value: dex
+            env: HELM_CHART
+          - name: version
+            value: 0.9.0
+            env: HELM_CHART_VERSION
+
+      - name: image.repo
+        value: ghcr.io/dexidp/dex
+      - name: image.tag
+        value: v2.32.0
+
+      - name: passwordDb
+        empty: allow
+        parameters:
+        - name: email
+        - name: password
+
+      - name: connectors
+        empty: allow
+        parameters:
+          - name: ldap
+            empty: allow
+            parameters:
+            - name: host
+            - name: dn
+            - name: usernamePrompt
+              value: Username
+            - name: password
+            - name: search.dn
+            - name: search.usernameAttr
+              value: uid
+            - name: search.filter
+              value: (objectClass=user)
+            - name: search.idAttr
+              value: uid
+            - name: groupSearch.dn
+              value: ${dex.connectors.ldap.search.dn}
+
+          - name: okta
+            empty: allow
+            parameters:
+              - name: issuer
+              - name: clientId
+              - name: clientSecret
 
 outputs:
-  - name: component.dex.issuer
-    # value: http://dex.${component.dex.namespace}.svc.cluster.local:5556
-    value: ${component.ingress.protocol}://${component.dex.oidcIssuerFqdn}
-  # - name: component.dex.namespace
+  - name: dex.api.endpoint
+    value: ${dex.name}.${dex.namespace}.svc.cluster.local
+  - name: dex.issuer
+    value: ${component.ingress.protocol}://${dex.issuerFqdn}
 
 templates:
-  files:
-    - "kubernetes/*.template"
   extra:
     - kind: go
       files:
-        - "kubernetes/*.gotemplate"
+        - "*.gotemplate"

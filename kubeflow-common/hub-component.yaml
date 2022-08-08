@@ -8,7 +8,6 @@ requires:
 parameters:
 - name: dns.domain
   env: DOMAIN_NAME
-- name: component.dex.issuer
 - name: component.ingress.protocol
 - name: component.istio.namespace
 - name: component.istio.ingressGateway
