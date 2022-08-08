@@ -3,7 +3,7 @@ kind: Kustomization
 bases:
 - kustomize/base
 resources:
-- oidc.yaml
+- add-oidc-job.yaml
 
 patchesJSON6902:
 - target:
@@ -41,9 +41,9 @@ configMapGenerator:
   - client_id=${component.kubeflow.authn.oidcClientId}
   - oidc_provider=${component.kubeflow.authn.oidcProvider}
   - oidc_redirect_uri=${component.kubeflow.authn.oidcRedirectURI}
-  - oidc_auth_url=${component.dex.issuer}/auth
+  - oidc_auth_url=${component.kubeflow.authn.oidcProvider}/auth
   - application_secret=${component.kubeflow.authn.oidcSecret}
-  - skip_auth_uri=${component.dex.issuer}
+  - skip_auth_uri=${component.kubeflow.authn.oidcProvider}
   - userid-header=kubeflow-userid
   - userid-prefix=
   - namespace=${component.istio.namespace}

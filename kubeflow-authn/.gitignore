@@ -1,5 +1,5 @@
 /kustomize
-/kustomization.yaml
-/oidc.yaml
+/*.yaml
 /authn-envoy-filter.json
 /patches/pvc.yaml
+!/hub-component.yaml

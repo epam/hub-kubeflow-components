@@ -14,7 +14,7 @@ controller:
     - ${component.argo.workflowNamespace}
   image:
     tag: "${component.argo.version}"
-  containerRuntimeExecutor: "${component.argo.executor}"  
+  containerRuntimeExecutor: "${component.argo.executor}"
 
   persistence: {}
   #   clusterName: "${hub.componentName}"
@@ -75,7 +75,7 @@ server:
   clusterWorkflowTemplates:
     enableEditing: true
   sso:
-    issuer: "${component.dex.issuer}"
+    issuer: "${dex.issuer}"
     redirectUrl: "${component.argo.oidc.redirectUrl}"
     clientId:
       name: ${hub.componentName}-sso
@@ -120,10 +120,10 @@ artifactRepository:
   # name: my-gcs-credentials
   # key: serviceAccountKey
 
-workflow: 
+workflow:
   serviceAccount:
     create: ${component.argo.workflowRBAC}
     annotations: {}
     name: ${component.argo.workflowNamespace}-workflow
   rbac:
-    create: ${component.argo.workflowRBAC}   
+    create: ${component.argo.workflowRBAC}

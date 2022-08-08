@@ -23,11 +23,11 @@ The component has the following directory structure:
 
 ```text
 ./
-├── crds               # Directory contains kubernetes CRDs manifests
-├── gateway.yaml.template         # Istio gateway definition template
-├── hub-component.yaml                  # Parameters definitions
-├── kustomization.yaml.template         # Kustomize file for ths component
-├── pre-deploy                          # Script to download tarball from kubeflow distribution website
+├── crds                        # Directory contains kubernetes CRDs manifests
+├── gateway.yaml.template       # Istio gateway definition template
+├── hub-component.yaml          # Parameters definitions
+├── kustomization.yaml.template # Kustomize file for ths component
+├── pre-deploy                  # Script to download tarball from kubeflow distribution website
 └── pre-undeploy -> pre-deploy
 ```
 
@@ -42,7 +42,6 @@ The following component level parameters has been defined `hub-component.yaml`:
 | Name      | Description | Default Value
 | --------- | ---------   | ---------
 | `dns.domain` | Domain name of the kubeflow stack | |
-| `component.dex.issuer` | OIDC auth URL (Dex) | |
 | `component.ingress.protocol` | HTTP or HTTPS schema | |
 | `component.istio.namespace` | Kubernetes namespace for Istio | |
 | `component.istio.ingressGateway` | Name of Istio ingress gateway service | |

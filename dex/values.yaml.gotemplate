@@ -1,0 +1,145 @@
+replicaCount: 1
+
+image:
+  repository: "{{.dex.image.repo}}"
+  tag: "{{.dex.image.tag}}"
+
+nameOverride: "{{.dex.name}}"
+fullnameOverride: "{{.dex.name}}"
+
+grpc:
+  enabled: true
+
+configSecret:
+  create: true
+
+config:
+  issuer: "{{.component.ingress.protocol}}://{{.dex.issuerFqdn}}"
+
+  storage:
+    type: kubernetes
+    config:
+      inCluster: true
+
+  web:
+    http: 0.0.0.0:5556
+
+  grpc:
+    addr: 0.0.0.0:5557
+    # tlsCert: /etc/dex-grpc-server-secret/tls-cert
+    # tlsKey: /etc/dex-grpc-server-secret/tls-key
+    # tlsClientCA: /etc/dex-grpc-server-secret/ca-cert
+
+  oauth2:
+    skipApprovalScreen: true
+
+{{if or .dex.connectors.ldap.host .dex.connectors.okta.issuer}}
+  connectors:
+{{if .dex.connectors.ldap.host}}
+    - type: ldap
+      id: ldap
+      name: LDAP
+      config:
+        host: '{{.dex.connectors.ldap.host}}'
+        insecureNoSSL: true
+        usernamePrompt: '{{.dex.connectors.ldap.usernamePrompt}}'
+        bindDN: '{{.dex.connectors.ldap.dn}}'
+{{if .dex.connectors.ldap.password}}
+        bindPW: '{{.dex.connectors.ldap.password}}'
+{{end}}
+{{if .dex.connectors.ldap.search.dn}}
+        userSearch:
+          baseDN: '{{.dex.connectors.ldap.search.dn}}'
+          filter: '{{.dex.connectors.ldap.search.filter}}'
+          username: '{{.dex.connectors.ldap.search.usernameAttr}}'
+          idAttr: '{{.dex.connectors.ldap.search.idAttr}}'
+          emailAttr: 'mail'
+          nameAttr: '{{.dex.connectors.ldap.search.usernameAttr}}'
+{{end}}
+{{if .dex.connectors.ldap.groupSearch.dn}}
+      groupSearch:
+        baseDN: '{{.dex.connectors.ldap.groupSearch.dn}}'
+        filter: '(objectClass=group)'
+{{end}}
+{{end}}
+{{if .dex.connectors.okta.issuer}}
+    - type: oidc
+      id: okta
+      name: Okta
+      config:
+        issuer: "{{.dex.connectors.okta.issuer}}"
+        clientID: "{{.dex.connectors.okta.clientId}}"
+        clientSecret: "{{.dex.connectors.okta.clientSecret}}"
+        redirectURI: "{{.component.ingress.protocol}}://{{.dex.issuerFqdn}}/callback"
+        userInfoURI: "{{.dex.connectors.okta.issuer}}/oauth2/v1/userinfo"
+        GetUserInfo: true
+        insecureSkipEmailVerified: true
+{{end}}
+{{else}}
+  connectors: []
+{{end}}
+
+{{if and .dex.passwordDb.email .dex.passwordDb.password}}
+  enablePasswordDB: true
+  staticPasswords:
+    - email: '{{.dex.passwordDb.email}}'
+      username: '{{.dex.passwordDb.email}}'
+      hash: '{{.dex.passwordDb.password | bcrypt}}'
+      userID: '{{.dex.passwordDb.email | b64enc}}'
+{{else}}
+  enablePasswordDB: false
+{{end}}
+
+# volumes:
+#   - name: "dex-grpc-server-secret"
+#     secret:
+#       secretName: "dex-grpc-server-secret"
+
+# volumeMounts:
+#   - name: "dex-grpc-server-secret"
+#     mountPath: "/etc/dex-grpc-server-secret"
+#     readOnly: true
+
+envVars:
+  - name: KUBERNETES_POD_NAMESPACE
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.namespace
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+
+ingress:
+  enabled: true
+  className: "{{.component.ingress.class}}"
+{{if eq .component.ingress.protocol "https"}}
+  annotations:
+    kubernetes.io/tls-acme: "true"
+{{else}}
+  annotations: {}
+{{end}}
+  hosts:
+    - host: "{{.dex.issuerFqdn}}"
+      paths:
+        - path: /
+          pathType: Prefix
+
+{{if eq .component.ingress.protocol "https"}}
+  tls:
+    - hosts:
+        - "{{.dex.issuerFqdn}}"
+      secretName: "{{.dex.name}}-tls"
+{{end}}
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+strategy:
+  rollingUpdate:
+    maxUnavailable: 0

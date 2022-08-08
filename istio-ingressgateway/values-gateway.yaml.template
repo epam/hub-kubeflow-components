@@ -22,7 +22,7 @@ ${hub.componentName}:
   cpu:
     targetAverageUtilization: 80
   loadBalancerIP: ""
-  loadBalancerSourceRanges: {}
+  loadBalancerSourceRanges: []
   externalIPs: []
   serviceAnnotations: {}
   podAnnotations: {}

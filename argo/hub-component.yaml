@@ -17,8 +17,10 @@ lifecycle:
 
 parameters:
 - name: dns.domain
-  env:  DOMAIN_NAME
-- name: component.dex.issuer
+  env:  HUB_DOMAIN_NAME
+- name: dex.issuer
+  empty: allow
+- name: dex.api.endpoint
   empty: allow
 - name: component.ingress
   parameters:
@@ -42,7 +44,7 @@ parameters:
     value: ${component.ingress.protocol}://${component.ingress.host}/oauth2/callback
   - name: helm
     parameters:
-    - name: repo 
+    - name: repo
       env: HELM_REPO
       value: https://argoproj.github.io/argo-helm
     - name: chart

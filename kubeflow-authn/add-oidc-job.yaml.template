@@ -16,7 +16,7 @@ spec:
             - create
             - oidc
             - "--host=${dex.api.endpoint}"
-            - "--clientId=${hub.componentName}-sso"
-            - "--clientSecret=${component.argo.oidc.clientSecret}"
-            - "--name=${hub.componentName}-sso"
-            - "--redirectUris=${component.argo.oidc.redirectUrl}"
+            - "--clientId=${component.kubeflow.authn.oidcClientId}"
+            - "--clientSecret=${component.kubeflow.authn.oidcSecret}"
+            - "--name=${component.kubeflow.name}"
+            - "--redirectUris=${component.kubeflow.authn.oidcRedirectURI}"

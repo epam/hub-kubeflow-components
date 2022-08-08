@@ -8,7 +8,7 @@ fi
 TEMP_DIR=$(mktemp -d)
 trap 'rm -rf $TEMP_DIR' EXIT
 
-kubectl="kubectl --context=$DOMAIN_NAME"
+kubectl="kubectl --context=$HUB_DOMAIN_NAME"
 
 dump_crd() {
     echo "* Backing up: $1..."

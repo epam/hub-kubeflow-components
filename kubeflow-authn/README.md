@@ -23,7 +23,8 @@ The following component level parameters has been defined `hub-component.yaml`:
 | Name | Description | Default Value |
 | :--- | :---        | :---          |
 | `component.ingress.protocol` | HTTP or HTTPS schema | `https` |
-| `component.dex.issuer` | OIDC auth URL (Dex) | `http://auth.${domain.name}` |
+| `dex.api.endpoint` | Dex API endpoint URL | |
+| `dex.issuer` | OIDC auth URL (Dex) | `https://auth.${dns.domain}` |
 | `component.kubeflow.authn.oidcProvider` | Kubeflow OIDC auth URL | `https://kubeflow.${dns.domain}/login/oidc` |
 | `component.kubeflow.authn.oidcSecret` | Hard to guess OIDC secret passphrase between Kubeflow and Dex (recommended: randomly generated string) | |
 | `component.kubeflow.authn.sessionMaxAge` | Max age (in seconds) for user session | `86400` |
