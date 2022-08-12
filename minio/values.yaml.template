@@ -9,11 +9,6 @@ mcImage:
   tag: ${component.minio.docker.mcTag}
   pullPolicy: IfNotPresent
 
-helmKubectlJqImage:
-  repository: ${component.minio.docker.jqImage}
-  tag: ${component.minio.docker.jqTag}
-  pullPolicy: IfNotPresent
-
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 mode: ${component.minio.mode}
 
