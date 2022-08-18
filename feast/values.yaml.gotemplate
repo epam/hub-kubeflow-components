@@ -1,0 +1,52 @@
+feature-server:
+  enabled: true
+
+  ingress:
+    grpc:
+      enabled: true
+      class: "{{.component.ingress.class}}"
+      hosts:
+        - "{{.component.ingress.host}}"
+      https:
+        enabled: {{eq .component.ingress.protocol "https"}}
+        secretNames:
+          {{.component.ingress.host}}: "{{.hub.componentName}}-tls"
+    http:
+      enabled: true
+      class: "{{.component.ingress.class}}"
+      hosts:
+        - "{{.component.ingress.host}}"
+      https:
+        enabled: {{eq .component.ingress.protocol "https"}}
+        secretNames:
+          {{.component.ingress.host}}: "{{.hub.componentName}}-tls"
+
+common:
+  metadata: {}
+
+transformation-service:
+  enabled: true
+
+redis:
+  # redis.enabled -- Flag to install Redis
+  enabled: true
+  # redis.usePassword -- Disable redis password
+  usePassword: false
+
+global:
+  featureStore:
+    # global.featureStore.registry -- Information about registry managed by Feast Python SDK (must be in sync with feature_store.yaml)
+    registry:
+      # global.featureStore.registry.path -- Path to the registry file managed by Feast Python SDK
+      path: /etc/feast/default/data/registry.db
+      # global.featureStore.registry.cache_ttl_seconds -- Registry cache (in memory) will be refreshed on this interval
+      cache_ttl_seconds: 0
+
+    # global.featureStore.project -- Project from feature_store.yaml
+    project: default
+
+    # global.featureStore.provider -- local or gcp or aws
+    provider: local
+
+    # global.featureStore.entity_key_serialization_version -- Entity key serialization version: This version is used to control what serialization scheme is used when writing data to the online store. A value <= 1 uses the serialization scheme used by feast up to Feast 0.22. A value of 2 uses a newer serialization scheme, supported as of Feast 0.23. The main difference between the two scheme is that the serialization scheme v1 stored `long` values as `int`s, which would result in errors trying to serialize a range of values. v2 fixes this error, but v1 is kept around to ensure backwards compatibility - specifically the ability to read feature values for entities that have already been written into the online store.
+    entity_key_serialization_version: 2

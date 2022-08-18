@@ -1,0 +1,17 @@
+{{- $isLocalPath := include "isLocalPath" . }}
+{{- if $isLocalPath }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "1Gi"
+  storageClassName: "local-path"
+{{- end }}

@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "transformation-service.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+    {{- include "transformation-service.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "transformation-service.labels" . | nindent 8 }}
+        {{- if .Values.podLabels }}
+          {{ toYaml .Values.podLabels | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: grpc
+          containerPort: {{ .Values.service.grpc.targetPort }}
+
+        {{ $isLocalPath := include "isLocalPath" . -}}
+        {{- if or .Values.secrets $isLocalPath -}}
+        volumeMounts:
+        {{- if $isLocalPath }}
+        {{- $registryPath := include "getLocalPath" . }}
+        - name: {{ .Release.Name }}-registry
+          mountPath: {{ dir $registryPath }}
+        {{- end }}
+        {{- range $secret := .Values.secrets }}
+        - name: {{ $secret }}
+          mountPath: "/etc/secrets/{{ $secret }}"
+          readOnly: true
+        {{- end }}
+        {{- end }}
+
+        env:
+        - name: FEATURE_TRANSFORMATION_SERVER_PORT
+          value: {{ .Values.service.grpc.targetPort | quote }}
+        - name: FEATURE_STORE_YAML_BASE64
+          value: {{ .Values.global.featureStore | toYaml | b64enc | quote }}
+
+        {{- range $key, $value := .Values.envOverrides }}
+        - name: {{ printf "%s" $key | replace "." "_" | upper | quote }}
+          {{- if eq (kindOf $value) "map" }}
+          valueFrom:
+            {{- toYaml $value | nindent 12 }}
+          {{- else }}
+          value: {{ $value | quote }}
+          {{- end }}
+        {{- end }}
+
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- if or .Values.secrets $isLocalPath }}
+      volumes:
+      {{- if $isLocalPath }}
+      - name: {{ .Release.Name }}-registry
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}
+      {{- end }}
+      {{- range $secret := .Values.secrets }}
+      - name: {{ $secret }}
+        secret:
+          secretName: {{ $secret }}
+      {{- end }}
+      {{- end }}

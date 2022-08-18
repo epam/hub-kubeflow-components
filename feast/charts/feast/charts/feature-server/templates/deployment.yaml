@@ -1,0 +1,163 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "feature-server.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "feature-server.labels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if index .Values "application-secret.yaml" "enabled" }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- end }}
+      {{ if .Values.podAnnotations }}
+        {{ toYaml .Values.podAnnotations | nindent 8 }}
+      {{ end }}
+      labels:
+        {{- include "feature-server.labels" . | nindent 8 }}
+      {{- if .Values.podLabels }}
+        {{ toYaml .Values.podLabels | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: {{ template "fullname" . }}-config
+        configMap:
+          name: {{ template "fullname" . }}
+      {{- if index .Values "application-secret.yaml" "enabled" }}
+      - name: {{ template "fullname" . }}-secret
+        secret:
+          secretName: {{ template "fullname" . }}
+      {{- end }}
+      {{- range $secret := .Values.secrets }}
+      - name: {{ $secret }}
+        secret:
+          secretName: {{ $secret }}
+      {{- end }}
+      {{- $isLocalPath := include "isLocalPath" . }}
+      {{- if $isLocalPath }}
+      - name: {{ .Release.Name }}-registry
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}
+
+      {{ $registryPath := include "getLocalPath" . -}}
+      initContainers:
+      - name: {{ .Chart.Name }}-init
+        image: busybox:1.35
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'touch {{ $registryPath }}']
+        volumeMounts:
+        - name: {{ .Release.Name }}-registry
+          mountPath: {{ dir $registryPath }}
+      {{- end }}
+
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+        volumeMounts:
+        - name: {{ template "fullname" . }}-config
+          mountPath: /etc/feast
+        {{- if index .Values "application-secret.yaml" "enabled" }}
+        - name: {{ template "fullname" . }}-secret
+          mountPath: /etc/secrets/feast
+          readOnly: true
+        {{- end }}
+        {{- range $secret := .Values.secrets }}
+        - name: {{ $secret }}
+          mountPath: "/etc/secrets/{{ $secret }}"
+          readOnly: true
+        {{- end }}
+        {{- if $isLocalPath }}
+        {{ $registryPath := include "getLocalPath" . -}}
+        - name: {{ .Release.Name }}-registry
+          mountPath: {{ dir $registryPath }}
+        {{- end }}
+
+        env:
+        - name: LOG_TYPE
+          value: {{ .Values.logType | quote }}
+        - name: LOG_LEVEL
+          value: {{ .Values.logLevel | quote }}
+
+        {{- if .Values.javaOpts }}
+        - name: JAVA_TOOL_OPTIONS
+          value: {{ .Values.javaOpts }}
+        {{- end }}
+
+        {{- range $key, $value := .Values.envOverrides }}
+        - name: {{ printf "%s" $key | replace "." "_" | upper | quote }}
+          {{ if eq (kindOf $value) "map" }}
+          valueFrom:
+            {{ toYaml $value | nindent 12 }}
+          {{ else }}
+          value: {{ $value | quote }}
+          {{ end }}
+        {{- end }}
+
+        command:
+        - java
+        - -jar
+        - /opt/feast/feast-serving.jar
+        - {{ if index .Values "application.yaml" "enabled" -}}
+          classpath:/application.yml
+          {{- end -}}
+          {{ if index .Values "application-generated.yaml" "enabled" -}}
+          ,file:/etc/feast/application-generated.yaml
+          {{- end -}}
+          {{ if index .Values "application-secret.yaml" "enabled" -}}
+          ,file:/etc/secrets/feast/application-secret.yaml
+          {{- end -}}
+          {{ if index .Values "application-override.yaml" "enabled" -}}
+          ,file:/etc/feast/application-override.yaml
+          {{- end }}
+
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.http.targetPort }}
+        - name: grpc
+          containerPort: {{ .Values.service.grpc.targetPort }}
+
+        {{ if .Values.livenessProbe.enabled -}}
+        livenessProbe:
+          exec:
+            command:
+            - "grpc-health-probe"
+            - "-addr={{ .Values.service.grpc.targetPort }}"
+            - "-connect-timeout={{ .Values.livenessProbe.timeoutSeconds }}s"
+            - "-rpc-timeout={{ .Values.livenessProbe.timeoutSeconds }}s"
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+
+        {{ if .Values.readinessProbe.enabled -}}
+        readinessProbe:
+          exec:
+            command:
+            - "grpc-health-probe"
+            - "-addr=:{{ .Values.service.grpc.targetPort }}"
+            - "-connect-timeout={{ .Values.readinessProbe.timeoutSeconds }}s"
+            - "-rpc-timeout={{ .Values.readinessProbe.timeoutSeconds }}s"
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}

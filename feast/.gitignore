@@ -1,0 +1,3 @@
+*.yaml
+!hub-component.yaml
+!charts/**/*.yaml

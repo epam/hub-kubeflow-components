@@ -1,0 +1,58 @@
+---
+version: 1
+kind: component
+meta:
+  name: feast
+  brief: feast
+  source:
+      dir: ./
+
+requires:
+  - kubernetes
+  - helm
+
+provides:
+  - feast
+
+parameters:
+  - name: dns.domain
+    env: HUB_DOMAIN_NAME
+
+  - name: component.ingress
+    parameters:
+    - name: protocol
+      value: http
+    - name: host
+      empty: allow
+    - name: class
+      empty: allow
+
+  - name: feats
+    parameters:
+      - name: namespace
+        value: feast
+        env: NAMESPACE
+
+      - name: helm
+        parameters:
+          # - name: repo
+          #   value: https://feast-helm-charts.storage.googleapis.com
+          #   env: HELM_REPO
+          - name: chart
+            env: HELM_CHART
+            value: charts/feast
+          - name: version
+            value: 0.23.0
+            env: HELM_CHART_VERSION
+
+templates:
+  files:
+    - "*.template"
+  extra:
+  - kind: go
+    files:
+    - "*.gotemplate"
+
+outputs:
+  - name: feast.server
+    value: http://feast.${component.ingress.host}

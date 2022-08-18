@@ -1,0 +1,59 @@
+{{ $fullName := include "fullname" . }}
+{{ $labels := include "feature-server.labels" . }}
+{{ $namespace := .Release.Namespace }}
+{{- range $protocol, $config := .Values.ingress }}
+{{ if $config.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-{{ $protocol }}
+  namespace: {{ $namespace }}
+  labels:
+    {{- $labels | nindent 4 }}
+  annotations:
+    {{- with $config.annotations }}
+    {{ toYaml . | indent 4 }}
+    {{- end }}
+    {{- if ne $config.class "" }}
+    kubernetes.io/ingress.class: {{ $config.class | quote }}
+    {{- end }}
+    {{- if eq $config.class "nginx" }}
+    {{- if $config.auth.enabled }}
+    {{- if $config.auth.authUrl }}
+    nginx.ingress.kubernetes.io/auth-url: {{ $config.auth.authUrl | quote }}
+    {{- end }}
+    nginx.ingress.kubernetes.io/auth-response-headers: "x-auth-request-email, x-auth-request-user"
+    {{- if $config.auth.signinHost }}
+    nginx.ingress.kubernetes.io/auth-signin: "https://{{ $config.auth.signinHost | default (splitList "." (index $config.hosts 0) | rest | join "." | printf "auth.%s")}}/oauth2/start?rd=/r/$host/$request_uri"
+    {{- end }}
+    {{- end }}
+    {{- if $config.whitelist }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ $config.whitelist | quote }}
+    {{- end }}
+    nginx.ingress.kubernetes.io/backend-protocol: {{ $protocol | upper }}
+    {{ end }}
+spec:
+  rules:
+  {{- range $host := $config.hosts }}
+  - host: {{ $host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ $fullName }}
+            port:
+              number: {{ index $.Values "service" $protocol "port" }}
+  {{- end }}
+  {{ if $config.https.enabled }}
+  tls:
+  {{- range $host := $config.hosts }}
+  - secretName: {{ index $config.https.secretNames $host | default (splitList "." $host | rest | join "-" | printf "%s-tls") }}
+    hosts:
+    - {{ $host }}
+  {{ end }}
+  {{ end }}
+---
+{{- end }}
+{{- end }}

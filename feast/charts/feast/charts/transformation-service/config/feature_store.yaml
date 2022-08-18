@@ -1,0 +1,5 @@
+registry:
+  path: {{ .Values.global.featureStore.registry.path }}
+  cache_ttl_seconds: {{ .Values.global.featureStore.registry.cache_ttl_seconds }}
+provider: local
+project: {{ .Values.global.featureStore.project }}
