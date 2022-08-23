@@ -23,7 +23,7 @@ parameters:
     - name: kustomize.tarball.subpath
       value: profiles
       env: HUB_KUSTOMIZE_TARBALL_SUBPATH
-- name: component.dex.passwordDb.email
+- name: dex.passwordDb.email
   value: bdaml
 - name: hub.backup.file
   empty: allow

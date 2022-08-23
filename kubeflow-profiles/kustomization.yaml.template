@@ -19,7 +19,7 @@ commonLabels:
 configMapGenerator:
 - name: profiles-parameters
   literals:
-  - admin=${component.dex.passwordDb.email}
+  - admin=${dex.passwordDb.email}
   - userid-header=kubeflow-userid
   - gcp-sa=
   - userid-prefix=

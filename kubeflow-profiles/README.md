@@ -34,7 +34,7 @@ This component uses Kustomize extension and follows common design guidelines for
 | `component.kubeflow.version` | Version of Kubeflow | `v1.2.0` |
 | `component.kubeflow.tarball` | URL to kubeflow tarball archive | `https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz` |
 | `component.kubeflow.tarball.subpath` | Directory from kubeflow tarball archive | `profiles` |
-| `component.dex.passwordDb.email` | Administrator email | `bdaml` |
+| `dex.passwordDb.email` | Administrator email | `bdaml` |
 | `hub.backup.file` | Profiles backup file | |
 
 ## See Also
