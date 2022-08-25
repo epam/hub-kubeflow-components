@@ -58,6 +58,37 @@ The following component level parameters can be set in `hub-component.yaml`:
 | `dex.api.endpoint` | Dex API endpoint URL |
 | `dex.issuer` | Dex issuer URL |
 
+## How to add static password or static OIDC
+
+To do this with running Dex and without restarting or redeploying Dex you need to use Dex API. To communicate with Dex API we have created a command line tool - [dexctl](https://github.com/agilestacks/dexctl). To use it you need to create a Kubernetes Job resource which will execute call to Dex API. Job should use `gcr.io/superhub/dexctl:latest` Docker image.
+
+Example of Job
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-oidc
+  generateName: "${hub.componentName}-"
+spec:
+  ttlSecondsAfterFinished: 120
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - image: gcr.io/superhub/dexctl:latest
+          name: "${hub.componentName}"
+          args:
+            - create
+            - oidc
+            - "--host=${dex.api.endpoint}"
+            - "--clientId=${component.my-component.oidcClientId}"
+            - "--clientSecret=${component.my-component.oidcClientSecret}"
+            - "--name=${component.my-component.name}"
+            - "--redirectUris=${component.my-component.oidcRedirectURI}"
+```
+
 ## References
 
 * [DEX](https://dexidp.io/)
