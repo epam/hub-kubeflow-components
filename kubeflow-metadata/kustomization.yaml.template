@@ -1,73 +1,44 @@
-namePrefix: metadata-
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: ${component.kubeflow.namespace}
 commonLabels:
-  # app: metadata
   kustomize.component: ${hub.componentName}
   app.kubernetes.io/component: ${hub.componentName}
-  app.kubernetes.io/name: ${component.kubeflow.name}  
+  app.kubernetes.io/name: ${component.kubeflow.name}
   app.kubernetes.io/version: "${component.kubeflow.version}"
-  app.kubernetes.io/managed-by: "superhub.io"   
+  app.kubernetes.io/managed-by: "superhub.io"
+
+resources:
+- kustomize/metadata/base/metadata-grpc-configmap.yaml
+- kustomize/metadata/base/metadata-grpc-deployment.yaml
+- kustomize/metadata/base/metadata-grpc-service.yaml
+- kustomize/metadata/base/metadata-grpc-sa.yaml
+- kustomize/metadata/base/metadata-envoy-deployment.yaml
+- kustomize/metadata/base/metadata-envoy-service.yaml
+- kustomize/metadata/options/istio/virtual-service.yaml
+- kustomize/metadata/options/istio/destination-rule.yaml
+- kustomize/metadata/options/istio/istio-authorization-policy.yaml
+
+patchesStrategicMerge:
+- kustomize/metadata/overlays/db/patches/metadata-grpc-deployment.yaml
+
 configMapGenerator:
-- name: ui-parameters
-  envs:
-  - kustomize/base/params.env
-- name: grpc-configmap
-  envs:
-  - kustomize/base/grpc-params.env
 - name: metadata-db-parameters
   envs:
   - db-params.env
+
 secretGenerator:
 - name: metadata-db-secrets
   envs:
-  - db-secrets.env  
+  - db-secrets.env
+
 generatorOptions:
   # TFX pipelines use metadata-grpc-configmap for finding grpc server host and
   # port at runtime. Because they don't know the suffix, we have to disable it.
   disableNameSuffixHash: true
-resources:
-- kustomize/base/metadata-deployment.yaml
-- kustomize/base/metadata-service.yaml
-- kustomize/base/metadata-envoy-deployment.yaml
-- kustomize/base/metadata-envoy-service.yaml
-- kustomize/overlays/application/application.yaml
-- kustomize/overlays/istio/virtual-service-metadata-grpc.yaml
-patchesStrategicMerge:
-- kustomize/overlays/external-mysql/metadata-deployment.yaml
-namespace: ${component.kubeflow.namespace}
-vars:
-- name: metadata-namespace
-  objref:
-    kind: Service
-    name: envoy-service
-    apiVersion: v1
-  fieldref:
-    fieldpath: metadata.namespace
-- name: ui-clusterDomain
-  objref:
-    kind: ConfigMap
-    name: ui-parameters
-    version: v1
-  fieldref:
-    fieldpath: data.uiClusterDomain
-- name: metadata-envoy-service
-  objref:
-    kind: Service
-    name: envoy-service
-    apiVersion: v1
-  fieldref:
-    fieldpath: metadata.name
+
 images:
-- name: gcr.io/kubeflow-images-public/metadata
-  newName: gcr.io/kubeflow-images-public/metadata
-  newTag: v0.1.11
 - name: gcr.io/tfx-oss-public/ml_metadata_store_server
-  newName: gcr.io/tfx-oss-public/ml_metadata_store_server
-  newTag: v0.21.1
-- name: gcr.io/ml-pipeline/envoy
-  newName: gcr.io/ml-pipeline/envoy
-  newTag: metadata-grpc
-configurations:
-- kustomize/overlays/istio/params.yaml
-- kustomize/v3/params.yaml
+  newTag: 1.9.0
+- name: gcr.io/ml-pipeline/metadata-envoy
+  newTag: ${component.kubeflow.metadata.version}
