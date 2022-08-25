@@ -1,2 +1,0 @@
-#!/bin/sh -e
-files download-tar "$URL" "kustomize" --tar-subpath "pipeline"
