@@ -1,2 +1,0 @@
-#!/bin/sh -e
-../../bin/shell/download-manifests -o "$(pwd)/kustomize" -s "pipeline"

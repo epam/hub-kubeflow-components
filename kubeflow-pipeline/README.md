@@ -47,7 +47,7 @@ This component uses Kustomize extension and follows common design guidelines for
 | Name | Description | Default Value |
 | :--- | :---        | :---          |
 | `component.kubeflow.manifests.version` | Version of kubeflow deployment manifests | `v1.2.0` |
-| `component.kubeflow.pipeline.multiUser` | Set's for multi user isolation | `true` |
+| `component.kubeflow.pipelines.multiUser` | Set's for multi user isolation | `true` |
 | `component.mysql.host` | MySQL server host name | |
 | `component.mysql.port` | MySQL server port (default to 3306) | `3306` |
 | `component.mysql.user` | MySQL server username (cannot be empty) | |

@@ -1,5 +1,5 @@
 ---
-apiVersion: apiextensions.k8s.io/v1beta1
+apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   name: compositecontrollers.metacontroller.k8s.io
@@ -13,9 +13,12 @@ spec:
     - cctl
     singular: compositecontroller
   scope: Cluster
-  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
 ---
-apiVersion: apiextensions.k8s.io/v1beta1
+apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   name: controllerrevisions.metacontroller.k8s.io
@@ -26,9 +29,12 @@ spec:
     plural: controllerrevisions
     singular: controllerrevision
   scope: Namespaced
-  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
 ---
-apiVersion: apiextensions.k8s.io/v1beta1
+apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   name: decoratorcontrollers.metacontroller.k8s.io
@@ -42,4 +48,7 @@ spec:
     - decorators
     singular: decoratorcontroller
   scope: Cluster
-  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
