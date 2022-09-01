@@ -1,4 +1,6 @@
 /kustomize
-/kustomization.yaml
 /envs/*.env
-/resources/default-editor.yaml
+*.yaml
+!hub-component.yaml
+!/patches/metadata-writer-role.yaml
+!/patches/pipeline-ui-deployment.yaml

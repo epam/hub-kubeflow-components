@@ -19,21 +19,17 @@ parameters:
         value: v1.5.1
         env: VERSION
       - name: tarball
-        value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
+        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
         env: HUB_KUSTOMIZE_TARBALL_URL
       - name: subpath
         value: "apps/pipeline/upstream/base: apps/pipeline/upstream/third-party/metacontroller/base:crds/metacontroller"
         env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
 
-      - name: pipelines
-        parameters:
-          - name: version
-            value: 1.8.2
-          # https://github.com/kubeflow/pipelines/issues/5117
-          # Multi User featuring should correlate with DEPLOYMENT flag
-          # For now DEPLOYMENT is just hard coded for Multi User case
-          - name: multiUser
-            value: true
+        # https://github.com/kubeflow/pipelines/issues/5117
+        # Multi User featuring should correlate with DEPLOYMENT flag
+        # For now DEPLOYMENT is just hard coded for Multi User case
+      - name: pipelines.multiUser
+        value: true
 
   - name: component.mysql
     parameters:
@@ -58,5 +54,4 @@ templates:
   files:
     - "envs/*.template"
     - "resources/*.template"
-    # - "patches/*.template"
     - "*.template"
