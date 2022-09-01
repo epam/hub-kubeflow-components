@@ -1,5 +1,4 @@
+/add-oidc-job.yaml
+/kustomization.yaml
 /kustomize
-/*.yaml
-/authn-envoy-filter.json
-/patches/pvc.yaml
-!/hub-component.yaml
+/envoy-filter.yaml

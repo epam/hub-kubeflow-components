@@ -20,8 +20,9 @@ parameters:
 - name: component.kubeflow
   parameters:
   - name: name
+    value: kubeflow
   - name: version
-    value: v1.2.0
+    value: v1.5.1
     env: VERSION
   - name: authn.oidcProvider
     value: ${dex.issuer}
@@ -29,16 +30,18 @@ parameters:
     value: https://${component.kubeflow.name}.${dns.domain}/login/oidc
   - name: authn.oidcClientId
     value: ${component.kubeflow.name}-client
+  - name: authn.afterLogin
+    value: ${component.ingress.protocol}://${component.kubeflow.name}.${dns.domain}
   - name: authn.oidcSecret
   - name: authn.sessionMaxAge
     value: 86400
   - name: authn.volumeSize
-    value: 10Gi
+    value: 10Gi    
   - name: kustomize.tarball
     value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
     env: HUB_KUSTOMIZE_TARBALL_URL
   - name: kustomize.subpath
-    value: istio/oidc-authservice
+    value: common/oidc-authservice
     env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 templates:

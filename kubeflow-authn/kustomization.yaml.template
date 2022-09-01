@@ -5,6 +5,9 @@ bases:
 resources:
 - add-oidc-job.yaml
 
+patchesStrategicMerge:
+- envoy-filter.yaml
+
 patchesJSON6902:
 - target:
     version: v1
@@ -20,31 +23,36 @@ commonLabels:
   app.kubernetes.io/component: ${hub.componentName}
   app.kubernetes.io/name: ${component.kubeflow.name}
   app.kubernetes.io/version: "${component.kubeflow.version}"
-  app.kubernetes.io/managed-by: "superhub.io"
-  app.kubernetes.io/part-of: kubeflow
-  superhub.io/dns.domain: ${dns.domain}
 
 namespace: ${component.istio.namespace}
 
 generatorOptions:
   disableNameSuffixHash: true
 
-images:
-- name: gcr.io/arrikto/kubeflow/oidc-authservice
-  newName: gcr.io/arrikto/kubeflow/oidc-authservice
-  newTag: 2cb5bf6
+# FIXME: latest version from gcr doesn't do proper redirect
+# images:
+# - name: gcr.io/arrikto/kubeflow/oidc-authservice
+#   newName: gcr.io/arrikto/kubeflow/oidc-authservice
+#   newTag: e236439
 
 configMapGenerator:
 - name: oidc-authservice-parameters
-  behavior: replace
+  behavior: merge
   literals:
-  - client_id=${component.kubeflow.authn.oidcClientId}
-  - oidc_provider=${component.kubeflow.authn.oidcProvider}
-  - oidc_redirect_uri=${component.kubeflow.authn.oidcRedirectURI}
-  - oidc_auth_url=${component.kubeflow.authn.oidcProvider}/auth
-  - application_secret=${component.kubeflow.authn.oidcSecret}
-  - skip_auth_uri=${component.kubeflow.authn.oidcProvider}
-  - userid-header=kubeflow-userid
-  - userid-prefix=
-  - namespace=${component.istio.namespace}
-  - gatewaySelector=${component.istio.ingressGateway}
+  - OIDC_PROVIDER=${component.kubeflow.authn.oidcProvider}
+  - OIDC_AUTH_URL=${component.kubeflow.authn.oidcProvider}/auth
+  - REDIRECT_URL=${component.kubeflow.authn.oidcRedirectURI}
+  - SKIP_AUTH_URI=${component.kubeflow.authn.oidcProvider}
+  - AFTER_LOGIN_URL=${component.kubeflow.authn.afterLogin}
+  - AUTHSERVICE_URL_PREFIX=${component.kubeflow.authn.oidcProvider}/authservice/
+  - SESSION_MAX_AGE=${component.kubeflow.authn.sessionMaxAge}
+  - USERID_TOKEN_HEADER=kubeflow-userid
+  - SERVER_HOSTNAME=0.0.0.0
+  - SERVER_PORT=8080
+
+secretGenerator:
+- name: oidc-authservice-client
+  behavior: merge
+  literals:
+  - CLIENT_ID=${component.kubeflow.authn.oidcClientId}
+  - CLIENT_SECRET=${component.kubeflow.authn.oidcSecret}
