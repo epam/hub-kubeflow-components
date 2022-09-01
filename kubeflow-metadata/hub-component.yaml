@@ -18,16 +18,11 @@ parameters:
         value: v1.5.1
         env: VERSION
       - name: tarball
-        value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
+        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
         env: HUB_KUSTOMIZE_TARBALL_URL
       - name: subpath
         value: apps/pipeline/upstream/base
         env: HUB_KUSTOMIZE_TARBALL_SUBPATH
-
-      - name: metadata
-        parameters:
-          - name: version
-            value: 1.8.2
 
   - name: component.mysql
     parameters:

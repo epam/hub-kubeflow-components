@@ -7,30 +7,27 @@ commonLabels:
   app.kubernetes.io/name: ${component.kubeflow.name}
   app.kubernetes.io/version: "${component.kubeflow.version}"
   app.kubernetes.io/managed-by: "superhub.io"
+  app.kubernetes.io/part-of: "kubeflow"
 
 resources:
-- kustomize/metadata/base/metadata-grpc-configmap.yaml
-- kustomize/metadata/base/metadata-grpc-deployment.yaml
-- kustomize/metadata/base/metadata-grpc-service.yaml
-- kustomize/metadata/base/metadata-grpc-sa.yaml
-- kustomize/metadata/base/metadata-envoy-deployment.yaml
-- kustomize/metadata/base/metadata-envoy-service.yaml
-- kustomize/metadata/options/istio/virtual-service.yaml
-- kustomize/metadata/options/istio/destination-rule.yaml
-- kustomize/metadata/options/istio/istio-authorization-policy.yaml
+- kustomize/metadata/base
+- kustomize/metadata/options/istio
 
 patchesStrategicMerge:
 - kustomize/metadata/overlays/db/patches/metadata-grpc-deployment.yaml
 
 configMapGenerator:
 - name: metadata-db-parameters
-  envs:
-  - db-params.env
+  literals:
+  - "MLMD_DB_HOST=${component.mysql.host}"
+  - "MYSQL_DATABASE=${component.mysql.database}"
+  - "MYSQL_PORT=${component.mysql.port}"
 
 secretGenerator:
 - name: metadata-db-secrets
-  envs:
-  - db-secrets.env
+  literals:
+  - "MYSQL_USER_NAME=${component.mysql.user}"
+  - "MYSQL_ROOT_PASSWORD=${component.mysql.password}"
 
 generatorOptions:
   # TFX pipelines use metadata-grpc-configmap for finding grpc server host and
@@ -38,7 +35,5 @@ generatorOptions:
   disableNameSuffixHash: true
 
 images:
-- name: gcr.io/tfx-oss-public/ml_metadata_store_server
-  newTag: 1.9.0
 - name: gcr.io/ml-pipeline/metadata-envoy
-  newTag: ${component.kubeflow.metadata.version}
+  newTag: 1.8.2
