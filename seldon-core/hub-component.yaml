@@ -16,6 +16,8 @@ lifecycle:
 
 parameters:
 - name: hub.componentName
+- name: component.kubeflow.name
+
 - name: component.seldon
   parameters:
   - name: namespace

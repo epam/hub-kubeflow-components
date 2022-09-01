@@ -17,8 +17,8 @@ if $helm list --failed --pending -q | grep -E "^$COMPONENT_NAME\$"; then
 fi
 
 for v in values.yaml values-*.yaml; do
-  if test -f "$v"; then 
-    HELM_OPTS="$HELM_OPTS --values $v"; 
+  if test -f "$v"; then
+    HELM_OPTS="$HELM_OPTS --values $v";
   fi
 done
 
@@ -35,3 +35,5 @@ $kubectl apply -n "$NAMESPACE" -f "istio-gateway.yaml"
 # shellcheck disable=SC2086
 $helm upgrade "$COMPONENT_NAME" "charts/seldon-core-operator-1.5.0.tgz" \
   -n "$NAMESPACE" --install --wait $HELM_OPTS
+
+$kubectl apply -n "$NAMESPACE" -f "seldon-edit.yaml"

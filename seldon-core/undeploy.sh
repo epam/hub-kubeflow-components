@@ -20,4 +20,5 @@ if $helm list --deployed --failed --pending -q | grep -E "^$COMPONENT_NAME\$"; t
   $helm uninstall "$COMPONENT_NAME"
 fi
 
-$kubectl delete --ignore-not-found=true -f istio-gateway.yaml
+$kubectl delete --ignore-not-found=true -f "istio-gateway.yaml"
+$kubectl delete --ignore-not-found=true -f "seldon-edit.yaml"
