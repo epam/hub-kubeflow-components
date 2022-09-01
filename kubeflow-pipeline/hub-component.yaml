@@ -22,8 +22,8 @@ parameters:
         value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
         env: HUB_KUSTOMIZE_TARBALL_URL
       - name: subpath
-        value: apps/pipeline/upstream/base
-        env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+        value: "apps/pipeline/upstream/base: apps/pipeline/upstream/third-party/metacontroller/base:crds/metacontroller"
+        env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
 
       - name: pipelines
         parameters:

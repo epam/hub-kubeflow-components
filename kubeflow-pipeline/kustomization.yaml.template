@@ -7,8 +7,14 @@ commonLabels:
   app.kubernetes.io/name: ${component.kubeflow.name}
   app.kubernetes.io/version: "${component.kubeflow.version}"
   app.kubernetes.io/managed-by: "superhub.io"
+  app.kubernetes.io/part-of: "kubeflow"
 
 resources:
+# crds
+- kustomize/pipeline/cluster-scoped/viewer-crd.yaml
+- kustomize/crds/metacontroller/crd.yaml
+- kustomize/pipeline/cluster-scoped/scheduled-workflow-crd.yaml
+
 # server api
 - kustomize/pipeline/ml-pipeline-apiserver-deployment.yaml
 - kustomize/pipeline/ml-pipeline-apiserver-role.yaml
