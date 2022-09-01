@@ -1,8 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: create-oidc
-  generateName: "${hub.componentName}-"
+  name: "${hub.componentName}-oidc"
 spec:
   ttlSecondsAfterFinished: 120
   backoffLimit: 0
@@ -11,7 +10,7 @@ spec:
       restartPolicy: Never
       containers:
         - image: gcr.io/superhub/dexctl:latest
-          name: "${hub.componentName}"
+          name: main
           args:
             - create
             - oidc
