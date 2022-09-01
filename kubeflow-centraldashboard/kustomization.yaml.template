@@ -1,86 +1,38 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-resources:
-- clusterrole-binding.yaml
-- kustomize/base/clusterrole.yaml
-- kustomize/base/deployment.yaml
-- role-binding.yaml
-- kustomize/base/role.yaml
-- kustomize/base/service-account.yaml
-- kustomize/base/service.yaml
-- kustomize/overlays/application/application.yaml
-- kustomize/overlays/istio/virtual-service.yaml
-patchesStrategicMerge:
-- deployment_patch.yaml
 namespace: ${component.kubeflow.namespace}
+
 commonLabels:
-  kustomize.component: centraldashboard
-  app.kubernetes.io/component: centraldashboard
+  kustomize.component: ${hub.componentName}
+  app.kubernetes.io/component: ${hub.componentName}
   app.kubernetes.io/name: ${component.kubeflow.name}
   app.kubernetes.io/version: "${component.kubeflow.version}"
   app.kubernetes.io/managed-by: "superhub.io"
-# images:
-# - name: gcr.io/kubeflow-images-public/centraldashboard
-#   newName: ${component.kubeflow.dashboard.image}
-#   newTag: ${component.kubeflow.dashboard.imageTag}
+  app.kubernetes.io/part-of: kubeflow
+
+resources:
+- kustomize/overlays/istio/
+
 configMapGenerator:
-- envs:
-  - params.env
-  name: parameters
-- files:
-  - links=links-config.json
-  name: centraldashboard-links-config
+- name: centraldashboard-parameters
+  behavior: merge
+  literals:
+    - "CD_REGISTRATION_FLOW=true"
+
 generatorOptions:
   disableNameSuffixHash: true
-vars:
-- fieldref:
-    fieldpath: metadata.namespace
-  name: namespace
-  objref:
-    apiVersion: v1
+
+replacements:
+- source:
     kind: Service
     name: centraldashboard
-- fieldref:
-    fieldpath: data.clusterDomain
-  name: clusterDomain
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: parameters
-- fieldref:
-    fieldpath: data.userid-header
-  name: userid-header
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: parameters
-- fieldref:
-    fieldpath: data.userid-prefix
-  name: userid-prefix
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: parameters
-- fieldref:
-    fieldpath: data.registration-flow
-  name: registration-flow
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: parameters
-- fieldref:
-    fieldpath: data.contributor-format
-  name: contributor-format
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: parameters
-- fieldref:
-    fieldpath: data.contributor-validation-message
-  name: contributor-validation-message
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: parameters
-configurations:
-- params.yaml
+    fieldPath: metadata.namespace
+  targets:
+  - select:
+      kind: ClusterRoleBinding
+    fieldPaths:
+    - subjects.[name=centraldashboard].namespace
+  - select:
+      kind: RoleBinding
+    fieldPaths:
+    - subjects.[name=centraldashboard].namespace

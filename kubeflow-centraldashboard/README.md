@@ -39,11 +39,11 @@ The following component level parameters has been defined `hub-component.yaml`
 
 | Name | Description | Default Value |
 | :--- | :---        | :---          |
-| `component.kubeflow.namespace` | Target Kubernetes namespace for this component | `kubeflow` |
-| `component.kubeflow.dashboard.image` | Central dashboard docker image configuration | `gcr.io/kubeflow-images-public/centraldashboard` |
-| `component.kubeflow.dashboard.imageTag` | Central dashboard docker image configuration | `vmaster-g8097cfeb` |
-| `component.kubeflow.dashboard.contributorFormat` | REGEX to configure validation for profiles congtributor | `^.+$` |
-| `component.kubeflow.dashboard.contributorValidationMessage` | Custom error message for contributor validation | `^.+$` |
+| `component.kubeflow.name` | Target Kubernetes resources name for this component | |
+| `component.kubeflow.namespace` | Target Kubernetes namespace for this component | |
+| `component.kubeflow.version` | Version of Kubeflow | `v1.5.1` |
+| `component.kubeflow.centraldashboard.kustomize.tarball` | URL to kubeflow tarball archive | `https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}` |
+| `component.kubeflow.centraldashboard.kustomize.subpath` | Tarball archive subpath where kustomize files are located | `apps/centraldashboard/upstream` |
 
 ## See Also
 
