@@ -1,19 +1,23 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-bases:
-- kustomize/kubeflow-roles
-resources:
-- kustomize/istio/cluster-roles.yaml
-- gateway.yaml
-
 namespace: ${component.kubeflow.namespace}
+
 commonLabels:
-  kustomize.component: kubeflow-common
+  kustomize.component: ${hub.componentName}
   app.kubernetes.io/component: ${hub.componentName}
   app.kubernetes.io/name: ${component.kubeflow.name}
   app.kubernetes.io/version: "${component.kubeflow.version}"
   app.kubernetes.io/managed-by: "superhub.io"
   app.kubernetes.io/part-of: kubeflow
+
+resources:
+- kustomize/kubeflow-roles
+# CRDs
+- kustomize/application/application-crd.yaml
+- kustomize/metacontroller/crd.yaml
+# Resources
+- kustomize/istio/cluster-roles.yaml
+- gateway.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
@@ -23,19 +27,3 @@ configMapGenerator:
   literals:
   - clusterRbacConfig=OFF
   - gatewaySelector=${component.istio.ingressGateway}
-
-vars:
-- name: clusterRbacConfig
-  objref:
-    kind: ConfigMap
-    name: istio-parameters
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.clusterRbacConfig
-- name: gatewaySelector
-  objref:
-    kind: ConfigMap
-    name: istio-parameters
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.gatewaySelector

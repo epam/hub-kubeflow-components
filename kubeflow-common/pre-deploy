@@ -1,4 +1,0 @@
-#!/bin/sh -e
-files download-tar "$URL" "kustomize/application" --tar-subpath "application"
-files download-tar "$URL" "kustomize/kubeflow-roles" --tar-subpath "kubeflow-roles/base"
-files download-tar "$URL" "kustomize/istio" --tar-subpath "istio/istio/base"

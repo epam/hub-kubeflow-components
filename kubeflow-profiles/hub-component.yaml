@@ -6,35 +6,36 @@ requires:
   - kubernetes
 
 parameters:
-- name: dns.domain
-  env: DOMAIN_NAME
-- name: component.kubeflow
-  parameters:
-    - name: name
-    - name: namespace
-      env: NAMESPACE
-    - name: version
-      # value: master
-      value: v1.2.0
-      env: VERSION
-    - name: kustomize.tarball.url
-      value: https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz
-      env: HUB_KUSTOMIZE_TARBALL_URL
-    - name: kustomize.tarball.subpath
-      value: profiles
-      env: HUB_KUSTOMIZE_TARBALL_SUBPATH
-- name: dex.passwordDb.email
-  value: bdaml
-- name: hub.backup.file
-  empty: allow
-  env: BACKUP_FILE
+  - name: dns.domain
+    env: HUB_DOMAIN_NAME
+
+  - name: component.kubeflow
+    parameters:
+      - name: name
+      - name: namespace
+        env: NAMESPACE
+      - name: version
+        value: v1.5.1
+        env: VERSION
+      - name: kustomize.tarball.url
+        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
+        env: HUB_KUSTOMIZE_TARBALL_URL
+      - name: kustomize.tarball.subpath
+        value: apps/profiles/upstream
+        env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+
+  - name: dex.passwordDb.email
+    value: bdaml
+  - name: hub.backup.file
+    empty: allow
+    env: BACKUP_FILE
 
 templates:
   files:
-  - "*.template"
+    - "*.template"
 
 lifecycle:
   verbs:
-  - deploy
-  - undeploy
-  - backup
+    - deploy
+    - undeploy
+    - backup

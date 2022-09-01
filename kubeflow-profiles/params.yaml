@@ -1,5 +1,0 @@
-varReference:
-- path: spec/template/spec/containers/args
-  kind: Deployment
-- path: spec/http/route/destination/host
-  kind: VirtualService
