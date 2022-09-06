@@ -15,8 +15,9 @@ spec:
           args:
             - create
             - oidc
+            - "--skip-exit-code"
             - "--host=${dex.api.endpoint}"
-            - "--clientId=${hub.componentName}-sso"
-            - "--clientSecret=${component.argo.oidc.clientSecret}"
+            - "--client-id=${hub.componentName}-sso"
+            - "--client-secret=${component.argo.oidc.clientSecret}"
             - "--name=${hub.componentName}-sso"
-            - "--redirectUris=${component.argo.oidc.redirectUrl}"
+            - "--redirect-uris=${component.argo.oidc.redirectUrl}"

@@ -14,8 +14,9 @@ spec:
           args:
             - create
             - oidc
+            - "--skip-exit-code"
             - "--host=${dex.api.endpoint}"
-            - "--clientId=${component.kubeflow.authn.oidcClientId}"
-            - "--clientSecret=${component.kubeflow.authn.oidcSecret}"
+            - "--client-id=${component.kubeflow.authn.oidcClientId}"
+            - "--client-secret=${component.kubeflow.authn.oidcSecret}"
             - "--name=${component.kubeflow.name}"
-            - "--redirectUris=${component.kubeflow.authn.oidcRedirectURI}"
+            - "--redirect-uris=${component.kubeflow.authn.oidcRedirectURI}"
