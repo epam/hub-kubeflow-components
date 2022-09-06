@@ -7,7 +7,7 @@ if test -n "$CA_BUNDLE_PATH"; then
         exit 1
     fi
 
-    echo -n "Checking secret/$COMPONENT_NAME-ca: "
+    printf "Checking secret/%s-ca: " "$COMPONENT_NAME"
     if $kubectl get secret "$COMPONENT_NAME-ca" -o name 2>/dev/null; then
         echo "already exists"
     else
