@@ -14,9 +14,9 @@ consoleIngress:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
 {{end}}
-    nginx.org/client-max-body-size: "{{.component.ingress.maxUploadSize}}"
+    nginx.org/client-max-body-size: "{{.component.ingress.fileSize}}"
     nginx.org/websocket-services: "{{.hub.componentName}}"
-    nginx.ingress.kubernetes.io/proxy-body-size: "{{.component.ingress.maxUploadSize}}"
+    nginx.ingress.kubernetes.io/proxy-body-size: "{{.component.ingress.fileSize}}"
     nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "256m"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{.component.ingress.uploadTimeout}}"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "{{.component.ingress.uploadTimeout}}"

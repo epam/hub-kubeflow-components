@@ -87,6 +87,10 @@ parameters:
     value: 640m
   - name: class
     empty: allow
+  - name: uploadTimeout
+    value: "1800"
+  - name: readTimeout
+    value: "1800"
 
 outputs:
 - name: component.bucket.kind
