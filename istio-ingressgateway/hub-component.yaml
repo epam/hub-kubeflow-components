@@ -6,69 +6,63 @@ requires:
   - kubernetes
   - helm
 
-provides:
-  - ingressgateway
-
 parameters:
-- name: hub.componentName
-  env: COMPONENT_NAME
-- name: dns.domain
-  env: DOMAIN_NAME
-- name: component.istio
-  parameters:
-  - name: namespace
-    value: istio-system
-    env: NAMESPACE
-  - name: version
-    value: 1.5.9
-  - name: ingressGateway.replicas
-    value: 1
-  - name: ingressGateway.serviceType
-    value: ClusterIP
-  - name: docker.repository
-    value: docker.io/istio
-  - name: helm
-    parameters:
-    - name: chartDir
-      empty: allow
-      value: ".workdir"
-      env: HELM_CHART_DIR
-    - name: chart
-      value: istio-${component.istio.version}.tgz
-      env: HELM_CHART
+  - name: hub.componentName
+  - name: dns.domain
+    env: HUB_DOMAIN_NAME
 
-- name: component.ingress
-  empty: allow
-  parameters:
-  - name: protocol
-    value: http
-  - name: class
+  - name: component.ingress
     empty: allow
-    env: INGRESS_CLASS
-  - name: host
-    env: INGRESS_HOST
-  - name: maxUploadSize
-    value: "1024m"
-  - name: uploadTimeout
-    value: "1800"
-  - name: readTimeout
-    value: "1800"
+    parameters:
+      - name: protocol
+        value: http
+      - name: class
+        empty: allow
+        env: INGRESS_CLASS
+      - name: host
+        env: INGRESS_HOST
+      - name: maxUploadSize
+        value: "1024m"
+      - name: uploadTimeout
+        value: "1800"
+      - name: readTimeout
+        value: "1800"
+
+  - name: component.istio
+    parameters:
+      - name: namespace
+        value: istio-system
+        env: NAMESPACE
+      - name: version
+        value: 1.15.0
+        env: CHART_VERSION
+      - name: ingressGateway
+        parameters:
+          - name: replicas
+            value: 1
+          - name: serviceType
+            value: ClusterIP
+      - name: helm.chart
+        parameters:
+          - name: name
+            value: "gateway"
+            env: HELM_CHART
+          - name: repo
+            empty: allow
+            value: https://istio-release.storage.googleapis.com/charts
+            env: HELM_REPO
 
 outputs:
-- name: component.istio.ingressGateway
-  value: "${hub.componentName}"
-- name: component.ingress.url
-  value: ${component.ingress.protocol}://${component.ingress.host}
-- name: component.ingress.host
+  - name: component.istio.ingressGateway
+    value: ${hub.componentName}
+  - name: component.ingress.url
+    value: ${component.ingress.protocol}://${component.ingress.host}
+  - name: component.ingress.host
 
 templates:
   files:
-  - "*.template"
+    - "*.template"
   extra:
-  - kind: go
-    files:
-    - "*.gotemplate"
-lifecycle:
-  verbs:
-  - deploy
-  - undeploy
+    - kind: go
+      files:
+        - "*.gotemplate"

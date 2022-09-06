@@ -13,8 +13,6 @@ resources:
 - kustomize/installs/multi-user
 - kustomize/application
 - resources/default-editor.yaml
-# TODO: remove when Istio will be updated to 1.11
-- resources/istio-authorization-config.yaml
 
 configMapGenerator:
 - name: pipeline-api-server-config

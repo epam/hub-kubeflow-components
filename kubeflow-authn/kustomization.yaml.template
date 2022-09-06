@@ -5,10 +5,23 @@ bases:
 resources:
 - add-oidc-job.yaml
 
-patchesStrategicMerge:
-- envoy-filter.yaml
-
+# Warning: using deprecated filter name "envoy.http_connection_manager"; use "envoy.filters.network.http_connection_manager" instead
 patchesJSON6902:
+- target:
+    group: networking.istio.io
+    version: v1alpha3
+    kind: EnvoyFilter
+    name: authn-filter
+    namespace: ${component.istio.namespace}
+  patch: |-
+    - op: replace
+      path: /spec/workloadSelector/labels
+      value:
+        app: ${component.istio.ingressGateway}
+        istio: ${component.istio.ingressGateway}
+    - op: replace
+      path: /spec/configPatches/0/match/listener/filterChain/filter/name
+      value: "envoy.filters.network.http_connection_manager"
 - target:
     version: v1
     kind: PersistentVolumeClaim
@@ -46,7 +59,7 @@ configMapGenerator:
   - AFTER_LOGIN_URL=${component.kubeflow.authn.afterLogin}
   - AUTHSERVICE_URL_PREFIX=${component.kubeflow.authn.oidcProvider}/authservice/
   - SESSION_MAX_AGE=${component.kubeflow.authn.sessionMaxAge}
-  # This is a default name used by authn service. 
+  # This is a default name used by authn service.
   # You can change it to header name required by your auth provider
   - USERID_TOKEN_HEADER=kubeflow-userid-token
   - SERVER_HOSTNAME=0.0.0.0

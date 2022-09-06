@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+kubectl="kubectl --context=$HUB_DOMAIN_NAME --namespace=$NAMESPACE"
+
+$kubectl delete --ignore-not-found -f "ingress.yaml"

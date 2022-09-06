@@ -1,0 +1,53 @@
+## Discovery Settings
+pilot:
+  # Resources for a small pilot install
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+telemetry:
+  enabled: false
+  v2:
+    # For Null VM case now.
+    # This also enables metadata exchange.
+    enabled: false
+
+# meshConfig defines runtime configuration of components, including Istiod and istio-agent behavior
+# See https://istio.io/docs/reference/config/istio.mesh.v1alpha1/ for all available options
+meshConfig:
+  enablePrometheusMerge: false
+
+global:
+  # Used to locate istiod.
+  istioNamespace: ${component.istio.namespace}
+
+  # Default hub for Istio images.
+  hub: docker.io/istio
+  # Default tag for Istio images.
+  tag: ${component.istio.version}
+
+  # Specify image pull policy if default behavior isn't desired.
+  # Default behavior: latest images will be Always else IfNotPresent.
+  imagePullPolicy: "IfNotPresent"
+
+  proxy:
+    # Per Component log level for proxy, applies to gateways and sidecars. If a component level is
+    # not set, then the global "logLevel" will be used.
+    componentLogLevel: "misc:error"
+
+    # Log level for proxy, applies to gateways and sidecars.
+    # Expected values are: trace|debug|info|warning|error|critical|off
+    logLevel: warning
+
+    # Resources for the sidecar.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 16Mi
+      limits:
+        cpu: 2000m
+        memory: 1024Mi
+
+  # Use the Mesh Control Protocol (MCP) for configuring Istiod. Requires an MCP source.
+  useMCP: true
