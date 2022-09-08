@@ -22,6 +22,10 @@ while [[ $# -gt 0 ]]; do
             namespace="$2"
             shift
             ;;
+        --secret-name)
+            secret_name="$2"
+            shift
+            ;;
         --cn)
             cn="$2"
             shift
@@ -39,6 +43,11 @@ done
 
 if [ ! -x "$(command -v openssl)" ]; then
     echo "openssl not found"
+    exit 1
+fi
+
+if [ ! -x "$(command -v kubectl)" ]; then
+    echo "kubectl not found"
     exit 1
 fi
 
@@ -99,3 +108,7 @@ openssl genrsa -out "$server_key" 2048
 
 openssl req -new -key "$server_key" -out "$server_csr" -config "$csr_conf"
 openssl x509 -req -in "$server_csr" -CA "$ca_crt" -CAkey "$ca_key" -CAcreateserial -out "$server_crt" -days 10000 -extensions v3_ext -extfile "$csr_conf"
+
+kubectl --namespace="$namespace" create secret tls "$secret_name" \
+  --key "$server_key" \
+  --cert "$server_crt"

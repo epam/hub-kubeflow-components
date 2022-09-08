@@ -1,6 +1,0 @@
-#!/bin/sh -e
-
-if test -d ".certs"; then
-    echo "Deleting certificates..."
-    rm -rfv ".certs"
-fi
