@@ -1,0 +1,3 @@
+#!/bin/sh -e
+
+./selfsigned/deploy.sh "webhook-certs"

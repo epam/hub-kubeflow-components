@@ -1,8 +1,7 @@
-kustomize
-kustomization.yaml
-params.env
-/role-binding.yaml
-/clusterrole-binding.yaml
+/kustomize
+*.yaml
+!hub-component.yaml
+.srl
 /selfsigned/csr.conf
 /selfsigned/*.key
 /selfsigned/*.crt

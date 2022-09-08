@@ -6,27 +6,25 @@ requires:
   - kubernetes
 
 parameters:
-- name: dns.domain
-  env: DOMAIN_NAME
-- name: component.kubeflow
-  parameters:
-    - name: name
-    - name: namespace
-      env: NAMESPACE
-    - name: version
-      # value: master
-      value: v1.2.0
-      env: VERSION
-    - name: tarball
-      value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
-      env: URL      
-    - name: webhook.cert
-      value: ${hub.componentName}
-      env: TLS_SECRET
+  - name: dns.domain
+    env: HUB_DOMAIN_NAME
+
+  - name: component.kubeflow
+    parameters:
+      - name: name
+      - name: namespace
+        env: NAMESPACE
+      - name: version
+        value: v1.5.1
+        env: VERSION
+      - name: tarball
+        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
+        env: HUB_KUSTOMIZE_TARBALL_URL
+      - name: tarball.dirs
+        value: "apps/admission-webhook/upstream"
+        env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 templates:
   files:
-  - "*.template"
-  - "selfsigned/*.template"
-  - "bootstrap/*.template"
-  - "webhook/*.template"
+    - "*.template"
+    - "selfsigned/*.template"

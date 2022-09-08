@@ -9,7 +9,7 @@ distinguished_name = dn
 C = LV
 ST = LV
 L = Riga
-O = Agile Stacks
+O = EPAM
 OU = ${component.kubeflow.name}
 CN = ${dns.domain}
 

@@ -3,9 +3,6 @@
 pwd=$(dirname "$0")
 
 kubectl="kubectl"
-if test -n "$DOMAIN_NAME"; then
-  kubectl="$kubectl --context=$DOMAIN_NAME"
-fi
 if test -n "$NAMESPACE"; then
   kubectl="$kubectl --namespace=$NAMESPACE"
 fi
@@ -17,7 +14,7 @@ fi
 
 echo "Generting self signed cert..."
 openssl genrsa -out "$pwd/ca.key" 2048
-openssl req -x509 -new -nodes -key "$pwd/ca.key" -subj "/CN=$DOMAIN_NAME" -days 10000 -out "$pwd/ca.crt"
+openssl req -x509 -new -nodes -key "$pwd/ca.key" -subj "/CN=$HUB_DOMAIN_NAME" -days 10000 -out "$pwd/ca.crt"
 openssl genrsa -out "$pwd/server.key" 2048
 openssl req -new -key "$pwd/server.key" -out "$pwd/server.csr" -config "$pwd/csr.conf"
 openssl x509 -req -in "$pwd/server.csr" -CA "$pwd/ca.crt" -CAkey "$pwd/ca.key" \
