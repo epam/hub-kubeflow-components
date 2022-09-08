@@ -1,2 +1,6 @@
+/kustomize
 /notebook-controller/kustomize
 /jupyter-web-app/kustomize
+*.yaml
+!hub-component.yaml
+!/jupyter-web-app/configs/logos-configmap.yaml
