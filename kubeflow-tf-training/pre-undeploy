@@ -1,2 +1,1 @@
-#!/bin/sh -xe
-../../bin/shell/download-manifests -o "$(pwd)/kustomize" -s "tf-training/tf-job-operator"
+pre-deploy

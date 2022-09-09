@@ -70,7 +70,7 @@ spawnerFormDefaults:
               storage: 10Gi
           accessModes:
           - ReadWriteOnce
-          storageClassName: "${component.kubeflow.jupyter.workspaceVolume.storageClass}"
+          storageClassName: "${component.storage-class.name}"
     readOnly: false
   dataVolumes:
     # List of additional Data Volumes to be attached to the user's Notebook

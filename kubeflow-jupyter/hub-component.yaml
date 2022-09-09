@@ -7,7 +7,6 @@ requires:
 parameters:
   - name: component.kubeflow
     parameters:
-      - name: name
       - name: namespace
         env: NAMESPACE
       - name: version
@@ -17,18 +16,23 @@ parameters:
         value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
         env: HUB_KUSTOMIZE_TARBALL_URL
       - name: tarball.dirs
-        value: "apps/jupyter/jupyter-web-app/upstream:../jupyter-web-app/kustomize apps/jupyter/notebook-controller/upstream:../notebook-controller/kustomize"
+        value: >-
+          apps/jupyter/jupyter-web-app/upstream:../jupyter-web-app/kustomize
+          apps/jupyter/notebook-controller/upstream:../notebook-controller/kustomize
         env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
 
-      - name: jupyter.workspaceVolume.storageClass
-        brief: |
-          Configuration for storage class for the notebooks
-          see: https://github.com/kubeflow/manifests/blob/v1.5.1/apps/jupyter/jupyter-web-app/upstream/base/configs/spawner_ui_config.yaml#L84
+  - name: component.storage-class.name
+    brief: |
+      Configuration for storage class for the notebooks
+      see: https://github.com/kubeflow/manifests/blob/v1.5.1/apps/jupyter/jupyter-web-app/upstream/base/configs/spawner_ui_config.yaml#L84
+
 
   - name: component.istio
     parameters:
       - name: namespace
+        value: istio-system
       - name: ingressGateway
+        value: istio-ingressgateway
 
 templates:
   files:
