@@ -1,1 +1,3 @@
 /kustomize
+*.yaml
+!hub-component.yaml
