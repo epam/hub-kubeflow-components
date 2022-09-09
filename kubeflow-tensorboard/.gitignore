@@ -1,2 +1,5 @@
 /tensorboard-controller/kustomize
 /tensorboards-web-app/kustomize
+/kustomize
+*.yaml
+!hub-component.yaml

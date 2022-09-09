@@ -5,18 +5,23 @@ requires:
   - kubernetes
 
 parameters:
-- name: component.kubeflow
-  parameters:
-    - name: version
-      value: v1.5.0
-      env: VERSION
-    - name: tarball
-      value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
-      env: HUB_KUSTOMIZE_TARBALL_URL      
-# - name: component.istio
-#   parameters:
-#   - name: namespace
-#   - name: ingressGateway
-# - name: hub.backup.file
-#   empty: allow
-#   env: BACKUP_FILE
+  - name: component.kubeflow
+    parameters:
+      - name: namespace
+        value: kubeflow
+        env: NAMESPACE
+      - name: version
+        value: v1.5.1
+        env: VERSION
+      - name: tarball
+        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
+        env: HUB_KUSTOMIZE_TARBALL_URL
+      - name: tarball.dirs
+        env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
+        value: "apps/tensorboard/tensorboard-controller/upstream:../tensorboard-controller/kustomize apps/tensorboard/tensorboards-web-app/upstream:../tensorboards-web-app/kustomize"
+
+templates:
+  files:
+    - "*.template"
+    - "tensorboard-controller/*.template"
+    - "tensorboards-web-app/*.template"
