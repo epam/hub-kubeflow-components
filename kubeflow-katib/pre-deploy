@@ -1,3 +1,8 @@
 #!/bin/sh -e
 
-./bin/self-signed-ca.sh --namespace "$NAMESPACE" --service "katib-controller" --secret-name "katib-webhook-cert"
+NAMESPACE="${NAMESPACE:-kubeflow}"
+kubectl="kubectl -n $NAMESPACE"
+
+if ! $kubectl get secret "katib-webhook-cert" -o name; then
+    ./bin/self-signed-ca.sh --namespace "$NAMESPACE" --service "katib-controller" --secret-name "katib-webhook-cert"
+fi
