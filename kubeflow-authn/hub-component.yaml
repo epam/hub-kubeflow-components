@@ -13,26 +13,28 @@ parameters:
   value: ${component.ingress.protocol}://auth.${dns.domain}
 - name: component.ingress.protocol
   value: https
-- name: component.istio.namespace
-  value: istio-system
-  env: NAMESPACE
-- name: component.istio.ingressGateway
+- name: component.istio
+  parameters:
+  - name: namespace
+    value: istio-system
+    env: NAMESPACE
+  - name: ingressGateway
+    value: istio-ingressgateway
 - name: component.kubeflow
   parameters:
-  - name: name
-    value: kubeflow
   - name: version
     value: v1.5.1
     env: VERSION
   - name: authn.oidcProvider
     value: ${dex.issuer}
   - name: authn.oidcRedirectURI
-    value: https://${component.kubeflow.name}.${dns.domain}/login/oidc
+    value: https://kubeflow.${dns.domain}/login/oidc
   - name: authn.oidcClientId
-    value: ${component.kubeflow.name}-client
+    value: kubeflow-client
   - name: authn.afterLogin
-    value: ${component.ingress.protocol}://${component.kubeflow.name}.${dns.domain}
+    value: ${component.ingress.protocol}://kubeflow.${dns.domain}
   - name: authn.oidcSecret
+    value: OpenID connect client mutual trust secret between Dex and Kubeflow
   - name: authn.sessionMaxAge
     value: 86400
   - name: authn.volumeSize

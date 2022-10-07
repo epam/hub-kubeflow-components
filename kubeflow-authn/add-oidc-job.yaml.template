@@ -18,5 +18,5 @@ spec:
             - "--host=${dex.api.endpoint}"
             - "--client-id=${component.kubeflow.authn.oidcClientId}"
             - "--client-secret=${component.kubeflow.authn.oidcSecret}"
-            - "--name=${component.kubeflow.name}"
+            - "--name=${hub.componentName}"
             - "--redirect-uris=${component.kubeflow.authn.oidcRedirectURI}"

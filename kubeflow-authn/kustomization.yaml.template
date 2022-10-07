@@ -34,7 +34,6 @@ patchesJSON6902:
 commonLabels:
   kustomize.component: kubeflow-authn
   app.kubernetes.io/component: ${hub.componentName}
-  app.kubernetes.io/name: ${component.kubeflow.name}
   app.kubernetes.io/version: "${component.kubeflow.version}"
 
 namespace: ${component.istio.namespace}

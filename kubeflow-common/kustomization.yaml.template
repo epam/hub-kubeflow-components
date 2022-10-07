@@ -5,9 +5,7 @@ namespace: ${component.kubeflow.namespace}
 commonLabels:
   kustomize.component: ${hub.componentName}
   app.kubernetes.io/component: ${hub.componentName}
-  app.kubernetes.io/name: ${component.kubeflow.name}
   app.kubernetes.io/version: "${component.kubeflow.version}"
-  app.kubernetes.io/managed-by: "superhub.io"
   app.kubernetes.io/part-of: kubeflow
 
 resources:

@@ -2,8 +2,8 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: ${component.kubeflow.name}-gateway
-  namespace: ${component.kubeflow.namespace}
+  # this name has been hardcoded in the kubeflow manifests
+  name: kubeflow-gateway
 spec:
   selector:
     app: "${component.istio.ingressGateway}"
@@ -13,4 +13,4 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - '${component.kubeflow.name}.${dns.domain}'
+    - '${component.ingress.host}'
