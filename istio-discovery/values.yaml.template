@@ -1,4 +1,4 @@
-## Discovery Settings
+# See all values here: https://github.com/istio/istio/blob/master/manifests/charts/istio-control/istio-discovery/values.yaml
 pilot:
   # Resources for a small pilot install
   resources:
@@ -51,3 +51,11 @@ global:
 
   # Use the Mesh Control Protocol (MCP) for configuring Istiod. Requires an MCP source.
   useMCP: true
+
+sidecarInjectorWebhook:
+  # Enable when using MTLS
+  rewriteAppHTTPProbe: false
+
+proxy:
+  # To enable heatlcheck set to: 15020
+  statusPort: 0

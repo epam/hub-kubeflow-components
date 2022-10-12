@@ -24,6 +24,9 @@ parameters:
             empty: allow
             value: https://istio-release.storage.googleapis.com/charts
             env: HELM_REPO
+          - name: useChartFile
+            value: values.yaml
+            env: CHART_VALUES_FILE
 
 templates:
   files:
