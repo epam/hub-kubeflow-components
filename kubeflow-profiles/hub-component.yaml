@@ -12,6 +12,7 @@ parameters:
   - name: component.kubeflow
     parameters:
       - name: namespace
+        value: kubeflow
         env: NAMESPACE
       - name: version
         value: v1.5.1
