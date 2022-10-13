@@ -25,10 +25,10 @@ consoleIngress:
 {{end}}
 {{end}}
   path: /
-  hosts: ["{{.component.ingress.host}}"]
+  hosts: ["{{.component.minio.ingress.host}}"]
 {{if eq .component.ingress.protocol "https"}}
   tls:
-    - hosts: ["{{.component.ingress.host}}"]
+    - hosts: ["{{.component.minio.ingress.host}}"]
       secretName: "{{.hub.componentName}}-tls"
 {{end}}
 {{end}}

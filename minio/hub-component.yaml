@@ -28,6 +28,8 @@ parameters:
 
 - name: component.minio
   parameters:
+  - name: ingress.host
+    value: ${component.ingress.host}  
   - name: accessKey
   - name: secretKey
   - name: namespace
