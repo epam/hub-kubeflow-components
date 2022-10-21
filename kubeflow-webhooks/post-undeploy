@@ -1,0 +1,3 @@
+#!/bin/sh -e
+
+kubectl -n "$NAMESPACE" delete secret "webhook-certs" --ignore-not-found

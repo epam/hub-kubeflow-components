@@ -8,10 +8,10 @@ commonLabels:
   app.kubernetes.io/component: poddefaults
   app.kubernetes.io/part-of: ${component.kubeflow.name}
   app.kubernetes.io/version: ${component.kubeflow.version}
-  app.kubernetes.io/managed-by: "superhub.io"
+  app.kubernetes.io/managed-by: hubctl
 
 resources:
 - kustomize/base
 
-patchesStrategicMerge:
-- kustomize/overlays/cert-manager/deployment.yaml
+patches:
+- path: kustomize/overlays/cert-manager/deployment.yaml
