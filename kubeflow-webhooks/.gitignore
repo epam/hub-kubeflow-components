@@ -2,8 +2,4 @@
 *.yaml
 !hub-component.yaml
 .srl
-/selfsigned/csr.conf
-/selfsigned/*.key
-/selfsigned/*.crt
-/selfsigned/*.csr
-/selfsigned/*.srl
+/.generated/*
