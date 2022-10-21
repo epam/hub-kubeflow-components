@@ -13,16 +13,9 @@ The component has the following directory structure:
 
 ```text
 ./
-├── deployment_patch.yaml               # Kustomize patch that adds extra env vars for pod
 ├── hub-component.yaml                  # Parameters definitions
 ├── kustomization.yaml.template         # Kustomize file for ths component
-├── links-config.json                   # Configuration for splash screen
-├── params.env.template                 # Configuration for environment variables of a central-dashboard pod
-├── params.yaml                         # Config for Kustomize varibles
-├── pre-deploy                          # Script to download tarball from kubeflow distribution website
-├── pre-undeploy -> pre-deploy
-├── clusterrole-binding.yaml.template   # RBAC for cluster role bindings
-└── role-binding.yaml.template          # RBAC for role bindings
+└── centraldashboard-config             # Customize central dashboard links
 ```
 
 The component uses an offical Kubeflow distribution Kustomize [scripts](https://github.com/kubeflow/manifests/) and applies patches and additional resources described in [kustomize.yaml](https://github.com/agilestacks/kubeflow-components/blob/main/kubeflow-centraldashboard/kustomization.yaml.template) file.
@@ -41,7 +34,7 @@ The following component level parameters has been defined `hub-component.yaml`
 | :--- | :---        | :---          |
 | `component.kubeflow.name` | Target Kubernetes resources name for this component | |
 | `component.kubeflow.namespace` | Target Kubernetes namespace for this component | |
-| `component.kubeflow.version` | Version of Kubeflow | `v1.5.1` |
+| `component.kubeflow.version` | Version of Kubeflow | `v1.6.1` |
 | `component.kubeflow.centraldashboard.kustomize.tarball` | URL to kubeflow tarball archive | `https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}` |
 | `component.kubeflow.centraldashboard.kustomize.subpath` | Tarball archive subpath where kustomize files are located | `apps/centraldashboard/upstream` |
 
