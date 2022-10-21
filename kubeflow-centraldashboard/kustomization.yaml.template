@@ -13,6 +13,9 @@ commonLabels:
 resources:
 - kustomize/overlays/istio/
 
+patches:
+- centraldashboard-config.yaml
+
 configMapGenerator:
 - name: centraldashboard-parameters
   behavior: merge

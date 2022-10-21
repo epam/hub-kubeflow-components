@@ -13,7 +13,7 @@ parameters:
         value: kubeflow
         env: NAMESPACE
       - name: version
-        value: v1.5.1
+        value: v1.6.1
         env: VERSION
       - name: centraldashboard.kustomize.tarball
         value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
