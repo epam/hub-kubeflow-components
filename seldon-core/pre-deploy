@@ -1,13 +1,39 @@
 #!/bin/bash -e
 
+TEMP="$(mktemp -d)"
+trap 'rm -rf $TEMP' EXIT
+
 kubectl="kubectl --context=$HUB_DOMAIN_NAME -n $NAMESPACE"
 
+apply_k8s_resources_file() {
+  max_di=$(yq e 'di' "$1" | tail -1)
+  for i in $(seq 0 "$max_di"); do
+    kind=$(yq e "select(di == $i).kind | select(.) | downcase" "$1")
+    name=$(yq e "select(di == $i).metadata.name | select(.)" "$1")
+    if test -z "$name" -o -z "$kind"; then
+      continue
+    fi
+    echo "  Checking $kind/$name"
+    if $kubectl get "$kind" "$name" > /dev/null; then
+      echo "  $name already exists"
+    else
+      echo "  (not an error) creating..."
+      yq e "select(di == $i)" "$1" | $kubectl create -f -
+    fi
+  done
+}
+
+echo "* Downloading seldon-core v$HELM_CHART_VERSION..."
 files download-tar \
     "https://codeload.github.com/SeldonIO/seldon-core/tar.gz/${HELM_CHART_VERSION}" \
-    "$(pwd)/.kustomize" \
+    "$TEMP/kustomize" \
     --tar-subpath "operator/config"
 
-$kubectl apply --validate=ignore -k ".kustomize/crd"
+echo "* Building CRDs with kustomize..."
+$kubectl kustomize "$TEMP/kustomize/crd" > "$TEMP/resources.yaml"
+yq e '. | select(.kind == "CustomResourceDefinition")' "$TEMP/resources.yaml" > "$TEMP/crds.yaml"
+apply_k8s_resources_file "$TEMP/crds.yaml"
+
 cat << EOF | $kubectl apply -f -
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -23,6 +49,8 @@ spec:
       number: 80
       protocol: HTTP
 EOF
+
+$kubectl apply -f "seldon-edit.yaml"
 
 # if ! $kubectl get secret "seldon-webhook-server-cert" > /dev/null; then
 #     echo "Generating self-signed certifiate"
