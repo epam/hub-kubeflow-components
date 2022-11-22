@@ -9,7 +9,7 @@ parameters:
   - name: dns.domain
     env: HUB_DOMAIN_NAME
 
-  - name: component.kubeflow
+  - name: kubeflow
     parameters:
       - name: name
         value: kubeflow
@@ -18,14 +18,14 @@ parameters:
       - name: version
         value: v1.5.1
         env: VERSION
-      - name: tarball
-        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
-        env: HUB_KUSTOMIZE_TARBALL_URL
-      - name: subpath
-        value: apps/pipeline/upstream/base
-        env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+  - name: kustomize.tarball
+    value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
+    env: HUB_KUSTOMIZE_TARBALL_URL
+  - name: kustomize.subpath
+    value: apps/pipeline/upstream/base
+    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
-  - name: component.mysql
+  - name: mysql
     parameters:
       - name: host
       - name: user
@@ -37,7 +37,7 @@ parameters:
       - name: database
         value: metadb
       - name: emptyPassword
-        value: "#{size(component.mysql.password) == 0}"
+        value: "#{size(mysql.password) == 0}"
 
 templates:
   files:

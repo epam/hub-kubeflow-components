@@ -1,0 +1,14 @@
+controller:
+  persistence: 
+    # archive: false
+    postgresql:
+      host: "argo-db.argo.svc"
+      port: 5432
+      database: argo
+      tableName: argo
+      userNameSecret:
+        name: argo-database
+        key: username
+      passwordSecret:
+        name: argo-database
+        key: password

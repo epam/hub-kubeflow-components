@@ -1,10 +1,4 @@
-image:
-  registry: ${component.mysql.docker.registry}
-  repository: ${component.mysql.docker.repository}
-  tag: ${component.mysql.docker.tag}
-  debug: true
 architecture: standalone
-
 primary:
   configuration: |-
     [mysqld]
@@ -37,12 +31,12 @@ primary:
     pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
   persistence:
     enabled: true
-    storageClass: "${component.storage-class.name}"
+    storageClass: "${storage.class}"
     accessModes:
       - ReadWriteOnce
-    size: ${component.mysql.volumeSize}
+    size: ${mysql.volumeSize}
   service:
-    port: ${component.mysql.port}
+    port: ${mysql.port}
 secondary:
   replicaCount: 1
   configuration: |-
@@ -76,7 +70,7 @@ secondary:
     enabled: true
     accessModes:
       - ReadWriteOnce
-    size: ${component.mysql.volumeSize}
+    size: ${mysql.volumeSize}
 serviceAccount:
   create: true
 rbac:

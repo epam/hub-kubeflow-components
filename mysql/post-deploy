@@ -1,36 +1,52 @@
 #!/bin/sh -e
 
-if test -z "$BACKUP_FILE"; then
-    echo "Skipping database restore: due to BACKUP_FILE has not been defined"
-    exit
-fi
-
-if test ! -f "$BACKUP_FILE"; then
-    echo "Error backup file has not been found: $BACKUP_FILE"
-    exit 1
-fi
-
-kubectl="kubectl --context=$DOMAIN_NAME --namespace=$NAMESPACE"
+kubectl="kubectl --context=$HUB_DOMAIN_NAME --namespace=$NAMESPACE"
 
 labels="app.kubernetes.io/component=primary"
 labels="$labels,app.kubernetes.io/instance=$COMPONENT_NAME"
 labels="$labels,app.kubernetes.io/name=mysql"
 
-pod=$($kubectl get pod -l "$labels" -o "name")
+pod=$($kubectl get pod -l "$labels" -o "name" | cut -d " " -f1)
 if test -z "$pod"; then
     echo "Error: cannot find pod with labels: $labels"
     exit 1
 fi
 
-echo "* restoring database: $DB_NAME"
-echo "* using backup file: $BACKUP_FILE"
-printf '* waiting pod %s ready... ' "$pod"
-$kubectl wait --for=condition=ready pod mysql-pipeline-0
-echo '* proceeding with mysql restore'
+printf '* Waiting %s become ready... ' "$pod"
+$kubectl wait --for=condition=ready "$pod"
 
-# shellcheck disable=SC2086,SC2002
-cat "$BACKUP_FILE" \
-| $kubectl exec -i $pod -- bash -c \
-"zcat | mysql -u root -p$ROOT_PASSWORD -D $DB_NAME"
+if test -n "$BACKUP_FILE"; then
+  echo "* restoring database: $DB_NAME"
+  echo "* using backup file: $BACKUP_FILE"
+  if test ! -f "$BACKUP_FILE"; then
+      echo "Error backup file has not been found: $BACKUP_FILE"
+      exit 1
+  fi
+  echo '* Proceeding with mysql restore'
+  $kubectl exec -i "$pod" -- bash -c \
+    "zcat | mysql -u root -p$MYSQL_ROOT_PASSWORD -D $DB_NAME" < "$BACKUP_FILE"
 
-echo "Done!"
+  echo "Done!"
+fi
+
+if test -n "$EXTRA_DATABASES"; then
+  temp="$(mktemp)"
+  trap 'rm -f $temp' EXIT
+  cat << EOF > "$temp"
+export MYSQL_PWD="$MYSQL_ROOT_PASSWORD";
+mysql -u root -e "CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD'";
+EOF
+  for DB in $DB_NAME $EXTRA_DATABASES; do
+    echo "* Ensure presence of database: $DB"
+    cat << EOF >> "$temp"
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS $DB CHARACTER SET utf8 COLLATE utf8_general_ci";
+mysql -u root -e "GRANT ALL PRIVILEGES ON $DB.* TO '$DB_USER'@'%'";
+EOF
+  done
+
+  cat << EOF >> "$temp"
+mysql -u root -e "SHOW DATABASES";
+mysql -u root -e "FLUSH PRIVILEGES";
+EOF
+  $kubectl exec -i "$pod" -- bash - < "$temp"
+fi

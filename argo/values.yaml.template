@@ -1,61 +1,19 @@
+# see https://github.com/argoproj/argo-helm/blob/main/charts/argo-workflows/values.yaml
 images:
-  namespace: "${component.argo.docker.repository}"
-  controller: workflow-controller
-  pullPolicy: IfNotPresent
-  pullSecrets: []
-  tag: "${component.argo.version}"
+  tag: "${argo.version}"
 
-fullnameOverride: argo
-createAggregateRoles: true
-singleNamespace: false
+crds:
+  install: true
+  keep: true
 
-controller:
-  workflowNamespaces:
-    - ${component.argo.workflowNamespace}
-  image:
-    tag: "${component.argo.version}"
-  containerRuntimeExecutor: "${component.argo.executor}"
-
-  persistence: {}
-  #   clusterName: "${hub.componentName}"
-  #   mysql:
-  #     host: "${component.mysql.host}"
-  #     port: ${component.mysql.port}
-  #     database: "${hub.componentName}"
-  #     tableName: ${hub.componentName}_workflows
-  #     userNameSecret:
-  #       name: ${hub.componentName}-database
-  #       key: username
-  #     passwordSecret:
-  #       name: ${hub.componentName}-database
-  #       key: password
-
-  extraEnv:
-  - name: LEADER_ELECTION_DISABLE
-    value: "0"
-  - name: LEADER_ELECTION_IDENTITY
-    valueFrom:
-      fieldRef:
-        apiVersion: v1
-        fieldPath: metadata.name
-  replicas: 1
-  pdb:
-    enabled: false
-    # minAvailable: 1
-    # maxUnavailable: 1
-
-executor:
-  image:
-    # Overrides .images.tag if defined.
-    tag: "${component.argo.version}"
-  env: {}
+fullnameOverride: "${hub.componentName}"
 
 server:
   enabled: true
   baseHref: "/"
   # baseHref: "/${hub.componentName}/"
   image:
-    tag: "${component.argo.version}"
+    tag: "${argo.version}"
   replicas: 1
   pdb:
     enabled: false
@@ -76,7 +34,7 @@ server:
     enableEditing: true
   sso:
     issuer: "${dex.issuer}"
-    redirectUrl: "${component.argo.oidc.redirectUrl}"
+    redirectUrl: "${argo.oidc.redirectUrl}"
     clientId:
       name: ${hub.componentName}-sso
       key: client-id
@@ -89,8 +47,6 @@ server:
     rbac:
       enabled: false
 
-# Influences the creation of the ConfigMap for the workflow-controller itself.
-useDefaultArtifactRepo: true
 useStaticCredentials: true
 artifactRepository:
   archiveLogs: false
@@ -102,9 +58,10 @@ artifactRepository:
       name: ${hub.componentName}-artifacts
       key: secretkey
     insecure: true
-    bucket: ${component.bucket.name}
-    endpoint: ${component.bucket.host}:${component.bucket.port}
-    region: ${component.bucket.region}
+    bucket: ${bucket.name}
+    endpoint: ${bucket.host}:${bucket.port}
+    region: ${bucket.region}
+  
   # gcs: {}
   # bucket: <project>-argo
   # keyFormat: "{{workflow.namespace}}/{{workflow.name}}/{{pod.name}}"
@@ -122,8 +79,8 @@ artifactRepository:
 
 workflow:
   serviceAccount:
-    create: ${component.argo.workflowRBAC}
+    create: true
     annotations: {}
-    name: ${component.argo.workflowNamespace}-workflow
+    name: ${argo.workflowNamespace}-workflow
   rbac:
-    create: ${component.argo.workflowRBAC}
+    create: true

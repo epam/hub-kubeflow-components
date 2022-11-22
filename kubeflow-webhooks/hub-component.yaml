@@ -8,22 +8,17 @@ requires:
 parameters:
   - name: dns.domain
     env: HUB_DOMAIN_NAME
-
-  - name: component.kubeflow
-    parameters:
-      - name: name
-        value: kubeflow
-      - name: namespace
-        env: NAMESPACE
-      - name: version
-        value: v1.6.1
-        env: VERSION
-      - name: tarball
-        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
-        env: HUB_KUSTOMIZE_TARBALL_URL
-      - name: tarball.dirs
-        value: "apps/admission-webhook/upstream"
-        env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+  - name: kubeflow.namespace
+    env: NAMESPACE
+  - name: kubeflow.version
+    value: v1.6.1
+    env: VERSION
+  - name: kustomize.tarball.url
+    value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
+    env: HUB_KUSTOMIZE_TARBALL_URL
+  - name: kustomize.tarball.dirs
+    value: "apps/admission-webhook/upstream"
+    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 templates:
   files:

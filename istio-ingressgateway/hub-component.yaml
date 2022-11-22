@@ -11,7 +11,7 @@ parameters:
   - name: dns.domain
     env: HUB_DOMAIN_NAME
 
-  - name: component.ingress
+  - name: ingress
     empty: allow
     parameters:
       - name: protocol
@@ -28,7 +28,7 @@ parameters:
       - name: readTimeout
         value: "1800"
 
-  - name: component.istio
+  - name: istio
     parameters:
       - name: namespace
         value: istio-system
@@ -42,22 +42,22 @@ parameters:
             value: 1
           - name: serviceType
             value: ClusterIP
-      - name: helm.chart
-        parameters:
-          - name: name
-            value: "gateway"
-            env: HELM_CHART
-          - name: repo
-            empty: allow
-            value: https://istio-release.storage.googleapis.com/charts
-            env: HELM_REPO
+  - name: helm.chart
+    parameters:
+      - name: name
+        value: "gateway"
+        env: HELM_CHART
+      - name: repo
+        empty: allow
+        value: https://istio-release.storage.googleapis.com/charts
+        env: HELM_REPO
 
 outputs:
-  - name: component.istio.ingressGateway
+  - name: istio.ingressGateway
     value: ${hub.componentName}
-  - name: component.ingress.url
-    value: ${component.ingress.protocol}://${component.ingress.host}
-  - name: component.ingress.host
+  - name: ingress.url
+    value: ${ingress.protocol}://${ingress.host}
+  - name: ingress.host
 
 templates:
   files:

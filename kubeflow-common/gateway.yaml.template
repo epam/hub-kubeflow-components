@@ -6,11 +6,11 @@ metadata:
   name: kubeflow-gateway
 spec:
   selector:
-    app: "${component.istio.ingressGateway}"
+    app: "${istio.ingressGateway}"
   servers:
   - port:
       number: 80
       name: http
       protocol: HTTP
     hosts:
-    - '${component.ingress.host}'
+    - '${ingress.host}'

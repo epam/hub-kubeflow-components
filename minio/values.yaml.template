@@ -1,37 +1,37 @@
 # see all values here: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
 image:
-  repository: ${component.minio.docker.image}
-  tag: ${component.minio.docker.tag}
+  repository: ${docker.image}
+  tag: ${docker.tag}
   pullPolicy: IfNotPresent
 
 mcImage:
-  repository: ${component.minio.docker.mcImage}
-  tag: ${component.minio.docker.mcTag}
+  repository: ${docker.mcImage}
+  tag: ${docker.mcTag}
   pullPolicy: IfNotPresent
 
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
-mode: ${component.minio.mode}
+mode: ${minio.mode}
 
-replicas: ${component.minio.replicas}
+replicas: ${minio.replicas}
 persistence:
   enabled: true
-  existingClaim: "${component.minio.existingClaim}"
-  storageClass: "${component.storage-class.name}"
+  existingClaim: "${minio.existingClaim}"
+  storageClass: "${storage.class}"
   VolumeName: ""
   accessMode: ReadWriteOnce
-  size: ${component.minio.storageSize}
+  size: ${minio.storageSize}
 
 users:
-- accessKey: "${component.minio.accessKey}"
-  secretKey: "${component.minio.secretKey}"
+- accessKey: "${minio.accessKey}"
+  secretKey: "${minio.secretKey}"
   policy: consoleAdmin
 
 buckets:
-- name: ${component.bucket.name}
+- name: ${bucket.name}
   policy: none
   purge: false
   # versioning: false
 
 resources:
   requests:
-    memory: "${component.minio.requests.ram}"
+    memory: "${minio.requests.ram}"

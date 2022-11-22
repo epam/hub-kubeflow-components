@@ -16,7 +16,7 @@ spec:
             - oidc
             - "--skip-exit-code"
             - "--host=${dex.api.endpoint}"
-            - "--client-id=${component.kubeflow.authn.oidcClientId}"
-            - "--client-secret=${component.kubeflow.authn.oidcSecret}"
+            - "--client-id=${kubeflow.authn.oidcClientId}"
+            - "--client-secret=${kubeflow.authn.oidcSecret}"
             - "--name=${hub.componentName}"
-            - "--redirect-uris=${component.kubeflow.authn.oidcRedirectURI}"
+            - "--redirect-uris=${kubeflow.authn.oidcRedirectURI}"

@@ -10,20 +10,20 @@ parameters:
   env: HUB_DOMAIN_NAME
 - name: dex.api.endpoint
 - name: dex.issuer
-  value: ${component.ingress.protocol}://auth.${dns.domain}
-- name: component.ingress.protocol
+  value: ${ingress.protocol}://auth.${dns.domain}
+- name: ingress.protocol
   value: https
-- name: component.istio
+- name: istio
   parameters:
   - name: namespace
     value: istio-system
     env: NAMESPACE
   - name: ingressGateway
     value: istio-ingressgateway
-- name: component.kubeflow
+- name: kubeflow
   parameters:
   - name: version
-    value: v1.5.1
+    value: v1.6.1
     env: VERSION
   - name: authn.oidcProvider
     value: ${dex.issuer}
@@ -32,19 +32,19 @@ parameters:
   - name: authn.oidcClientId
     value: kubeflow-client
   - name: authn.afterLogin
-    value: ${component.ingress.protocol}://kubeflow.${dns.domain}
+    value: ${ingress.protocol}://kubeflow.${dns.domain}
   - name: authn.oidcSecret
     value: OpenID connect client mutual trust secret between Dex and Kubeflow
   - name: authn.sessionMaxAge
     value: 86400
   - name: authn.volumeSize
     value: 10Gi    
-  - name: kustomize.tarball
-    value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
-    env: HUB_KUSTOMIZE_TARBALL_URL
-  - name: kustomize.subpath
-    value: common/oidc-authservice
-    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+- name: kustomize.tarball.url
+  value: "https://github.com/kubeflow/manifests/archive/${kubeflow.version}.tar.gz"
+  env: HUB_KUSTOMIZE_TARBALL_URL
+- name: kustomize.subpath
+  value: common/oidc-authservice
+  env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 templates:
   files:
