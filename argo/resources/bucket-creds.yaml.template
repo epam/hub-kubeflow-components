@@ -7,5 +7,5 @@ metadata:
     app.kubernetes.io/component: ${hub.componentName}
     app.kubernetes.io/name: ${hub.componentName}
 data:
-  accesskey: "${component.bucket.accessKey/base64}"
-  secretkey: "${component.bucket.secretKey/base64}"
+  accesskey: "${bucket.accessKey/base64}"
+  secretkey: "${bucket.secretKey/base64}"

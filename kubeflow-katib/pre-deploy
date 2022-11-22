@@ -1,8 +1,13 @@
 #!/bin/sh -e
 
 NAMESPACE="${NAMESPACE:-kubeflow}"
-kubectl="kubectl -n $NAMESPACE"
 
-if ! $kubectl get secret "katib-webhook-cert" -o name; then
-    ./bin/self-signed-ca.sh --namespace "$NAMESPACE" --service "katib-controller" --secret-name "katib-webhook-cert"
+if ! kubectl -n "$NAMESPACE" get secret "katib-webhook-cert" > /dev/null; then
+    echo "Generating self-signed certifiate"
+    mkdir -p ".generated"
+    bin/self-signed-ca.sh \
+        --namespace "$NAMESPACE" \
+        --service "katib-controller" \
+        --output-dir ".generated" \
+        --secret-name "katib-webhook-cert"
 fi

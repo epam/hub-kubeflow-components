@@ -4,8 +4,8 @@ image:
   repository: "{{.dex.image.repo}}"
   tag: "{{.dex.image.tag}}"
 
-nameOverride: "{{.dex.name}}"
-fullnameOverride: "{{.dex.name}}"
+nameOverride: "{{.hub.componentName}}"
+fullnameOverride: "{{.hub.componentName}}"
 
 grpc:
   enabled: true
@@ -14,7 +14,7 @@ configSecret:
   create: true
 
 config:
-  issuer: "{{.component.ingress.protocol}}://{{.dex.issuerFqdn}}"
+  issuer: "{{.ingress.protocol}}://{{.dex.issuerFqdn}}"
 
   storage:
     type: kubernetes
@@ -70,7 +70,7 @@ config:
         issuer: "{{.dex.connectors.okta.issuer}}"
         clientID: "{{.dex.connectors.okta.clientId}}"
         clientSecret: "{{.dex.connectors.okta.clientSecret}}"
-        redirectURI: "{{.component.ingress.protocol}}://{{.dex.issuerFqdn}}/callback"
+        redirectURI: "{{.ingress.protocol}}://{{.dex.issuerFqdn}}/callback"
         userInfoURI: "{{.dex.connectors.okta.issuer}}/oauth2/v1/userinfo"
         GetUserInfo: true
         insecureSkipEmailVerified: true
@@ -112,8 +112,8 @@ podSecurityContext:
 
 ingress:
   enabled: true
-  className: "{{.component.ingress.class}}"
-{{if eq .component.ingress.protocol "https"}}
+  className: "{{.ingress.class}}"
+{{if eq .ingress.protocol "https"}}
   annotations:
     kubernetes.io/tls-acme: "true"
 {{else}}
@@ -125,11 +125,11 @@ ingress:
         - path: /
           pathType: Prefix
 
-{{if eq .component.ingress.protocol "https"}}
+{{if eq .ingress.protocol "https"}}
   tls:
     - hosts:
         - "{{.dex.issuerFqdn}}"
-      secretName: "{{.dex.name}}-tls"
+      secretName: "{{.hub.componentName}}-tls"
 {{end}}
 
 resources:

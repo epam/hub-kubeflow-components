@@ -1,23 +1,22 @@
 #!/bin/sh -e
 
-if ! kubectl -n "$NAMESPACE" get secret "webhook-cert" > /dev/null; then
+if ! kubectl -n "$NAMESPACE" get secret "webhook-certs" > /dev/null; then
   echo "Generating self-signed certifiate"
   mkdir -p ".generated"
   bin/self-signed-ca.sh \
       --namespace "$NAMESPACE" \
       --service "admission-webhook-service" \
-      --secret-name "webhook-cert" \
+      --secret-name "webhook-certs" \
       --output-dir ".generated"
 fi
 
-CABUNDLE=$(openssl enc -a -A < ".generated/ca-cert.pem")
 cat <<EOF > ".generated/patch.yaml"
 - op: replace
   path: /webhooks/0/name
   value: admission-webhook-service.$NAMESPACE.svc
 - op: replace
   path: /webhooks/0/clientConfig/caBundle
-  value: "$CABUNDLE"
+  value: $(openssl enc -a -A < ".generated/ca-cert.pem")
 EOF
 
 kustomize edit add patch \

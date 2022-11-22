@@ -6,24 +6,22 @@ requires:
   - kubernetes
 
 parameters:
-  - name: component.kubeflow
+  - name: kubeflow
     parameters:
-      - name: name
-        value: kubeflow
       - name: namespace
         env: NAMESPACE
         value: kubeflow
       - name: version
         value: v1.5.1
         env: VERSION
-      - name: tarball
-        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
-        env: HUB_KUSTOMIZE_TARBALL_URL
-      - name: tarball.subpath
-        value: "apps/katib/upstream"
-        env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+  - name: kustomize.tarball.url
+    value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
+    env: HUB_KUSTOMIZE_TARBALL_URL
+  - name: kustomize.tarball.subpath
+    value: "apps/katib/upstream"
+    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
-  - name: component.mysql
+  - name: mysql
     parameters:
       - name: host
       - name: user

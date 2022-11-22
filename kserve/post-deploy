@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 verb="$(basename "$0" | cut -d- -f2)"
 export HUB_KUSTOMIZE_TARBALL_SUBPATH="config"

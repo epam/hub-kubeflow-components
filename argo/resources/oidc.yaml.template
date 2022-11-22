@@ -18,6 +18,6 @@ spec:
             - "--skip-exit-code"
             - "--host=${dex.api.endpoint}"
             - "--client-id=${hub.componentName}-sso"
-            - "--client-secret=${component.argo.oidc.clientSecret}"
+            - "--client-secret=${argo.oidc.clientSecret}"
             - "--name=${hub.componentName}-sso"
-            - "--redirect-uris=${component.argo.oidc.redirectUrl}"
+            - "--redirect-uris=${argo.oidc.redirectUrl}"

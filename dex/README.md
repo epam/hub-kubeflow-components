@@ -25,15 +25,15 @@ The following component level parameters can be set in `hub-component.yaml`:
 | Name | Description | Default Value |
 | :--- | :---        | :---          |
 | `dns.domain` | Domain name of the kubeflow stack | |
-| `component.ingress.protocol` | HTTP or HTTPS schema | `https` |
-| `component.ingress.class` | Name of ingress class in kubernetes | |
-| `component.ingress.ssoUrlPrefix` | Url prefix for protected applications | `dex` |
+| `ingress.protocol` | HTTP or HTTPS schema | `https` |
+| `ingress.class` | Name of ingress class in kubernetes | |
+| `ingress.ssoUrlPrefix` | Url prefix for protected applications | `dex` |
 | `dex.name` | Name of Dex kubernetes resources | `dex` |
 | `dex.namespace` | Name of kubernetes namespace where Dex will be deployed | `kube-system` |
 | `dex.issuerFqdn` | Url of Dex issuer | `auth.${dns.domain}` |
 | `dex.image.repo` | Dex docker image | `ghcr.io/dexidp/dex` |
 | `dex.image.tag` | Dex docker image | `v2.32.0` |
-| `dex.helm.repo` | Helm repo of Dex | `https://charts.dexidp.io` |
+| `dexhelm.repo` | Helm repo of Dex | `https://charts.dexidp.io` |
 | `dex.helm.chart` | Name of Dex helm chart | `dex` |
 | `dex.helm.version` | Version of Dex helm chart | `0.9.0` |
 | `dex.passwordDb.email` | Static password DB user email | |

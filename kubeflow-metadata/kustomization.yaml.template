@@ -1,12 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: ${component.kubeflow.namespace}
+namespace: ${kubeflow.namespace}
 commonLabels:
   kustomize.component: ${hub.componentName}
   app.kubernetes.io/component: ${hub.componentName}
-  app.kubernetes.io/name: ${component.kubeflow.name}
-  app.kubernetes.io/version: "${component.kubeflow.version}"
-  app.kubernetes.io/managed-by: "superhub.io"
+  app.kubernetes.io/version: "${kubeflow.version}"
+  app.kubernetes.io/managed-by: "hubctl"
   app.kubernetes.io/part-of: "kubeflow"
 
 resources:
@@ -19,15 +18,15 @@ patchesStrategicMerge:
 configMapGenerator:
 - name: metadata-db-parameters
   literals:
-  - "MLMD_DB_HOST=${component.mysql.host}"
-  - "MYSQL_DATABASE=${component.mysql.database}"
-  - "MYSQL_PORT=${component.mysql.port}"
+  - "MLMD_DB_HOST=${mysql.host}"
+  - "MYSQL_DATABASE=${mysql.database}"
+  - "MYSQL_PORT=${mysql.port}"
 
 secretGenerator:
 - name: metadata-db-secrets
   literals:
-  - "MYSQL_USER_NAME=${component.mysql.user}"
-  - "MYSQL_ROOT_PASSWORD=${component.mysql.password}"
+  - "MYSQL_USER_NAME=${mysql.user}"
+  - "MYSQL_ROOT_PASSWORD=${mysql.password}"
 
 generatorOptions:
   # TFX pipelines use metadata-grpc-configmap for finding grpc server host and

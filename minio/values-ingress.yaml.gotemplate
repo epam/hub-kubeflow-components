@@ -1,34 +1,34 @@
-{{if ne .component.ingress.host ""}}
+{{if ne .ingress.host ""}}
 consoleIngress:
   enabled: true
-{{if or (eq .component.ingress.protocol "https") .component.ingress.class}}
+{{if or (eq .ingress.protocol "https") .ingress.class}}
   annotations:
-{{if eq .component.ingress.protocol "https"}}
+{{if eq .ingress.protocol "https"}}
     kubernetes.io/tls-acme: "true"
 {{end}}
-{{if ne .component.ingress.class ""}}
-    kubernetes.io/ingress.class: "{{.component.ingress.class}}"
+{{if ne .ingress.class ""}}
+    kubernetes.io/ingress.class: "{{.ingress.class}}"
 {{end}}
-{{if eq .component.ingress.class "nginx"}}
-{{if eq .component.ingress.protocol "https"}}
+{{if eq .ingress.class "nginx"}}
+{{if eq .ingress.protocol "https"}}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
 {{end}}
-    nginx.org/client-max-body-size: "{{.component.ingress.fileSize}}"
+    nginx.org/client-max-body-size: "{{.ingress.fileSize}}"
     nginx.org/websocket-services: "{{.hub.componentName}}-console"
-    nginx.ingress.kubernetes.io/proxy-body-size: "{{.component.ingress.fileSize}}"
+    nginx.ingress.kubernetes.io/proxy-body-size: "{{.ingress.fileSize}}"
     nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "256m"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{.component.ingress.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "{{.component.ingress.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "{{.component.ingress.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "{{.component.ingress.readTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{.ingress.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "{{.ingress.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "{{.ingress.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "{{.ingress.readTimeout}}"
 {{end}}
 {{end}}
   path: /
-  hosts: ["{{.component.minio.ingress.host}}"]
-{{if eq .component.ingress.protocol "https"}}
+  hosts: ["{{.minio.ingress.host}}"]
+{{if eq .ingress.protocol "https"}}
   tls:
-    - hosts: ["{{.component.minio.ingress.host}}"]
+    - hosts: ["{{.minio.ingress.host}}"]
       secretName: "{{.hub.componentName}}-tls"
 {{end}}
 {{end}}

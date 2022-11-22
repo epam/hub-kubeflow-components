@@ -20,12 +20,12 @@ meshConfig:
 
 global:
   # Used to locate istiod.
-  istioNamespace: ${component.istio.namespace}
+  istioNamespace: ${istio.namespace}
 
   # Default hub for Istio images.
   hub: docker.io/istio
   # Default tag for Istio images.
-  tag: ${component.istio.version}
+  tag: ${istio.version}
 
   # Specify image pull policy if default behavior isn't desired.
   # Default behavior: latest images will be Always else IfNotPresent.

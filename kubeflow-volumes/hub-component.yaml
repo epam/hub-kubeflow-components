@@ -5,20 +5,18 @@ requires:
   - kubernetes
 
 parameters:
-  - name: component.kubeflow
-    parameters:
-      - name: namespace
-        value: kubeflow
-        env: NAMESPACE
-      - name: version
-        value: v1.5.1
-        env: VERSION
-      - name: volumes.kustomize.tarball
-        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
-        env: HUB_KUSTOMIZE_TARBALL_URL
-      - name: volumes.kustomize.subpath
-        value: apps/volumes-web-app/upstream
-        env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+  - name: kubeflow.namespace
+    env: NAMESPACE
+    value: kubeflow
+  - name: kubeflow.version
+    value: v1.6.1
+    env: VERSION
+  - name: kustomize.tarball.url
+    value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
+    env: HUB_KUSTOMIZE_TARBALL_URL
+  - name: kustomize.subpath
+    value: apps/volumes-web-app/upstream
+    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 templates:
   files:

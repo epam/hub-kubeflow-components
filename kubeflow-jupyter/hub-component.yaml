@@ -5,7 +5,7 @@ requires:
   - kubernetes
 
 parameters:
-  - name: component.kubeflow
+  - name: kubeflow
     parameters:
       - name: namespace
         env: NAMESPACE
@@ -13,22 +13,22 @@ parameters:
       - name: version
         value: v1.5.1
         env: VERSION
-      - name: tarball
-        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
-        env: HUB_KUSTOMIZE_TARBALL_URL
-      - name: tarball.dirs
-        value: >-
-          apps/jupyter/jupyter-web-app/upstream:../jupyter-web-app/kustomize
-          apps/jupyter/notebook-controller/upstream:../notebook-controller/kustomize
-        env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
+  - name: kustomize.tarball.url
+    value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
+    env: HUB_KUSTOMIZE_TARBALL_URL
+  - name: kustomize.tarball.dirs
+    value: >-
+      apps/jupyter/jupyter-web-app/upstream:../jupyter-web-app/kustomize
+      apps/jupyter/notebook-controller/upstream:../notebook-controller/kustomize
+    env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
 
-  - name: component.storage-class.name
+  - name: storage.class
     brief: |
       Configuration for storage class for the notebooks
       see: https://github.com/kubeflow/manifests/blob/v1.5.1/apps/jupyter/jupyter-web-app/upstream/base/configs/spawner_ui_config.yaml#L84
 
 
-  - name: component.istio
+  - name: istio
     parameters:
       - name: namespace
         value: istio-system

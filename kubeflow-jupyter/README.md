@@ -48,11 +48,11 @@ The following component level parameters has been defined `hub-component.yaml`:
 
 | Name      | Description | Default Value
 | --------- | ---------   | ---------
-| `component.kubeflow.namespace` | Target Kubernetes namespace for this component | `kubeflow`
-| `component.kubeflow.dashboard.image` | Central dashboard docker image configuration | `gcr.io/kubeflow-images-public/centraldashboard`
-| `component.kubeflow.dashboard.imageTag` | Central dashboard docker image configuration | `vmaster-g8097cfeb`
-| `component.kubeflow.dashboard.contributorFormat` | REGEX to configure validation for profiles congtributor | `^.+$`
-| `component.kubeflow.dashboard.contributorValidationMessage` | Custom error message for contributor validation | `^.+$`
+| `kubeflow.namespace` | Target Kubernetes namespace for this component | `kubeflow`
+| `kubeflow.dashboard.image` | Central dashboard docker image configuration | `gcr.io/kubeflow-images-public/centraldashboard`
+| `kubeflow.dashboard.imageTag` | Central dashboard docker image configuration | `vmaster-g8097cfeb`
+| `kubeflow.dashboard.contributorFormat` | REGEX to configure validation for profiles congtributor | `^.+$`
+| `kubeflow.dashboard.contributorValidationMessage` | Custom error message for contributor validation | `^.+$`
 
 ## See Also
 

@@ -14,10 +14,9 @@ provides:
 parameters:
 - name: hub.componentName
   env: COMPONENT_NAME
-- name: dns.domain
-  env: DOMAIN_NAME
-- name: component.storage-class.name
-- name: component.mysql
+- name: storage.class
+  empty: allow
+- name: mysql
   empty: allow
   parameters:
   - name: namespace
@@ -32,47 +31,39 @@ parameters:
   - name: database
     env: DB_NAME
   - name: rootPassword
-    env: ROOT_PASSWORD
+    env: MYSQL_ROOT_PASSWORD
   - name: volumeSize
     value: 8Gi
-  - name: docker
-    parameters:
-    - name: registry
-      value: docker.io
-    - name: repository
-      value: bitnami/mysql
-    - name: tag
-      value: 8.0.22-debian-10-r23
-  - name: helm
-    parameters:
-    - name: chart
-      value: "mysql-8.0.0.tgz"
-      env: HELM_CHART
-    - name: valuesFile
-      value: values.yaml
-      env: CHART_VALUES_FILE
+  - name: extra.databases
+    empty: allow
+    env: EXTRA_DATABASES
+- name: helm
+  parameters:
+  - name: repo
+    value: https://charts.bitnami.com/bitnami
+    env: HELM_REPO
+  - name: chart
+    value: mysql
+    env: HELM_CHART
+  - name: version
+    value: 9.4.1
+    env: HELM_CHART_VERSION
+  - name: valuesFile
+    value: values.yaml
+    env: CHART_VALUES_FILE
 - name: hub.backup.file
   empty: allow
   env: BACKUP_FILE
-    # - name: repo
-    #   value: https://charts.bitnami.com/bitnami
-    #   env: HELM_REPO
-    # - name: chart
-    #   value: ingress-nginx
-    #   env: HELM_CHART
-    # - name: version
-    #   value: 8.0.0
-    #   env: HELM_CHART_VERSION
 
 outputs:
-- name: component.mysql.host
-  value: ${hub.componentName}.${component.mysql.namespace}.svc.cluster.local
-- name: component.mysql.port
-- name: component.mysql.database
-- name: component.mysql.user
-- name: component.mysql.password
+- name: mysql.host
+  value: ${hub.componentName}.${mysql.namespace}.svc.cluster.local
+- name: mysql.port
+- name: mysql.database
+- name: mysql.user
+- name: mysql.password
   kind: secret
-- name: component.mysql.rootPassword
+- name: mysql.rootPassword
   kind: secret
 
 templates:
