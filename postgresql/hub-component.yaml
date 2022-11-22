@@ -1,0 +1,70 @@
+---
+version: 1
+kind: component
+
+requires:
+  - kubernetes
+  - helm
+
+provides:
+  - postgresql
+  - database
+  - sql
+
+parameters:
+- name: hub.componentName
+  env: COMPONENT_NAME
+- name: storage.class
+  empty: allow
+- name: postgresql
+  parameters:
+  - name: namespace
+    value: postgresql
+    env: NAMESPACE
+  - name: port
+    value: 5432
+  - name: user
+  - name: password
+  - name: database
+    env: DB_NAME
+  - name: adminPassword
+  - name: volumeSize
+    value: 8Gi
+  - name: extra.databases
+    empty: allow
+    env: EXTRA_DATABASES
+- name: helm
+  parameters:
+  - name: repo
+    value: https://charts.bitnami.com/bitnami
+    env: HELM_REPO
+  - name: chart
+    value: postgresql
+    env: HELM_CHART
+    brief: more info https://github.com/bitnami/charts/tree/main/bitnami/postgresql
+  - name: version
+    value: 12.1.2
+    env: HELM_CHART_VERSION
+  - name: valuesFile
+    value: values.yaml
+    env: CHART_VALUES_FILE
+
+outputs:
+- name: postgresql.host
+  value: ${hub.componentName}.${postgresql.namespace}.svc
+- name: postgresql.port
+- name: postgresql.database
+- name: postgresql.user
+- name: postgresql.password
+  kind: secret
+- name: postgresql.adminPassword
+  kind: secret
+
+templates:
+  files:
+    - "*.template"
+
+lifecycle:
+  verbs:
+  - deploy
+  - undeploy
