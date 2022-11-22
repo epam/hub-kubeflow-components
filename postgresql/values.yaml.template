@@ -1,0 +1,30 @@
+# Other settings can be found here
+# https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
+nameOverride: "${hub.componentName}"
+fullnameOverride: "${hub.componentName}"
+
+containerPorts:
+  postgresql: "${postgresql.port}"
+
+auth:
+  enablePostgresUser: true
+  postgresPassword: "${postgresql.adminPassword}"
+  username: "${postgresql.user}"
+  password: "${postgresql.password}"
+  database: "${postgresql.database}"  
+
+primary:
+  persistence:
+    size: "${postgresql.volumeSize}"
+    storageClass: "${storage.class}"
+
+readReplicas:
+  replicaCount: 1
+  persistence:
+    size: "${postgresql.volumeSize}"
+    storageClass: "${storage.class}"
+
+serviceAccount:
+  create: true
+rbac:
+  create: false
