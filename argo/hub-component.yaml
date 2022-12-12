@@ -5,9 +5,6 @@ requires:
 - kubernetes
 - helm
 
-provides:
-- argo-workflows
-
 lifecycle:
   verbs:
   - deploy
