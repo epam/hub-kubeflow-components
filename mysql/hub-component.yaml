@@ -6,11 +6,6 @@ requires:
   - kubernetes
   - helm
 
-provides:
-  - mysql
-  - database
-  - sql
-
 parameters:
 - name: hub.componentName
   env: COMPONENT_NAME
