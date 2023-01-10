@@ -10,8 +10,8 @@ The component has the following directory structure:
 
 ```text
 ./
-├── authn-envoy-filter.json.template    # HTTP filter configuration
 ├── hub-component.yaml                  # Component definition
+├── add-oidc-job.yaml.template.         # Template for Kubernetes job to register user
 ├── kustomization.yaml.template         # Kustomize config
 └── oidc.yaml.template                  # Custom resource template for dex integration
 ```
@@ -22,14 +22,14 @@ The following component level parameters has been defined `hub-component.yaml`:
 
 | Name | Description | Default Value |
 | :--- | :---        | :---          |
-| `component.ingress.protocol` | HTTP or HTTPS schema | `https` |
+| `ingress.protocol` | HTTP or HTTPS schema | `https` |
 | `dex.api.endpoint` | Dex API endpoint URL | |
 | `dex.issuer` | OIDC auth URL (Dex) | `https://auth.${dns.domain}` |
-| `component.kubeflow.authn.oidcProvider` | Kubeflow OIDC auth URL | `https://kubeflow.${dns.domain}/login/oidc` |
-| `component.kubeflow.authn.oidcSecret` | Hard to guess OIDC secret passphrase between Kubeflow and Dex (recommended: randomly generated string) | |
-| `component.kubeflow.authn.sessionMaxAge` | Max age (in seconds) for user session | `86400` |
-| `component.istio.namespace` | Kubernetes namespace for Istio | `istio-system` |
-| `component.istio.ingressGateway` | Name of Istio ingress gateway service | |
+| `kubeflow.authn.oidcProvider` | Kubeflow OIDC auth URL | `https://kubeflow.${dns.domain}/login/oidc` |
+| `kubeflow.authn.oidcSecret` | Hard to guess OIDC secret passphrase between Kubeflow and Dex (recommended: randomly generated string) | |
+| `kubeflow.authn.sessionMaxAge` | Max age (in seconds) for user session | `86400` |
+| `istio.namespace` | Kubernetes namespace for Istio | `istio-system` |
+| `istio.ingressGateway` | Name of Istio ingress gateway service | |
 
 ## See Also
 
