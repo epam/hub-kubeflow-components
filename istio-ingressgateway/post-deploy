@@ -2,6 +2,6 @@
 
 kubectl="kubectl --context=$HUB_DOMAIN_NAME --namespace=$NAMESPACE"
 
-if test -n "$INGRESS_HOST" && ! $kubectl get -f ingress.yaml > /dev/null; then
+if test -n "$INGRESS_HOSTS" && ! $kubectl get -f ingress.yaml > /dev/null; then
   $kubectl apply -f ingress.yaml
 fi
