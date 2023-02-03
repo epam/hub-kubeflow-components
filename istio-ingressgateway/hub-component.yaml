@@ -18,14 +18,13 @@ parameters:
         value: http
       - name: class
         empty: allow
-        env: INGRESS_CLASS
-      - name: host
-        env: INGRESS_HOST
-      - name: maxUploadSize
+      - name: hosts
+        env: INGRESS_HOSTS
+      - name: nginx.maxUploadSize
         value: "1024m"
-      - name: uploadTimeout
+      - name: nginx.uploadTimeout
         value: "1800"
-      - name: readTimeout
+      - name: nginx.readTimeout
         value: "1800"
 
   - name: istio
@@ -55,9 +54,6 @@ parameters:
 outputs:
   - name: istio.ingressGateway
     value: ${hub.componentName}
-  - name: ingress.url
-    value: ${ingress.protocol}://${ingress.host}
-  - name: ingress.host
 
 templates:
   files:

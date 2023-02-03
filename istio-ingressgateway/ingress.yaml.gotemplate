@@ -1,7 +1,9 @@
+{{$hosts := .ingress.hosts | split | compact }}
+{{$component := .hub.componentName }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: "{{.hub.componentName}}"
+  name: "{{$component}}"
 {{if or (eq .ingress.protocol "https") (eq .ingress.class "nginx")}}
   annotations:
 {{if eq .ingress.protocol "https"}}
@@ -11,7 +13,7 @@ metadata:
 {{end}}
 {{if eq .ingress.class "nginx"}}
     nginx.org/client-max-body-size: "{{.ingress.maxUploadSize}}"
-    nginx.org/websocket-services: "{{.hubName}}"
+    nginx.org/websocket-services: "{{$component}}"
     nginx.ingress.kubernetes.io/proxy-body-size: "{{.ingress.maxUploadSize}}"
     nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "256m"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{.ingress.uploadTimeout}}"
@@ -25,19 +27,22 @@ spec:
   ingressClassName: "{{.ingress.class}}"
 {{end}}
   rules:
-  - host: "{{.ingress.host}}"
+{{- range $hosts}}
+  - host: {{.}}
     http:
       paths:
       - backend:
           service:
-            name: "{{.hub.componentName}}"
+            name: "{{$component}}"
             port:
               number: 80
         path: /
         pathType: Prefix
+{{- end}}
 {{if eq .ingress.protocol "https"}}
   tls:
-    - hosts:
-      - "{{.ingress.host}}"
-      secretName: "{{.hub.componentName}}-tls"
+{{- range $hosts}}
+    - hosts: [{{.}}]
+      secretName: "{{. | formatSubdomain}}-tls"
+{{- end }}
 {{end}}
