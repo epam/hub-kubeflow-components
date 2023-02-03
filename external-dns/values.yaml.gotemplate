@@ -1,0 +1,27 @@
+# see: https://github.com/bitnami/charts/blob/master/bitnami/external-dns/values.yaml
+sources:
+# - service
+- ingress
+# - crd
+
+txtOwnerId: "{{.externalDns.txtOwnerId}}"
+domainFilters:
+{{- range .externalDns.domainFilters | split | compact}}
+- "{{.}}"
+{{- end}}
+
+interval: "{{.externalDns.syncIntervalSeconds}}s"
+policy: {{.externalDns.syncPolicy}}
+
+serviceAccount:
+{{- if .externalDns.serviceAccount}}
+    name: "{{.externalDns.serviceAccount}}"
+    create: false
+{{- else}}
+    name: "{{.hub.componentName}}"
+    create: true
+{{- end}}
+
+provider: google
+google:
+  project: "{{.projectId}}"
