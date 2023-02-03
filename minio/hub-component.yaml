@@ -10,11 +10,13 @@ parameters:
 - name: ingress.protocol
   value: http
   env: PROTOCOL
-- name: ingress.host
+- name: ingress.hosts
   value: ${hub.componentName}.${dns.domain}
 
 - name: bucket
   parameters:
+  - name: accessKey
+  - name: secretKey
   - name: region
     value: us-east-1
   - name: name
@@ -25,10 +27,6 @@ parameters:
 
 - name: minio
   parameters:
-  - name: ingress.host
-    value: ${ingress.host}  
-  - name: accessKey
-  - name: secretKey
   - name: namespace
     value: minio
     env: NAMESPACE
@@ -46,6 +44,8 @@ parameters:
     value: distributed
   - name: requests.ram
     value: 1Gi
+  - name: logLevel
+    value: info
 
 - name: helm
   parameters:
@@ -56,36 +56,38 @@ parameters:
     env: HELM_CHART
     value: minio
   - name: version
-    value: 4.0.2
+    value: 5.0.4
     env: HELM_CHART_VERSION
   - name: baseValuesFile
     value: values.yaml
     env: CHART_VALUES_FILE
-  - name: logLevel
-    value: info
 
 - name: docker
   parameters:
   - name: image
     value: quay.io/minio/minio
   - name: tag
-    value: RELEASE.2022-06-02T02-11-04Z
+    value: RELEASE.2022-12-12T19-27-27Z
   - name: mcImage
     value: quay.io/minio/mc
   - name: mcTag
-    value: RELEASE.2022-05-09T04-08-26Z
+    value: RELEASE.2022-12-13T00-23-28Z
 
 - name: ingress
   parameters:
   - name: protocol
     value: http
-  - name: host
+  - name: hosts
     empty: allow
   - name: fileSize
     empty: allow
     value: 640m
   - name: class
     empty: allow
+
+- name: nginx
+  empty: allow
+  parameters:
   - name: uploadTimeout
     value: "1800"
   - name: readTimeout

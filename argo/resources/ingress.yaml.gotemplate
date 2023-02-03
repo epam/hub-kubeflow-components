@@ -10,19 +10,24 @@ metadata:
   name: "{{.hub.componentName}}"
 spec:
   rules:
-  - host: "{{.ingress.host}}"
+{{$component := .hub.componentName}}
+{{$hosts := .ingress.hosts | split | compact}}
+{{- range $hosts}}
+  - host: "{{.}}"
     http:
       paths:
       - backend:
           service:
-            name: {{.hub.componentName}}-server
+            name: {{$component}}-server
             port:
               number: 2746
         path: /
         pathType: Prefix
+{{- end}}
 {{if eq .ingress.protocol "https"}}
   tls:
-    - hosts:
-      - "{{.ingress.host}}"
-      secretName: "{{.hub.componentName}}-tls"
+{{- range $hosts}}
+    - hosts: ["{{.}}"]
+      secretName: "{{. | formatSubdomain}}-tls"
+{{- end}}
 {{end}}
