@@ -1,0 +1,32 @@
+version: 1
+kind: component
+
+requires:
+  - helm
+provides:
+  - cert-manager
+
+parameters:
+  - name: certmanager
+    parameters:
+      - name: version
+        value: v1.11.0
+        env: CHART_VERSION
+      - name: namespace
+        value: kube-system
+        env: NAMESPACE
+  - name: helm
+    parameters:
+      - name: repo
+        value: https://charts.jetstack.io
+        env: HELM_REPO
+      - name: chart
+        env: HELM_CHART
+        value: "cert-manager"
+      - name: crd
+        env: CRD
+        value: https://github.com/jetstack/cert-manager/releases/download/${certmanager.version}/cert-manager.crds.yaml
+
+templates:
+  files:
+    - "*.template"

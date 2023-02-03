@@ -1,0 +1,47 @@
+# https://github.com/bitnami/charts/blob/main/bitnami/cert-manager/values.yaml
+---
+installCRDs: false
+
+global:
+  rbac:
+    create: true
+  leaderElection:
+    namespace: "${certmanager.namespace}"
+
+replicaCount: 1
+image:
+  repository: quay.io/jetstack/cert-manager-controller
+  pullPolicy: IfNotPresent
+
+clusterResourceNamespace: ""
+
+ingressShim:
+  defaultIssuerName: "${hub.componentName}"
+  defaultIssuerKind: "ClusterIssuer"
+  defaultIssuerGroup: "cert-manager.io"
+
+serviceAccount:
+  create: true
+  automountServiceAccountToken: true
+
+prometheus:
+  enabled: false
+
+webhook:
+  image:
+    repository: quay.io/jetstack/cert-manager-webhook
+    pullPolicy: IfNotPresent
+
+  serviceAccount:
+    create: true
+    automountServiceAccountToken: true
+
+cainjector:
+  enabled: true
+  image:
+    repository: quay.io/jetstack/cert-manager-cainjector
+    pullPolicy: IfNotPresent
+
+  serviceAccount:
+    create: true
+    automountServiceAccountToken: true
