@@ -20,7 +20,8 @@ parameters:
   empty: allow
 - name: ingress.protocol
   value: http
-- name: ingress.host
+- name: ingress.hosts
+  empty: allow
 - name: argo.namespace
   value: argo
   env: NAMESPACE
@@ -31,7 +32,7 @@ parameters:
 - name: argo.oidc.clientSecret
   empty: allow
 - name: argo.oidc.redirectUrl
-  value: ${ingress.protocol}://${ingress.host}/oauth2/callback
+  value: ${ingress.protocol}://${dns.domain}/oauth2/callback
 - name: argo.executor
   brief: Current version of Kubeflow Pipelines supports "emissary" executor only
   value: emissary

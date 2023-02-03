@@ -1,3 +1,4 @@
+{{$hosts := .ingress.hosts | split | compact }}
 {{if ne .ingress.host ""}}
 consoleIngress:
   enabled: true
@@ -14,21 +15,26 @@ consoleIngress:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
 {{end}}
-    nginx.org/client-max-body-size: "{{.ingress.fileSize}}"
+    nginx.org/client-max-body-size: "{{.nginx.fileSize}}"
     nginx.org/websocket-services: "{{.hub.componentName}}-console"
-    nginx.ingress.kubernetes.io/proxy-body-size: "{{.ingress.fileSize}}"
+    nginx.ingress.kubernetes.io/proxy-body-size: "{{.nginx.fileSize}}"
     nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "256m"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{.ingress.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "{{.ingress.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "{{.ingress.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "{{.ingress.readTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{.nginx.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "{{.nginx.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "{{.nginx.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "{{.nginx.readTimeout}}"
 {{end}}
 {{end}}
   path: /
-  hosts: ["{{.minio.ingress.host}}"]
+  hosts:
+{{- range $hosts}}
+  - {{.}}
+{{- end }}
 {{if eq .ingress.protocol "https"}}
   tls:
-    - hosts: ["{{.minio.ingress.host}}"]
-      secretName: "{{.hub.componentName}}-tls"
+{{- range $hosts}}
+    - hosts: [{{.}}]
+      secretName: "{{. | formatSubdomain}}-tls"
+{{- end }}
 {{end}}
 {{end}}

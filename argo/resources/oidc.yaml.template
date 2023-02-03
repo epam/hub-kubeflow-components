@@ -10,7 +10,7 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-        - image: gcr.io/superhub/dexctl:latest
+        - image:  ghcr.io/epam/dexctl:5d481d0
           name: "${hub.componentName}"
           args:
             - create

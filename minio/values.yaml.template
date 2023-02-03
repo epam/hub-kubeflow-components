@@ -22,8 +22,8 @@ persistence:
   size: ${minio.storageSize}
 
 users:
-- accessKey: "${minio.accessKey}"
-  secretKey: "${minio.secretKey}"
+- accessKey: "${bucket.accessKey}"
+  secretKey: "${bucket.secretKey}"
   policy: consoleAdmin
 
 buckets:

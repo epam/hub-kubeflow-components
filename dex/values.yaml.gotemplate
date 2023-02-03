@@ -1,11 +1,14 @@
+{{$hosts := .ingress.hosts | split | compact}}
+{{$component := .hub.componentName}}
+
 replicaCount: 1
 
 image:
   repository: "{{.dex.image.repo}}"
   tag: "{{.dex.image.tag}}"
 
-nameOverride: "{{.hub.componentName}}"
-fullnameOverride: "{{.hub.componentName}}"
+nameOverride: "{{$component}}"
+fullnameOverride: "{{$component}}"
 
 grpc:
   enabled: true
@@ -120,16 +123,20 @@ ingress:
   annotations: {}
 {{end}}
   hosts:
-    - host: "{{.dex.issuerFqdn}}"
+{{- range $hosts}}
+    - host: "{{.}}"
       paths:
         - path: /
           pathType: Prefix
+{{- end}}
 
 {{if eq .ingress.protocol "https"}}
   tls:
     - hosts:
-        - "{{.dex.issuerFqdn}}"
-      secretName: "{{.hub.componentName}}-tls"
+{{- range $hosts}}
+        - "{{.}}"
+{{- end}}
+      secretName: "{{$component | formatSubdomain}}-tls"
 {{end}}
 
 resources:
