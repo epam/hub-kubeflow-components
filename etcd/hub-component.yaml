@@ -15,11 +15,11 @@ parameters:
   - name: namespace
     env: NAMESPACE
     value: etcd
-  - name: version
-    value: 3.5.6
   - name: rootPassword
   - name: volumeSize
     value: 8Gi
+- name: storage.class
+  empty: allow    
 - name: helm
   parameters:
   - name: chart
@@ -34,8 +34,6 @@ parameters:
   - name: baseValuesFile
     value: values.yaml
     env: CHART_VALUES_FILE
-- name: storage.class
-  empty: allow
 
 outputs:
 - name: etcd.host
