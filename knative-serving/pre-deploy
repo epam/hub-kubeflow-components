@@ -1,0 +1,24 @@
+#!/bin/bash -e
+
+download_file() {
+    echo "Downloading $1..."
+    files download "$1" "kustomize/$(basename "$1")"
+}
+
+download_file "https://github.com/knative/serving/releases/download/knative-$VERSION/serving-core.yaml"
+
+if test "$ISTIO_ENABLED" = "enabled"; then
+    download_file "https://github.com/knative/net-istio/releases/download/knative-$VERSION/net-istio.yaml"
+    kubectl label namespace "$NAMESPACE" istio-injection=enabled
+    kustomize edit add resource kustomize/net-istio.yaml
+    kustomize edit add resource istio/peer-auth.yaml
+fi
+
+if test "$HPA_ENABLED" = "enabled"; then
+    download_file "https://github.com/knative/serving/releases/download/knative-$VERSION/serving-hpa.yaml"
+    kustomize edit add resource kustomize/serving-hpa.yaml
+fi
+
+# download_file "https://github.com/knative/serving/releases/download/knative-$VERSION/serving-default-domain.yaml"
+# download_file "https://github.com/knative/net-certmanager/releases/download/knative-$VERSION/release.yaml"
+

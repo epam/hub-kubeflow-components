@@ -1,0 +1,29 @@
+version: 1
+kind: component
+
+requires:
+- kubernetes
+
+parameters:
+- name: knative
+  parameters:
+  - name: version
+    value: v1.9.0
+    env: VERSION
+  - name: serving.namespace
+    value: knative-serving
+    env: NAMESPACE
+  - name: serving.crd
+    value: https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-crds.yaml
+    env: CRD
+  - name: serving.extensions.hpa
+    value: enabled
+    env: HPA_ENABLED
+  - name: serving.extensions.istio
+    value: enabled
+    env: ISTIO_ENABLED
+
+
+templates:
+  files:
+    - "*.template"
