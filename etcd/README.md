@@ -2,7 +2,7 @@
 
 [etcd](https://etcd.io) is a distributed key-value store that provides a reliable way to store data across a cluster of machines. etcd gracefully handles master elections during network partitions and will tolerate machine failure, including the master.
 
-etcd is used by Kubernetes as the backing store for all cluster data. However etcd can be used for other purposes as well such as backend for services such as KNative. In this case we don't want to mess with Kubernetes etcd, but rather use it as a separate service.
+etcd is used by Kubernetes as the backing store for all cluster data. However etcd can be used for other purposes as well such as backend for services such as KServe Model Mesh. In this case we don't want to mess with Kubernetes etcd, but rather use it as a separate service.
 
 ## Structure
 
