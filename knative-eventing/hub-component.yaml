@@ -1,0 +1,22 @@
+version: 1
+kind: component
+
+requires:
+  - kubernetes
+
+parameters:
+- name: knative
+  parameters:
+  - name: version
+    value: v1.9.2
+    env: VERSION
+  - name: eventing.namespace
+    value: knative-eventing
+    env: NAMESPACE
+  - name: eventing.crd
+    value: https://github.com/knative/eventing/releases/download/knative-${knative.version}/eventing-crds.yaml
+    env: CRD
+
+templates:
+  files:
+    - "*.template"
