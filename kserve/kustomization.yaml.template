@@ -4,9 +4,8 @@ generatorOptions:
   disableNameSuffixHash: true
 
 resources:
-- core/kserve.yaml
-- core/kserve-runtimes.yaml
-# - core/kserve_kubeflow.yaml
+- kustomize/kserve.yaml
+- kustomize/kserve-runtimes.yaml
 
 patchesJson6902:
 - target:
@@ -20,13 +19,4 @@ patchesJson6902:
         {
           "defaultDeploymentMode": "RawDeployment"
         }
-    - op: replace
-      path: /data/ingress
-      value: |-
-        {
-          "ingressGateway" : "knative-serving/knative-ingress-gateway",
-          "ingressService" : "istio-ingressgateway.istio-system.svc.cluster.local",
-          "localGateway" : "knative-serving/knative-local-gateway",
-          "localGatewayService" : "knative-local-gateway.istio-system.svc.cluster.local",
-          "ingressDomain"  : "${dns.domain}"
-        }
+

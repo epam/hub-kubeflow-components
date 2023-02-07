@@ -5,34 +5,21 @@ requires:
   - kubernetes
 
 parameters:
-- name: dns.domain
-- name: component.kubeflow.namespace
-  value: kubeflow
-- name: component.kserve
-  parameters:
-    - name: modelmesh.namespace
-      value: kserve
-      env: KSERVE_MODEL_MESH
-    - name: .version
-      value: v0.8.0
-      env: KSERVE_VERSION
-- name: component.etcd.endpoint
-  value: http://etcd:2379
-- name: component.bucket
-  parameters:
-  - name: endpoint
-    value: http://minio.kubeflow-data.svc:9000
-  - name: region
-    value: us-east-1
-  - name: accessKey
-    empty: allow
-  - name: secretKey
-    empty: allow
-  - name: name
-    value: mlpipelines
+- name: kserve.namespace
+  value: kserve
+  env: NAMESPACE
+- name: kserve.version
+  value: v0.10.0
+  env: VERSION
+- name: kustomize.tarball
+  value: "https://github.com/kserve/kserve/archive/refs/tags/${kserve.version}.tar.gz"
+  env: HUB_KUSTOMIZE_TARBALL_URL
+- name: kustomize.subpath
+  value: "install/${kserve.version}"
+  env: HUB_KUSTOMIZE_TARBALL_SUBPATH  
 
 templates:
   files:
   - '*.template'
-  - 'model-mesh/*.template'
-  - 'web-app/*.template'
+  
+  
