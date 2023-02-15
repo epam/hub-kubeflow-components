@@ -1,1 +1,6 @@
 /kustomize
+/cert-manager/certificate.yaml
+/cert-manager/kustomization.yaml
+/istio/kustomization.yaml
+/istio/net-istio.yaml
+/kustomization.yaml

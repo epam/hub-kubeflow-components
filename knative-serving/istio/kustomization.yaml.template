@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- net-istio.yaml
+- peer-auth.yaml
+
+patches:
+- target:
+    kind: ConfigMap
+    name: config-istio
+  patch: |-
+    - op: replace
+      path: /data
+      value:
+        gateway.${knative.serving.namespace}.knative-ingress-gateway: "${istio.ingressGateway}.${istio.namespace}.svc"
