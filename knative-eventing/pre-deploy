@@ -1,9 +1,0 @@
-#!/bin/bash -e
-
-download_file() {
-    echo "Downloading $1..."
-    files download "$1" "kustomize/$(basename "$1")"
-}
-
-download_file "https://github.com/knative/eventing/releases/download/knative-$VERSION/eventing-core.yaml"
-download_file "https://github.com/knative/eventing/releases/download/knative-$VERSION/in-memory-channel.yaml"
