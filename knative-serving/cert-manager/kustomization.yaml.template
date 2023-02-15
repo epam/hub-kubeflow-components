@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- certificate.yaml
+
+patches:
+- target:
+    kind: ConfigMap
+    name: config-certmanager
+  patch: |-
+    - op: replace
+      path: /data
+      value:
+        issuerRef: |
+          kind: ClusterIssuer
+          name: letsencrypt-issuer
+- target:
+    kind: MutatingWebhookConfiguration
+    name: webhook.serving.knative.dev
+  patch: |-
+    - op: replace
+      path: /metadata/annotations
+      value:
+        cert-manager.io/inject-ca-from: ${knative.serving.namespace}/webhook-cert
+- target:
+    kind: MutatingWebhookConfiguration
+    name: webhook.domainmapping.serving.knative.dev
+  patch: |-
+    - op: replace
+      path: /metadata/annotations
+      value:
+        cert-manager.io/inject-ca-from: ${knative.serving.namespace}/domainmapping-webhook-certs

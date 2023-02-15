@@ -9,21 +9,49 @@ parameters:
   parameters:
   - name: version
     value: v1.9.0
-    env: VERSION
-  - name: serving.namespace
-    value: knative-serving
-    env: NAMESPACE
-  - name: serving.crd
-    value: https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-crds.yaml
-    env: CRD
-  - name: serving.extensions.hpa
-    value: enabled
-    env: HPA_ENABLED
-  - name: serving.extensions.istio
-    value: enabled
-    env: ISTIO_ENABLED
+  - name: serving
+    parameters:
+    - name: namespace
+      env: NAMESPACE
+      value: knative-serving
+    - name: autoscaling.scaleToZero
+      value: "true"
+    - name: autoscaling.stableWindow
+      value: "60s"
+    - name: autoscaling.initialScale
+      value: "1"
+    - name: autoscaling.minScale
+      value: "0"
+    - name: autoscaling.maxScale
+      value: "0"
+    - name: hpa
+      env: HPA_ENABLED
+      value: disabled
+    - name: istio
+      env: ISTIO_ENABLED
+      value: enabled
+- name: istio
+  empty: allow
+  parameters: 
+  - name: ingressGateway
+  - name: namespace
+    value: istio-system
 
+- name: kustomize
+  parameters:
+  - name: crd
+    env: CRD
+    value: https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-crds.yaml
+  - name: resources
+    env: HUB_KUSTOMIZE_RESOURCES
+    value: >-
+      https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-core.yaml
+      https://github.com/knative/net-istio/releases/download/knative-${knative.version}/net-istio.yaml
+      https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-hpa.yaml
+      https://github.com/knative/net-certmanager/releases/download/knative-${knative.version}/release.yaml
 
 templates:
   files:
     - "*.template"
+    - "istio/*.template"
+    - "cert-manager/*.template"
