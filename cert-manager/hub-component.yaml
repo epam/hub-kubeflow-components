@@ -3,6 +3,7 @@ kind: component
 
 requires:
   - helm
+  - kubernetes
 provides:
   - cert-manager
 
@@ -13,7 +14,7 @@ parameters:
         value: v1.11.0
         env: CHART_VERSION
       - name: namespace
-        value: kube-system
+        value: cert-manager
         env: NAMESPACE
   - name: helm
     parameters:
