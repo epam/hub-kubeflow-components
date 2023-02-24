@@ -1,17 +1,41 @@
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: selfsigned-issuer
+  name: selfsigned-ca-issuer
 spec:
   selfSigned: {}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  name: self-signed-ca
+spec:
+  isCA: true
+  commonName: localhost
+  secretName: self-signed-ca
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    kind: Issuer
+    name: selfsigned-ca-issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-issuer
+spec:
+  ca:
+    secretName: self-signed-ca
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
   name: webhook-cert 
 spec:
-  commonName: webhook.${knative.serving.namespace}.svc
+  commonName:  webhook
   dnsNames:
+    - webhook.${knative.serving.namespace}
     - webhook.${knative.serving.namespace}.svc
     - webhook.${knative.serving.namespace}.svc.cluster.local
   issuerRef:
@@ -24,11 +48,27 @@ kind: Certificate
 metadata:
   name: domainmapping-webhook
 spec:
-  commonName: domainmapping-webhook.${knative.serving.namespace}.svc
+  commonName: domainmapping-webhook
   dnsNames:
+    - domainmapping-webhook.${knative.serving.namespace}
     - domainmapping-webhook.${knative.serving.namespace}.svc
     - domainmapping-webhook.${knative.serving.namespace}.svc.cluster.local
   issuerRef:
     kind: Issuer
     name: selfsigned-issuer
   secretName: domainmapping-webhook-certs
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: net-istio-webhook
+spec:
+  commonName: net-istio-webhook
+  dnsNames:
+    - net-istio-webhook.${knative.serving.namespace}
+    - net-istio-webhook.${knative.serving.namespace}.svc
+    - net-istio-webhook.${knative.serving.namespace}.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: selfsigned-issuer
+  secretName: net-istio-webhook-certs
