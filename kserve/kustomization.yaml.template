@@ -3,20 +3,34 @@ kind: Kustomization
 generatorOptions:
   disableNameSuffixHash: true
 
+namespace: ${kserve.namespace}
+
 resources:
 - kustomize/kserve.yaml
 - kustomize/kserve-runtimes.yaml
 
-patchesJson6902:
+patches:
 - target:
     version: v1
     kind: ConfigMap
     name: inferenceservice-config
   patch: |-
     - op: replace
-      path: /data/deploy
+      path: /data/credentials
       value: |-
         {
-          "defaultDeploymentMode": "RawDeployment"
+          "gcs": {
+              "gcsCredentialFileName": "gcloud-application-credentials.json"
+          },
+          "s3": {
+              "s3AccessKeyIDName": "AWS_ACCESS_KEY_ID",
+              "s3SecretAccessKeyName": "AWS_SECRET_ACCESS_KEY",
+              "s3Endpoint": "${bucket.endpoint}",
+              "s3UseHttps": "${bucket.endpoint|isSecure}",
+              "s3Region": "${bucket.region}",
+              "s3VerifySSL": "",
+              "s3UseVirtualBucket": "",
+              "s3UseAnonymousCredential": "",
+              "s3CABundle": ""
+          }
         }
-

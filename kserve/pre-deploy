@@ -1,0 +1,10 @@
+#!/bin/bash -e
+
+if test "$DEPLOYMENT_MODE" = 'Serverless'; then
+    yq -i '.resources += "serverless"' kustomization.yaml
+elif test "$DEPLOYMENT_MODE" = 'RawDeployment'; then
+    yq -i '.resources += "rawdeployment"' kustomization.yaml
+else 
+    >&2 echo "Error: unsupported deployment mode: $KSERVE_MODE"
+    exit 1
+fi
