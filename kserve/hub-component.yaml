@@ -5,21 +5,55 @@ requires:
   - kubernetes
 
 parameters:
-- name: kserve.namespace
-  value: kserve
-  env: NAMESPACE
-- name: kserve.version
-  value: v0.10.0
-  env: VERSION
-- name: kustomize.tarball
-  value: "https://github.com/kserve/kserve/archive/refs/tags/${kserve.version}.tar.gz"
-  env: HUB_KUSTOMIZE_TARBALL_URL
-- name: kustomize.subpath
-  value: "install/${kserve.version}"
-  env: HUB_KUSTOMIZE_TARBALL_SUBPATH  
+- name: knative
+  parameters:
+  - name: namespace
+    value: knative-serving
+  - name: networking.ingressClass
+    value: knative-local-gateway.istio-system.svc.cluster.local
+- name: kserve
+  parameters:
+  - name: namespace
+    value: kserve
+    env: NAMESPACE
+  - name: version
+    value: v0.10.0
+  - name: deploymentMode
+    env: DEPLOYMENT_MODE
+    brief: | 
+      Possible values RawDeployment or Serverless
+      See more: https://github.com/kserve/kserve#standalone-installation
+    value: RawDeployment
+  - name: disableVirtualHost
+    value: true
+- name: ingress
+  empty: allow
+  parameters:
+  - name: hosts
+  - name: class
+  - name: protocol
+    value: http
+- name: bucket
+  empty: allow
+  parameters:
+  - name: endpoint
+  - name: region
+- name: istio
+  empty: allow
+  parameters:
+  - name: namespace
+    value: istio-system
+  - name: ingressGateway
+
+- name: kustomize.resources
+  env: HUB_KUSTOMIZE_RESOURCES
+  value: >-
+    https://github.com/kserve/kserve/releases/download/${kserve.version}/kserve.yaml
+    https://github.com/kserve/kserve/releases/download/${kserve.version}/kserve-runtimes.yaml
 
 templates:
   files:
   - '*.template'
-  
+  - 'rawdeployment/*.template'
+  - 'serverless/*.template'
   
