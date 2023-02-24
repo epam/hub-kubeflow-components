@@ -28,7 +28,7 @@ spec:
 {{end}}
   rules:
 {{- range $hosts}}
-  - host: {{.}}
+  - host: '{{.}}'
     http:
       paths:
       - backend:
@@ -42,7 +42,7 @@ spec:
 {{if eq .ingress.protocol "https"}}
   tls:
 {{- range $hosts}}
-    - hosts: [{{.}}]
+    - hosts: ['{{. | unquote}}']
       secretName: "{{. | formatSubdomain}}-tls"
 {{- end }}
 {{end}}

@@ -32,8 +32,6 @@ parameters:
     env: NAMESPACE
   - name: replicas
     value: 4
-  - name:  volumeType
-    value: gp2
   - name:  existingClaim
     empty: allow
   - name: storageSize
@@ -103,7 +101,7 @@ outputs:
 - name: bucket.name
 - name: bucket.region
 - name: bucket.endpoint
-  value: ${ingress.protocol}://minio.${minio.namespace}.svc:9000
+  value: http://minio.${minio.namespace}.svc:9000
 
 templates:
   files:
