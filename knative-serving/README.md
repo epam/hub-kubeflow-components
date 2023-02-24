@@ -9,18 +9,24 @@ The following component level parameters has been defined `hub-component.yaml`
 | Name | Description | Default Value |
 | :--- | :---        | :---          |
 | `knative.version` | Version of kustomize serving | `v1.9.2` |
-| `knative.serving.namespace` | Kubernetes namespace | `knative-serving` |
-| `knative.serving.crd` | Version specific CRD to download CRDs | `URL` |
-| `knative.serving.autoscaling.scaleToZero` | Enable scale to zero [behavior](https://knative.dev/docs/serving/autoscaling/scale-to-zero/#enable-scale-to-zero) | `true` |
-| `knative.serving.autoscaling.stableWindow` | Behavior for stable mode see [details](https://knative.dev/docs/serving/autoscaling/kpa-specific/#modes) | `60s` |
-| `knative.serving.autoscaling.initialScale` | Initial replicas | `1` |
-| `knative.serving.autoscaling.minScale` | Min scale replicas | `0` |
-| `knative.serving.autoscaling.maxScale` | Max scal replicas | `0` |
-| `knative.serving.autoscaling.maxScale` | Max scal replicas | `0` |
-| `knative.serving.hpa` | If `enabled` then install optional `hpa` configuration | `disabled` |
-| `knative.serving.istio` | If `enabled` then install optional `istio` configuration | `enabled` |
-| `istio.namespace` | Only affected when `kantive.serving.istio=enabled`. Point to istio-namespace  |`istio-system`|
-| `istio.ingressGateway` | Only affected when `kantive.serving.istio=enabled`. Service name of istio ingress gateway | |
+| `knative.namespace` | Kubernetes namespace | `knative-serving` |
+| `knative.crd` | Version specific CRD to download CRDs | `URL` |
+| `knative.autoscaling.scaleToZero` | Enable scale to zero [behavior](https://knative.dev/docs/serving/autoscaling/scale-to-zero/#enable-scale-to-zero) | `true` |
+| `knative.autoscaling.stableWindow` | Behavior for stable mode see [details](https://knative.dev/docs/serving/autoscaling/kpa-specific/#modes) | `60s` |
+| `knative.autoscaling.initialScale` | Initial replicas | `1` |
+| `knative.autoscaling.minScale` | Min scale replicas | `0` |
+| `knative.autoscaling.maxScale` | Max scal replicas | `0` |
+| `knative.autoscaling.maxScale` | Max scal replicas | `0` |
+| `knative.networking.autocreateClusterDomainClaims` | Enables `ClusterDomainlaims` publishing | `Disabled` |
+| `knative.networking.autoTLS` | Enables auto tls configuration | `Disabled` |
+| `knative.networking.ingresClass` | Configures knative service ingress class | `istio.ingress.networking.knative.dev` |
+| `knative.networking.certificateClass` | Configures certificates if TLS enabled | `cert-manager.certificate.networking.knative.dev` |
+| `knative.hpa` | If `enabled` then install optional `hpa` configuration | `disabled` |
+| `knative.istio` | If `enabled` then install optional `istio` configuration | `enabled` |
+| `istio.namespace` | Only affected when `kantive.istio=enabled`. Point to istio-namespace  |`istio-system`|
+| `istio.ingressGateway` | Only affected when `kantive.istio=enabled`. Service name of istio ingress gateway | |
+| `ingress.hosts` | If defines then enables external domain configuration | |
+| `ingress.protocol` | `http` or `https` external domain configuration | |
 | `kustomize.resources` | Contains list of resources kubernetes resources to download. These resourcs will be stored in `./kustomize` directory and available for `kustomization.yaml` to be executed.  | whitespace separated URLs |
 
 ## Implementation Details
@@ -47,27 +53,61 @@ The component has the following directory structure:
 
 There is a hard dependency on cert-manager to generate self signed certificates for the webhooks. 
 
-### External Domains
 
-To define ingres traffic for external domains user needs to define parmeters:
+### Istio 
 
-* `ingress.hosts` - list ingress hosts to map traffic
-* `ingress.protocol` - to let knative know incoming external traffic is `http` or `https`
-* `istio.ingressGateway` - service name of istio ingress gateway
-* `istio.namespace` - namespace where istio ingress gateway is deployed
+Istio is the optional for this component. It is enabled as `istio` overlay if parmeter `knative.istio` is set to `enabled`. Script `pre-deploy` will check this parameter and add to `kustomization.yaml`
 
-External domains has been defined via `ingress.hosts` parameter. If defined then 
-confgmap patches will be added to the `kustomization.yaml` file.
+> Note: user may not have `kustomize` CLI installed. Therefore we are usign `yq` to achieve the same as `kustomize edit add resource`
 
-1. `config-domain` config map will be patched to add external domains
-2. `config-network` config map will be to modify domain tempalte. To make it friendly to wildcard ingresses (traefik supports that), the template defines `name-namespace.example.com` to keep routes on a single level.
 
-See more about possible configuration to `config-network` [here](https://github.com/knative/serving/blob/main/vendor/knative.dev/networking/config/config-network.yaml)
+### Cert Manager 
+
+Because KNative is using webhooks there is a dependency on `cert-manager` which has been enabled as overlay. This overlay will define a `self signed` certificate issuer in namespace defined by `knative.namespace` and the webhook certificates as Cert Manager `Certificate` resources.
+
+
+### Horizontal Pod Autoscaler (HPA)
+
+KNative can optionaly use `HPA` to scale the pods. This is alternative to Serverless mode managed by istio. This mode can be enabled by setting parameter `knative.hpa` to `enabled`. Then `pre-deploy` script will add resource `kustomize/serving-hpa.yaml` to the `kustomization.yaml` file.
+
+This file has been downloaded as part of `kustomize.resources` parameter.
+
+
+### Config Autoscaler
+
+Knative autoscaler configuration is defined in `config-autoscaler` config map. The component is using `kustomize` to patch the config map. The patch is defined in `kustomization.yaml` file.
+
+Visit kustomization file template to change autoscaler behavior.
+
+To dissble autoscaling behaviour set autoscaling parameters to:
+    
+```yaml
+parameters:
+  knative.autoscaling.initialScale: "1"
+  knative.autoscaling.maxScale: "1"
+  knative.autoscaling.minScale: "1"
+  knative.autoscaling.scaleToZero: "false"
+```
+
+### Config Network
+
+Knative network configuration is defined in `config-network` config map. The component is using `kustomize` to patch the config map. The patch is defined in `kustomization.yaml` file. 
+
+Configmap `config-network` content details can be found [here](https://github.com/knative/serving/blob/main/vendor/knative.dev/networking/config/config-network.yaml))
 
 > Note: Knative is using ingress class to route traffic to the services. This is not the same as kubernetes ingress class. 
 
 
-### Limitations
+### Config Domain
+
+If parameter `ingress.hosts` is defined then kustomization file template will render `config-domain` config map patch with external domain hosts.
+
+To define ingres traffic for external domains user needs to define parmeters:
+
+See details [here](https://knative.dev/docs/serving/using-a-custom-domain/#procedure)
+
+
+## Limitations
 
 1. This component will fail if `Issuer` and `Certificate` CRD cannot be found
 
@@ -95,6 +135,7 @@ To download `kn` cli tool follow [this](https://knative.dev/docs/client/install-
 
 
 KNative applicaitons debugging issues [guide](https://knative.dev/docs/serving/troubleshooting/debugging-application-issues/)
+
 
 ## See Also
 

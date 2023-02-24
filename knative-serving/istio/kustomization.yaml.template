@@ -19,7 +19,7 @@ patches:
     - op: replace
       path: /data
       value:
-        gateway.${knative.serving.namespace}.knative-ingress-gateway: "${istio.ingressGateway}.${istio.namespace}.svc"
+        gateway.${knative.namespace}.knative-ingress-gateway: "${istio.ingressGateway}.${istio.namespace}.svc"
 - target:
     kind: Gateway
     name: knative-ingress-gateway   

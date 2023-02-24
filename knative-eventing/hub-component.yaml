@@ -9,7 +9,7 @@ parameters:
   parameters:
   - name: version
     value: v1.9.2
-  - name: eventing.namespace
+  - name: namespace
     env: NAMESPACE
     value: knative-eventing
 - name: kustomize
