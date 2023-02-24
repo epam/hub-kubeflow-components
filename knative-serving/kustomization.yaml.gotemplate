@@ -17,6 +17,7 @@ patches:
       path: /data
       value:
         enable-scale-to-zero: "{{.knative.autoscaling.scaleToZero}}"
+        scale-to-zero-grace-period: "{{.knative.autoscaling.scaleToZeroGracePeriod}}"
         stable-window: "{{.knative.autoscaling.stableWindow}}"
         initial-scale: "{{.knative.autoscaling.initialScale}}"
         min-scale: "{{.knative.autoscaling.minScale}}"
@@ -45,5 +46,15 @@ patches:
         auto-tls: "Disabled"
         autocreate-cluster-domain-claims: "{{.knative.networking.autocreateClusterDomainClaims}}"
         default-external-scheme: "{{.ingress.protocol | default "http"}}"
-        ingress-class: "{{.knative.networking.ingresClass}}"
+        ingress-class: "{{.knative.networking.ingressClass}}"
         certificate-class: "{{.knative.networking.certificateClass}}"
+- target:
+    kind: ConfigMap
+    name: config-features
+  patch: |-
+    - op: replace
+      path: /data
+      value:
+        kubernetes.podspec-affinity: "{{.knative.podspec.nodeScheduling}}"
+        kubernetes.podspec-nodeselector: "{{.knative.podspec.nodeScheduling}}"
+        kubernetes.podspec-tolerations: "{{.knative.podspec.nodeScheduling}}"

@@ -17,6 +17,7 @@ The following component level parameters has been defined `hub-component.yaml`
 | `knative.autoscaling.minScale` | Min scale replicas | `0` |
 | `knative.autoscaling.maxScale` | Max scal replicas | `0` |
 | `knative.autoscaling.maxScale` | Max scal replicas | `0` |
+| `knative.podspec.nodeSchedulling` | `enabled` or `disabled` enables support for node schedulling. Cannot be safely disabled once enabled | `disabled` |
 | `knative.networking.autocreateClusterDomainClaims` | Enables `ClusterDomainlaims` publishing | `Disabled` |
 | `knative.networking.autoTLS` | Enables auto tls configuration | `Disabled` |
 | `knative.networking.ingresClass` | Configures knative service ingress class | `istio.ingress.networking.knative.dev` |
@@ -106,6 +107,18 @@ To define ingres traffic for external domains user needs to define parmeters:
 
 See details [here](https://knative.dev/docs/serving/using-a-custom-domain/#procedure)
 
+### Config Features
+
+Config features is used to control pod schedulling behavior and controlled via `config-features` config map. 
+
+See how enable [node schedulling](https://kserve.github.io/website/0.10/modelserving/nodescheduling/inferenceservicenodescheduling/) option. This behavior controlled with parmeter `knative.podspec.nodeSelector`.
+
+> Warning: cannot be safely disbled after enabled
+
+See possible values for `config-features` configmap [here](https://github.com/knative/serving/blob/main/config/core/configmaps/features.yaml)
+
+Values for the options has been explained [here](https://kserve.github.io/website/master/admin/serverless/servicemesh/#turn-on-strict-mtls-and-authorization-policy)
+
 
 ## Limitations
 
@@ -120,11 +133,10 @@ See details [here](https://knative.dev/docs/serving/using-a-custom-domain/#proce
 
 To create sample application use following command:
 
-```
-kn service create hello \
-    --image "gcr.io/knative-samples/helloworld-go" \
-    --port 8080 \
-    --env TARGET=World
+```bash
+kn service create 'hello' \
+    --image 'gcr.io/knative-samples/helloworld-go' \
+    --port 8080 --env 'TARGET=World' --force
 
 kn route list -o json | jq -r '.items[0].status.url'
 # https://hello-namespace.example.com
