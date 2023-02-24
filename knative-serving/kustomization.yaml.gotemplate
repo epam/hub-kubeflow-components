@@ -16,6 +16,11 @@ patches:
     - op: replace
       path: /data
       value:
+{{if eq .knative.hpa "enabled"}}
+        pod-autoscaler-class: "hpa.autoscaling.knative.dev"
+{{else}}
+        pod-autoscaler-class: "kpa.autoscaling.knative.dev"
+{{end}}
         enable-scale-to-zero: "{{.knative.autoscaling.scaleToZero}}"
         scale-to-zero-grace-period: "{{.knative.autoscaling.scaleToZeroGracePeriod}}"
         stable-window: "{{.knative.autoscaling.stableWindow}}"
