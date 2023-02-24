@@ -22,7 +22,7 @@ patches:
     - op: replace
       path: /metadata/annotations
       value:
-        cert-manager.io/inject-ca-from: ${knative.serving.namespace}/webhook-cert
+        cert-manager.io/inject-ca-from: ${knative.namespace}/webhook-cert
 - target:
     kind: MutatingWebhookConfiguration
     name: webhook.domainmapping.serving.knative.dev
@@ -30,7 +30,7 @@ patches:
     - op: replace
       path: /metadata/annotations
       value:
-        cert-manager.io/inject-ca-from: ${knative.serving.namespace}/domainmapping-webhook-certs
+        cert-manager.io/inject-ca-from: ${knative.namespace}/domainmapping-webhook-certs
 - target:
     kind: Deployment
     name: webhook
@@ -38,4 +38,4 @@ patches:
     - op: add
       path: /
       value:
-        cert-manager.io/inject-ca-from: ${knative.serving.namespace}/webhook-cert
+        cert-manager.io/inject-ca-from: ${knative.namespace}/webhook-cert
