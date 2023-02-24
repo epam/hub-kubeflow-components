@@ -14,6 +14,8 @@ parameters:
     value: knative-serving
   - name: autoscaling.scaleToZero
     value: "true"
+  - name: autoscaling.scaleToZeroGracePeriod
+    value: "60s"
   - name: autoscaling.stableWindow
     value: "60s"
   - name: autoscaling.initialScale
@@ -26,10 +28,12 @@ parameters:
     value: "true"
   - name: networking.autoTLS
     value: "Disabled"
-  - name: networking.ingresClass
+  - name: networking.ingressClass
     value: istio.ingress.networking.knative.dev
   - name: networking.certificateClass
     value: cert-manager.certificate.networking.knative.dev
+  - name: podspec.nodeScheduling
+    value: "disabled"
   - name: hpa
     env: HPA_ENABLED
     value: disabled
@@ -62,6 +66,9 @@ parameters:
       https://github.com/knative/net-istio/releases/download/knative-${knative.version}/net-istio.yaml
       https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-hpa.yaml
       https://github.com/knative/net-certmanager/releases/download/knative-${knative.version}/release.yaml
+
+outputs:
+- name: knative.networking.ingressClass
 
 templates:
   files:
