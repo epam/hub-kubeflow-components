@@ -6,6 +6,12 @@ resources:
 - peer-auth.yaml
 
 patches:
+# We may declare a wildcard domain as ingress route
+# in this case domain template should generate only single level domain name
+# so name and namespace should be on the same level as
+# "{{.Name}}-{{.Namespace}}.{{.Domain}}"
+# 
+# See other config options: https://github.com/knative/serving/blob/knative-v1.9.0/third_party/istio-latest/net-istio.yaml#L156
 - target:
     kind: ConfigMap
     name: config-istio
@@ -14,3 +20,11 @@ patches:
       path: /data
       value:
         gateway.${knative.serving.namespace}.knative-ingress-gateway: "${istio.ingressGateway}.${istio.namespace}.svc"
+- target:
+    kind: Gateway
+    name: knative-ingress-gateway   
+  patch: |-
+    - op: replace
+      path: /spec/selector
+      value:
+        istio: "${istio.ingressGateway}"

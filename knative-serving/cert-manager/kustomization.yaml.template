@@ -31,3 +31,11 @@ patches:
       path: /metadata/annotations
       value:
         cert-manager.io/inject-ca-from: ${knative.serving.namespace}/domainmapping-webhook-certs
+- target:
+    kind: Deployment
+    name: webhook
+  patch: |-
+    - op: add
+      path: /
+      value:
+        cert-manager.io/inject-ca-from: ${knative.serving.namespace}/webhook-cert

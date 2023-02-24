@@ -1,11 +1,13 @@
 #!/bin/bash -e
 
 if test "$ISTIO_ENABLED" = 'enabled'; then
+    echo "* Adding optional kustomize overlays and patches for Istio"
     kubectl label namespace "$NAMESPACE" 'istio-injection=enabled'
-    kustomize edit add resource 'istio'
     cp -v kustomize/net-istio.yaml istio
+    yq -i '.resources += ["istio"]' kustomization.yaml
 fi
 
 if test "$HPA_ENABLED" = 'enabled'; then
-    kustomize edit add resource 'kustomize/serving-hpa.yaml'
+    echo "* Adding optional kustomize overlays and patches for HPA"
+    yq -i '.resources += ["kustomize/serving-hpa.yaml"]' kustomization.yaml
 fi
