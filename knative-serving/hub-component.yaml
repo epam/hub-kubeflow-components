@@ -8,16 +8,16 @@ parameters:
 - name: knative
   parameters:
   - name: version
-    value: v1.9.0
+    value: v1.9.2
   - name: namespace
-    env: NAMESPACE
     value: knative-serving
+    env: NAMESPACE
   - name: autoscaling.scaleToZero
     value: "true"
   - name: autoscaling.scaleToZeroGracePeriod
-    value: "60s"
+    value: "5m"
   - name: autoscaling.stableWindow
-    value: "60s"
+    value: "180s"
   - name: autoscaling.initialScale
     value: "1"
   - name: autoscaling.minScale
@@ -44,6 +44,7 @@ parameters:
   empty: allow
   parameters: 
   - name: ingressGateway
+  - name: localGateway
   - name: namespace
     value: istio-system
 - name: ingress
@@ -52,7 +53,7 @@ parameters:
   - name: protocol
     value: http
   - name: hosts
-    env: INGRESS_HOSTS
+    value: svc.cluster.local
 
 - name: kustomize
   parameters:

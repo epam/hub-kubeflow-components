@@ -19,7 +19,9 @@ patches:
     - op: replace
       path: /data
       value:
-        gateway.${knative.namespace}.knative-ingress-gateway: "${istio.ingressGateway}.${istio.namespace}.svc"
+        gateway.${knative.namespace}.knative-ingress-gateway: "${istio.ingressGateway}.${istio.namespace}.svc.cluster.local"
+        local-gateway.${knative.namespace}.knative-local-gateway: "${istio.localGateway}.${istio.namespace}.svc.cluster.local"
+        enable-virtualservice-status: "false"
 - target:
     kind: Gateway
     name: knative-ingress-gateway   
@@ -28,3 +30,10 @@ patches:
       path: /spec/selector
       value:
         istio: "${istio.ingressGateway}"
+- target:
+    name: knative-local-gateway
+  patch: |-
+    - op: replace
+      path: /spec/selector
+      value:
+        istio: "${istio.localGateway}"

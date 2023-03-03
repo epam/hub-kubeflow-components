@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 - certificate.yaml
+# - net-certmanager.yaml
 
 patches:
 - target:

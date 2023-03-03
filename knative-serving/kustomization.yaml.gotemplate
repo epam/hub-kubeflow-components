@@ -2,7 +2,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: "{{.knative.namespace}}"
+# DO NOT USE: namespace
+#
+# namespace directive will effectively override namespace
+# for knative resources. This is bad idea because it will
+# break knative serving installation as it should be installed
+# across several namespaces including istio-system.
 
 resources:
 - kustomize/serving-core.yaml
