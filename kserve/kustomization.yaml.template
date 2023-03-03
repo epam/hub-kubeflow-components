@@ -16,6 +16,12 @@ patches:
     name: inferenceservice-config
   patch: |-
     - op: replace
+      path: /data/deploy
+      value: |-
+        {
+          "defaultDeploymentMode": "${kserve.deploymentMode}"
+        }
+    - op: replace
       path: /data/credentials
       value: |-
         {

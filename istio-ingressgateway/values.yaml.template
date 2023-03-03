@@ -1,7 +1,7 @@
 # Name allows overriding the release name. Generally this should not be set
 name: "${hub.componentName}"
 
-replicaCount: ${istio.ingressGateway.replicas}
+replicaCount: ${istio.replicas}
 
 kind: Deployment
 
@@ -16,7 +16,7 @@ serviceAccount:
 
 service:
   # Type of service. Set to "None" to disable the service entirely
-  type: ${istio.ingressGateway.serviceType}
+  type: ${istio.serviceType}
   ports:
   - name: http2
     port: 80

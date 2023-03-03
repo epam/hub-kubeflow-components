@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
 if test "$DEPLOYMENT_MODE" = 'Serverless'; then
-    yq -i '.resources += "serverless"' kustomization.yaml
+    yq -i '.patchesStrategicMerge += ["serverless/inferenceservice-config.yaml"]' kustomization.yaml
 elif test "$DEPLOYMENT_MODE" = 'RawDeployment'; then
-    yq -i '.resources += "rawdeployment"' kustomization.yaml
+    yq -i '.patchesStrategicMerge += ["rawdeployment/inferenceservice-config.yaml"]' kustomization.yaml
 else 
     >&2 echo "Error: unsupported deployment mode: $KSERVE_MODE"
     exit 1

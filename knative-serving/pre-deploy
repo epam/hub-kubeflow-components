@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+cp -v kustomize/release.yaml cert-manager/net-certmanager.yaml
+
 if test "$ISTIO_ENABLED" = 'enabled'; then
     echo "* Adding optional kustomize overlays and patches for Istio"
     kubectl label namespace "$NAMESPACE" 'istio-injection=enabled'

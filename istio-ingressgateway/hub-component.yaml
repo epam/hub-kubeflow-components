@@ -35,12 +35,10 @@ parameters:
       - name: version
         value: 1.15.0
         env: CHART_VERSION
-      - name: ingressGateway
-        parameters:
-          - name: replicas
-            value: 1
-          - name: serviceType
-            value: ClusterIP
+      - name: replicas
+        value: 1
+      - name: serviceType
+        value: ClusterIP
   - name: helm.chart
     parameters:
       - name: name
