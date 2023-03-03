@@ -1,0 +1,52 @@
+version: 1
+kind: component
+
+requires:
+  - kubernetes
+
+parameters:
+- name: kserve
+  parameters:
+  - name: namespace
+    value: kserve
+    env: NAMESPACE
+  - name: version
+    value: v0.10.0
+  - name: ui.disableAuth
+    value: "True"
+  - name: ui.path
+    value: /
+  - name: ui.secureCookies
+    value: "False"
+
+- name: ingress
+  empty: allow
+  parameters:
+  - name: hosts
+  - name: class
+  - name: protocol
+    value: http
+  - name: paths
+    value: /kserve-endpoints/
+
+- name: istio.namespace
+  value: istio-system
+- name: istio.gateways
+  value: knative-serving/knative-ingress-gateway
+
+- name: kustomize
+  parameters:
+  - name: tarball.url
+    value: https://github.com/kserve/models-web-app/archive/refs/tags/${kserve.version}.tar.gz
+    env: HUB_KUSTOMIZE_TARBALL_URL
+  - name: tarball.subpath
+    value: config/
+    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+
+templates:
+  files:
+  - '*.template'
+  extra:
+  - kind: go
+    files:
+    - "resources/*.gotemplate"

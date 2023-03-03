@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+generatorOptions:
+  disableNameSuffixHash: true
+
+namespace: ${kserve.namespace}
+
+resources:
+- kustomize/base
+
+configMapGenerator:
+- name: kserve-models-web-app-config
+  behavior: merge
+  literals:
+  - APP_DISABLE_AUTH="${kserve.ui.disableAuth}"
+  - APP_PREFIX="${kserve.ui.path}"
+  - APP_SECURE_COOKIES="${kserve.ui.secureCookies}"
+
+patches:
+- target:
+    kind: VirtualService
+    name: kserve-models-web-app
+  path: resources/istio-patch.yaml
