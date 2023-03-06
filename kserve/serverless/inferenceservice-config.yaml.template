@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inferenceservice-config
+  namespace: ${kserve.namespace}
+data:
+  ingress: |-
+    {
+      "ingressGateway" : "${knative.networking.gateway.ingress}",
+      "ingressService" : "${istio.ingressGateway}.${istio.namespace}.svc.cluster.local",
+      "localGateway" : "${knative.networking.gateway.local}",
+      "localGatewayService" : "knative-local-gateway.${istio.namespace}.svc.cluster.local",
+      "ingressDomain"  : "${ingress.hosts|first}",
+      "ingressClassName" : "${ingress.class}",
+      "domainTemplate": "{{ .Name }}-{{ .Namespace }}.{{ .IngressDomain }}",
+      "urlScheme": "${ingress.protocol}",
+      "disableIstioVirtualHost": false
+    }

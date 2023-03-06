@@ -70,6 +70,10 @@ parameters:
 
 outputs:
 - name: knative.networking.ingressClass
+- name: knative.networking.gateway.ingress
+  value: "${knative.namespace}/knative-ingress-gateway"
+- name: knative.networking.gateway.local
+  value: "${knative.namespace}/knative-local-gateway"
 
 templates:
   files:
