@@ -1,0 +1,31 @@
+# {{$hosts := .ingress.hosts | split | compact }}
+# {{$paths := .ingress.paths | split | compact }}
+# {{$gateways := .istio.gateways | split | compact }}
+# {{$uiPath := .kserve.ui.path}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: kserve-models-web-app
+spec:
+  gateways:
+  # {{range $gateways}}
+    - "{{.}}"
+  # {{end}}
+  hosts:
+  # {{range $hosts}}
+    - "{{.}}"
+  # {{end}}
+  http:
+  - match:
+    # {{range $paths}}
+    - uri:
+        prefix: "{{.}}"
+    rewrite:
+      uri: "{{$uiPath}}"
+    # {{end}}
+    route:
+    - destination:
+        host: kserve-models-web-app.{{.kserve.namespace}}.svc.cluster.local
+        port:
+          number: 80
+      weight: 100
