@@ -28,6 +28,8 @@ parameters:
     value: nginx/nginx-ingress
   - name: imageTag
     value: 3.0.1
+  - name: loadBalancerSourceRanges
+    empty: allow
 - name: helm
   parameters:
   - name: chart
@@ -44,5 +46,5 @@ parameters:
     env: CHART_VALUES_FILE
 
 templates:
-  files:
-  - '*.template'
+  kind: go
+  files: ["*.gotemplate"]
