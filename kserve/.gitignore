@@ -1,2 +1,4 @@
 /kustomize
 /kustomization.yaml
+/rawdeployment/inferenceservice-config.yaml
+/serverless/inferenceservice-config.yaml
