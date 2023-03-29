@@ -7,11 +7,6 @@ requires:
 - helm
 
 parameters:
-- name: ingress.protocol
-  value: http
-  env: PROTOCOL
-- name: ingress.hosts
-  value: ${hub.componentName}.${dns.domain}
 
 - name: bucket
   parameters:
