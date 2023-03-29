@@ -1,5 +1,5 @@
 {{$hosts := .ingress.hosts | split | compact }}
-{{if ne .ingress.host ""}}
+{{if ne .ingress.hosts ""}}
 consoleIngress:
   enabled: true
 {{if or (eq .ingress.protocol "https") .ingress.class}}
