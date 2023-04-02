@@ -12,30 +12,31 @@ lifecycle:
   - backup
 
 parameters:
-- name: dns.domain
-  env:  HUB_DOMAIN_NAME
-- name: dex.issuer
-  empty: allow
-- name: dex.api.endpoint
-  empty: allow
-- name: ingress.protocol
-  value: http
-- name: ingress.hosts
-  empty: allow
-- name: argo.namespace
-  value: argo
-  env: NAMESPACE
-- name: argo.workflowNamespace
-  value: ${argo.namespace}
-- name: argo.version
-  value: v3.4.3
-- name: argo.oidc.clientSecret
-  empty: allow
-- name: argo.oidc.redirectUrl
-  value: ${ingress.protocol}://${dns.domain}/oauth2/callback
-- name: argo.executor
-  brief: Current version of Kubeflow Pipelines supports "emissary" executor only
-  value: emissary
+- name: ingress
+  parameters:
+  - name: protocol
+    value: http
+  - name: hosts
+    empty: allow
+    env: INGRESS_HOSTS
+
+- name: argo
+  parameters:
+  - name: namespace
+    value: argo
+    env: NAMESPACE
+  - name: workflowNamespace
+    value: ${argo.namespace}
+  - name: version
+    value: v3.4.5
+  - name: executor
+    parameters:
+    - name: registry
+      value: "quay.io"
+    - name: repository
+      value: "argoproj/argoexec"
+    - name: tag
+      empty: allow
 
 - name: helm
   parameters:
@@ -46,24 +47,11 @@ parameters:
     value: argo-workflows
     env: HELM_CHART
   - name: chartVersion
-    value: 0.20.8
+    value: 0.22.15
     env: HELM_CHART_VERSION
   - name: valuesFile
     value: values.yaml
     env: CHART_VALUES_FILE
-
-- name: postgresql
-  empty: allow
-  parameters:
-  - name: host
-    env: POSTGRES_HOST
-  - name: user
-  - name: port
-    value: 5432
-    env: POSTGRES_PORT
-  - name: password
-  - name: database
-    env: POSTGRES_DB
 
 - name: bucket
   parameters:
@@ -84,4 +72,5 @@ templates:
   - "resources/*.template"
   extra:
     - kind: go
-      files: ["resources/*.gotemplate"]
+      files: 
+      - "resources/*.gotemplate"

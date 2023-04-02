@@ -1,10 +1,12 @@
 #!/bin/sh
 
-kubectl="kubectl --context=$HUB_DOMAIN_NAME --namespace=$NAMESPACE --ignore-not-found=true"
+# shellcheck disable=SC2154,SC2250
+kubectl="kubectl --context=${HUB_DOMAIN_NAME} --namespace=${NAMESPACE} --ignore-not-found=true"
 $kubectl delete -f "resources/bucket-creds.yaml"
-# $kubectl delete -f "resources/virtual-service.yaml"
-$kubectl delete -f "resources/ingress.yaml"
-$kubectl delete -f "resources/oidc.yaml"
-$kubectl delete -f "resources/database-secret.yaml"
-$kubectl delete secret "$COMPONENT_NAME-ca"
+
+if test -n "${INGRESS_HOSTS}"; then 
+    $kubectl delete -f "resources/ingress.yaml"
+fi
+
+$kubectl delete secret "${COMPONENT_NAME}-ca"
 echo "Done!"
