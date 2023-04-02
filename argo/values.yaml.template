@@ -32,22 +32,9 @@ server:
 
   clusterWorkflowTemplates:
     enableEditing: true
-  sso:
-    issuer: "${dex.issuer}"
-    redirectUrl: "${argo.oidc.redirectUrl}"
-    clientId:
-      name: ${hub.componentName}-sso
-      key: client-id
-    clientSecret:
-      name: ${hub.componentName}-sso
-      key: client-secret
-    scopes:
-    - groups
-    - email
-    rbac:
-      enabled: false
 
 useStaticCredentials: true
+useDefaultArtifactRepo: true
 artifactRepository:
   archiveLogs: false
   s3:

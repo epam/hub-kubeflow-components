@@ -1,15 +1,17 @@
 #!/bin/sh -e
-if test ! -f "$BACKUP_FILE"; then
+
+# shellcheck disable=SC2154
+if test ! -f "${BACKUP_FILE}"; then
     echo "Nothing to restore..."
     exit
 fi
 
-echo "Restoring from $BACKUP_FILE..."
+echo "Restoring from ${BACKUP_FILE}..."
 
 TEMP_DIR=$(mktemp -d)
-trap 'rm -rf $TEMP_DIR' EXIT
+trap 'rm -rf ${TEMP_DIR}' EXIT
 
-tar -xvf "$BACKUP_FILE" -c "$TEMP_DIR"
+tar -xvf "${BACKUP_FILE}" -c "${TEMP_DIR}"
 
-kubectl="kubectl --context=$HUB_DOMAIN_NAME" create -f "$TEMP_DIR"
+kubectl="kubectl --context=${HUB_DOMAIN_NAME} --namespace=${NAMESPACE}" create -f "${TEMP_DIR}"
 echo "Done!"

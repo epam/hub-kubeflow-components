@@ -1,6 +1,7 @@
 #!/bin/sh
 
-if test -z "$HUB_BACKUP_DIR"; then
+# shellcheck disable=SC2154,SC2250
+if test -z "${HUB_BACKUP_DIR}"; then
     echo "Error: HUB_BACKUP_DIR has not been defined"
     exit 1
 fi
@@ -8,7 +9,7 @@ fi
 TEMP_DIR=$(mktemp -d)
 trap 'rm -rf $TEMP_DIR' EXIT
 
-kubectl="kubectl --context=$HUB_DOMAIN_NAME"
+kubectl="kubectl --context=${HUB_DOMAIN_NAME}"
 
 dump_crd() {
     echo "* Backing up: $1..."
@@ -18,16 +19,16 @@ dump_crd() {
     | jq -cM '. | del(.items[].status)  | del(.items[].metadata.uid)' > "$2/$1.json"
 }
 
-dump_crd "clusterworkflowtemplates.argoproj.io" "$TEMP_DIR"
-dump_crd "cronworkflows.argoproj.io" "$TEMP_DIR"
-dump_crd "workfloweventbindings.argoproj.io" "$TEMP_DIR"
-dump_crd "workflows.argoproj.io" "$TEMP_DIR"
-dump_crd "workflowtemplates.argoproj.io" "$TEMP_DIR"
+dump_crd "clusterworkflowtemplates.argoproj.io" "${TEMP_DIR}"
+dump_crd "cronworkflows.argoproj.io" "${TEMP_DIR}"
+dump_crd "workfloweventbindings.argoproj.io" "${TEMP_DIR}"
+dump_crd "workflows.argoproj.io" "${TEMP_DIR}"
+dump_crd "workflowtemplates.argoproj.io" "${TEMP_DIR}"
 echo "* Compressing..."
-tar -czf "$HUB_BACKUP_DIR/$COMPONENT_NAME.tar.gz" -C "$TEMP_DIR" "."
+tar -czf "${HUB_BACKUP_DIR}/${COMPONENT_NAME}.tar.gz" -C "${TEMP_DIR}" "."
 
 cat <<EOF
 
 Outputs:
-hub.backup.file = $HUB_BACKUP_DIR/$COMPONENT_NAME.tar.gz
+hub.backup.file = ${HUB_BACKUP_DIR}/${COMPONENT_NAME}.tar.gz
 EOF

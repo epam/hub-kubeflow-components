@@ -1,29 +1,10 @@
 #!/bin/sh
-kubectl="kubectl --context=$HUB_DOMAIN_NAME --namespace=$NAMESPACE"
+
+# shellcheck disable=SC2154,SC2250
+kubectl="kubectl --context=${HUB_DOMAIN_NAME} --namespace=${NAMESPACE}"
 
 $kubectl apply -f "resources/bucket-creds.yaml"
-# $kubectl apply -f "resources/virtual-service.yaml"
-# $kubectl apply -f "resources/ingress.yaml"
-$kubectl apply -f "resources/oidc.yaml"
 
-if test -n "$POSTGRES_HOST"; then
-    $kubectl apply -f "resources/database-secret.yaml"
-    cat << EOF > values-postgres.yaml
-controller:
-  persistence: 
-    # archive: false
-    postgresql:
-      host: "$POSTGRES_HOST"
-      port: $POSTGRES_PORT
-      database: $POSTGRES_DB
-      tableName: $HUB_COMPONENT
-      userNameSecret:
-        name: ${HUB_COMPONENT}-database
-        key: username
-      passwordSecret:
-        name: ${HUB_COMPONENT}-database
-        key: password
-EOF
-else 
-    rm -f "values-postgres.yaml"
+if test -n "${INGRESS_HOSTS}"; then 
+  $kubectl apply -f "resources/ingress.yaml"
 fi
