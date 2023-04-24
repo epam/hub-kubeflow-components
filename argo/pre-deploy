@@ -8,3 +8,8 @@ $kubectl apply -f "resources/bucket-creds.yaml"
 if test -n "${INGRESS_HOSTS}"; then 
   $kubectl apply -f "resources/ingress.yaml"
 fi
+
+if test -n "${AZURE_STORAGE_ACCOUNT_NAME}" && test -n "${BUCKET_HOST}"; then
+  echo "WARNING: Both Azure Storage Account and S3 compatible storage connection details has been discovered."
+  echo "Azure Storage Account connection will be used."
+fi

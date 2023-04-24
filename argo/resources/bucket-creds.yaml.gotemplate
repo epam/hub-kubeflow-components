@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: {{.hub.componentName}}-artifacts
+  labels:
+    app.kubernetes.io/component: {{.hub.componentName}}
+    app.kubernetes.io/name: {{.hub.componentName}}
+stringData:
+{{- if .azure.storageAccount.accessKey}}
+  accesskey: "{{.azure.storageAccount.accessKey}}"
+{{- else if and .bucket.accessKey .bucket.secretKey}}
+  accesskey: "{{.bucket.accessKey}}"
+  secretkey: "{{.bucket.secretKey}}"
+{{- end}}
