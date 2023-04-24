@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namePrefix: mlflow-
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+resources:
+  - deployment.yaml
+  - service.yaml
+
+configMapGenerator:
+- name: env
+  behavior: create
+  literals:
+  - ARTIFACT_ENDPOINT_URI=gs://mlflow-kfp-20230104" 
+
+secretGenerator:
+- name: env
+  behavior: create
+  literals:
+  - MLFLOW_TRACKING_URI=mysql+pymysql://mysql:******@mysql.kubeflow-data.svc.cluster.local:3306/mlflow-kfp

@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+# shellcheck disable=SC2154
+if test -n "${POSTGRESQL_HOST}" && test -n "${MYSQL_HOST}"; then
+  echo "WARNING: Both MySQL and PostgreSQL database connection details has been discovered."
+  echo "MySQL connection will be used."
+fi
+
+if test -n "${AZURE_STORAGE_ACCOUNT_NAME}" && test -n "${BUCKET_ENDPOINT}"; then
+  echo "WARNING: Both Azure Storage Account and S3 compatible storage connection details has been discovered."
+  echo "Azure Storage Account connection will be used."
+fi
+
+if test -n "${INGRESS_HOSTS}"; then
+  kubectl --context="${HUB_DOMAIN_NAME}" --namespace="${NAMESPACE}" apply -f ingress.yaml
+fi
