@@ -54,13 +54,23 @@ parameters:
     env: CHART_VALUES_FILE
 
 - name: bucket
+  empty: allow
   parameters:
   - name: host
+    env: BUCKET_HOST
   - name: port
   - name: region
   - name: accessKey
   - name: secretKey
   - name: name
+
+- name: azure.storageAccount
+  empty: allow
+  parameters:
+  - name: name
+    env: AZURE_STORAGE_ACCOUNT_NAME
+  - name: containerName
+  - name: accessKey
 
 - name: hub.backup.file
   empty: allow
@@ -69,8 +79,8 @@ parameters:
 templates:
   files:
   - "*.template"
-  - "resources/*.template"
   extra:
     - kind: go
       files: 
+      - "*.gotemplate"
       - "resources/*.gotemplate"
