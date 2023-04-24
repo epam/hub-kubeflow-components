@@ -1,0 +1,41 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: "{{.mlflow.namespace}}"
+generatorOptions:
+  disableNameSuffixHash: true
+
+resources:
+  - base
+
+images:
+- name: mlflow
+  newName: {{.mlflow.image.name}}
+  newTag: {{.mlflow.image.tag}}
+
+configMapGenerator:
+- name: env
+  behavior: merge
+  literals:
+{{- if and .azure.storageAccount.name .azure.storageAccount.containerName }}  
+  - ARTIFACT_ENDPOINT_URI="wasbs://{{.azure.storageAccount.containerName}}@{{.azure.storageAccount.name}}.blob.core.windows.net/"
+{{- else if and .bucket.endpoint .bucket.region }}   
+  - ARTIFACT_ENDPOINT_URI={{.bucket.endpoint}}
+  - AWS_DEFAULT_REGION={{.bucket.region}}
+{{- end}}
+
+secretGenerator:
+- name: env
+  behavior: merge
+  literals:
+{{- if and .mysql.host .mysql.user .mysql.password .mysql.port .mysql.database}}}   
+  - MLFLOW_TRACKING_URI="mysql+pymysql://{{.mysql.user}}:{{.mysql.password}}@{{.mysql.host}}:{{.mysql.port}}/{{.mysql.database}}"
+{{- else if and .postgresql.host .postgresql.user .postgresql.password .postgresql.port .postgresql.database}}   
+  - MLFLOW_TRACKING_URI="postgresql+psycopg2://{{.postgresql.user}}:{{.postgresql.password}}@{{.postgresql.host}}:{{.postgresql.port}}/{{.postgresql.database}}"
+{{- end}}
+{{- if and .azure.storageAccount.name .azure.storageAccount.accessKey}}
+  - AZURE_STORAGE_CONNECTION_STRING="DefaultEndpointsProtocol=https;AccountName={{.azure.storageAccount.name}};AccountKey={{.azure.storageAccount.accessKey}};EndpointSuffix=core.windows.net"
+{{- else if and .bucket.accessKey .bucket.secretKey }}
+  - AWS_ACCESS_KEY_ID={{.bucket.accessKey}}
+  - AWS_SECRET_ACCESS_KEY={{.bucket.secretKey}}
+{{- end}}

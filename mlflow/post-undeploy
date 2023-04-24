@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+# shellcheck disable=SC2154
+if test -n "${INGRESS_HOSTS}"; then
+  kubectl --context="${HUB_DOMAIN_NAME}" --namespace="${NAMESPACE}" delete -f ingress.yaml || true
+fi

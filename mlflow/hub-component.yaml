@@ -1,0 +1,70 @@
+version: 1
+kind: component
+requires:
+  - kubernetes
+
+
+parameters:
+- name: hub.componentName
+
+- name: ingress
+  empty: allow
+  parameters:
+  - name: protocol
+  - name: hosts
+    env: INGRESS_HOSTS
+
+- name: mlflow
+  parameters:
+  - name: namespace
+    env: NAMESPACE
+    value: mlflow
+  - name: version
+    value: 2.3.0
+  - name: image.name
+    value: ghcr.io/mlflow/mlflow    
+  - name: image.tag
+    value: v${mlflow.version} 
+
+- name: postgresql
+  empty: allow
+  parameters:
+  - name: host
+    env: POSTGRESQL_HOST
+  - name: user
+  - name: port
+  - name: password
+  - name: database  
+
+- name: mysql
+  empty: allow
+  parameters:
+  - name: host
+    env: MYSQL_HOST
+  - name: user
+  - name: port
+  - name: password
+  - name: database
+
+- name: bucket
+  empty: allow
+  parameters:
+  - name: endpoint
+    env: BUCKET_ENDPOINT
+  - name: region
+    value: us-east-1
+  - name: accessKey
+  - name: secretKey
+
+- name: azure.storageAccount
+  empty: allow
+  parameters:
+  - name: name
+    env: AZURE_STORAGE_ACCOUNT_NAME
+  - name: containerName
+  - name: accessKey
+
+templates:
+  extra:
+  - kind: go
+    files: ["*.gotemplate"]
