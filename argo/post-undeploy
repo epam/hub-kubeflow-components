@@ -4,9 +4,5 @@
 kubectl="kubectl --context=${HUB_DOMAIN_NAME} --namespace=${NAMESPACE} --ignore-not-found=true"
 $kubectl delete -f "resources/bucket-creds.yaml"
 
-if test -n "${INGRESS_HOSTS}"; then 
-    $kubectl delete -f "resources/ingress.yaml"
-fi
-
 $kubectl delete secret "${COMPONENT_NAME}-ca"
 echo "Done!"
