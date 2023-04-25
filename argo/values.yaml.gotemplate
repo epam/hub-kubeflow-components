@@ -20,8 +20,24 @@ server:
     # minAvailable: 1
     # maxUnavailable: 1
 
-  ingress:
-    enabled: false
+{{$hosts := .ingress.hosts | split | compact}}
+{{- if $hosts}}
+  ingress: 
+    enabled: true 
+    hosts: {{$hosts}} 
+    pathType: "Prefix" 
+    paths: ["/"] 
+    annotations: 
+      nginx.org/proxy-buffering: "false"
+{{- if eq .ingress.protocol "https"}} 
+      kubernetes.io/tls-acme: "true" 
+    tls:
+{{- range $hosts}} 
+    - hosts: ["{{.}}"] 
+      secretName: "{{. | formatSubdomain}}-tls"
+{{- end}}
+{{- end}}
+{{- end}}
 
   extraArgs:
   # this enables service HTTP protocol
@@ -66,3 +82,4 @@ workflow:
     name: {{.argo.workflowNamespace}}-workflow
   rbac:
     create: true
+
