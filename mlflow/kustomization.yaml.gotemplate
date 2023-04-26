@@ -35,6 +35,7 @@ secretGenerator:
 {{- end}}
 {{- if and .azure.storageAccount.name .azure.storageAccount.accessKey}}
   - AZURE_STORAGE_CONNECTION_STRING="DefaultEndpointsProtocol=https;AccountName={{.azure.storageAccount.name}};AccountKey={{.azure.storageAccount.accessKey}};EndpointSuffix=core.windows.net"
+  - AZURE_STORAGE_ACCESS_KEY="{{.azure.storageAccount.accessKey}}"
 {{- else if and .bucket.accessKey .bucket.secretKey }}
   - AWS_ACCESS_KEY_ID={{.bucket.accessKey}}
   - AWS_SECRET_ACCESS_KEY={{.bucket.secretKey}}
