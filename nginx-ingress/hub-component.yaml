@@ -14,12 +14,26 @@ parameters:
 - name: ingress.class
   value: nginx
 - name: ingress.isDefault
-  value: false
+  value: true
+
+- name: kubernetes
+  parameters: 
+  - name: namespace
+    value: kube-ingress
+    env: NAMESPACE
+
+- name: nlb
+  parameters:
+  - name: name
+    empty: allow
+    env: NLB_NAME
+  - name: backendPortHttp
+    empty: allow
+  - name: backendPortHttps
+    empty: allow      
+
 - name: nginx
   parameters:
-  - name: namespace
-    value: ${hub.componentName}
-    env: NAMESPACE  
   - name: replicaCount
     value: 1
   - name: serviceType
