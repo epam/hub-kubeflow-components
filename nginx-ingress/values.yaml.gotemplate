@@ -19,3 +19,11 @@ controller:
     - "{{.}}"
 {{- end }}    
 {{- end }}
+{{- if .nlb.backendPortHttp }} 
+    httpPort: 
+      nodePort: {{.nlb.backendPortHttp}}
+{{- end }}
+{{- if .nlb.backendPortHttps }}        
+    httpsPort: 
+      nodePort: {{.nlb.backendPortHttps}}
+{{- end }}
