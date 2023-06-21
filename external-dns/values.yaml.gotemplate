@@ -14,8 +14,8 @@ interval: "{{.externalDns.syncIntervalSeconds}}s"
 policy: {{.externalDns.syncPolicy}}
 
 serviceAccount:
-{{- if .externalDns.serviceAccount}}
-    name: "{{.externalDns.serviceAccount}}"
+{{- if .kubernetes.serviceAccount}}
+    name: "{{.kubernetes.serviceAccount}}"
     create: false
 {{- else}}
     name: "{{.hub.componentName}}"

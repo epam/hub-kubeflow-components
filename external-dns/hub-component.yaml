@@ -7,15 +7,20 @@ requires:
 
 parameters:
 - name: hub.deploymentId
-- name: externalDns
-  parameters:
+
+- name: kubernetes
+  parameters: 
   - name: namespace
     value: kube-system
     env: NAMESPACE
+  - name: serviceAccount
+    env: SERVICE_ACCOUNT
+    empty: allow
+
+- name: externalDns
+  parameters:
   - name: txtOwnerId
     value: ${hub.deploymentId}
-  - name: serviceAccount
-    empty: allow
   - name: syncIntervalSeconds
     value: 30
     # This envvar has been used in the delete hook
