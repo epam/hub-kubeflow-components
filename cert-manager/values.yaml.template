@@ -6,7 +6,7 @@ global:
   rbac:
     create: true
   leaderElection:
-    namespace: "${certmanager.namespace}"
+    namespace: "${kubernetes.namespace}"
 
 replicaCount: 1
 image:
