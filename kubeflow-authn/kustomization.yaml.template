@@ -51,12 +51,12 @@ configMapGenerator:
 - name: oidc-authservice-parameters
   behavior: merge
   literals:
-  - OIDC_PROVIDER=${kubeflow.authn.oidcProviderInternal}
-  - OIDC_AUTH_URL=${kubeflow.authn.oidcProvider}/auth
+  - OIDC_PROVIDER=${kubeflow.authn.oidcProvider}
+  - OIDC_AUTH_URL=${kubeflow.authn.oidcAuthUrl}
   - REDIRECT_URL=${kubeflow.authn.oidcRedirectURI}
-  - SKIP_AUTH_URI=${kubeflow.authn.oidcProviderInternal}
+  - SKIP_AUTH_URI=${kubeflow.authn.oidcProvider}
   - AFTER_LOGIN_URL=${kubeflow.authn.afterLogin}
-  - AUTHSERVICE_URL_PREFIX=${kubeflow.authn.oidcProviderInternal}/authservice/
+  - AUTHSERVICE_URL_PREFIX=${kubeflow.authn.oidcProvider}/authservice/
   - SESSION_MAX_AGE=${kubeflow.authn.sessionMaxAge}
   # This is a default name used by authn service.
   # You can change it to header name required by your auth provider
