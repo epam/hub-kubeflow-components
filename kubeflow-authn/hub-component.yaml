@@ -6,13 +6,22 @@ requires:
   - kubernetes
 
 parameters:
-- name: dns.domain
-  env: HUB_DOMAIN_NAME
-- name: dex.api.endpoint
-- name: dex.issuer
-  value: ${ingress.protocol}://auth.${dns.domain}
+# Kubeflow protocol and host
 - name: ingress.protocol
-  value: https
+- name: ingress.hosts
+
+# Base endpoint of Dex OIDC provider, for example: https://auth.fluffy-cat-21.epam.devops.delivery/
+- name: dex.issuer
+
+# OIDC API endpoint, to register used to register OIDC application
+- name: dex.api.endpoint
+
+# If authproxy is unable to call the external endpoint of Dex for some reason (e.g. firewall),
+# specify the corresponding Kubernetes Service endpoint, e.g. http://dex.dex.svc.cluster.local:5556
+# defaults to ${dex.issuer}
+- name: dex.issuer.internal
+  value: ${dex.issuer}
+
 - name: istio
   parameters:
   - name: namespace
@@ -26,13 +35,15 @@ parameters:
     value: v1.6.1
     env: VERSION
   - name: authn.oidcProvider
-    value: ${dex.issuer}
+    value: ${dex.issuer}      
+  - name: authn.oidcProviderInternal
+    value: ${dex.issuer.internal} 
   - name: authn.oidcRedirectURI
-    value: https://kubeflow.${dns.domain}/login/oidc
+    value: ${ingress.protocol}://${ingress.hosts}/login/oidc
   - name: authn.oidcClientId
     value: kubeflow-client
   - name: authn.afterLogin
-    value: ${ingress.protocol}://kubeflow.${dns.domain}
+    value: ${ingress.protocol}://${ingress.hosts}
   - name: authn.oidcSecret
     value: OpenID connect client mutual trust secret between Dex and Kubeflow
   - name: authn.sessionMaxAge
