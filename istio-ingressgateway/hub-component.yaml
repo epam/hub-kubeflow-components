@@ -8,8 +8,6 @@ requires:
 
 parameters:
   - name: hub.componentName
-  - name: dns.domain
-    env: HUB_DOMAIN_NAME
 
   - name: ingress
     empty: allow
@@ -20,11 +18,14 @@ parameters:
         empty: allow
       - name: hosts
         env: INGRESS_HOSTS
-      - name: nginx.maxUploadSize
+
+  - name: nginx
+    parameters:
+      - name: maxUploadSize
         value: "1024m"
-      - name: nginx.uploadTimeout
+      - name: uploadTimeout
         value: "1800"
-      - name: nginx.readTimeout
+      - name: readTimeout
         value: "1800"
 
   - name: istio
