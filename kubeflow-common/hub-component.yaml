@@ -6,10 +6,7 @@ requires:
   - kubernetes
 
 parameters:
-  - name: dns.domain
-    env: HUB_DOMAIN_NAME
-  - name: ingress.host
-    value: kubeflow.${dns.domain}
+  - name: ingress.hosts
   
   - name: istio
     parameters: 

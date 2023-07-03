@@ -6,8 +6,6 @@ requires:
   - kubernetes
 
 parameters:
-  - name: dns.domain
-    env: HUB_DOMAIN_NAME
 
   - name: kubeflow
     parameters:
