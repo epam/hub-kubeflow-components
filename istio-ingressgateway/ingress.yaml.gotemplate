@@ -12,14 +12,14 @@ metadata:
     kubernetes.io/tls-acme: "true"
 {{end}}
 {{if eq .ingress.class "nginx"}}
-    nginx.org/client-max-body-size: "{{.ingress.maxUploadSize}}"
+    nginx.org/client-max-body-size: "{{.nginx.maxUploadSize}}"
     nginx.org/websocket-services: "{{$component}}"
-    nginx.ingress.kubernetes.io/proxy-body-size: "{{.ingress.maxUploadSize}}"
+    nginx.ingress.kubernetes.io/proxy-body-size: "{{.nginx.maxUploadSize}}"
     nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "256m"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{.ingress.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "{{.ingress.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "{{.ingress.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "{{.ingress.readTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{.nginx.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "{{.nginx.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "{{.nginx.uploadTimeout}}"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "{{.nginx.readTimeout}}"
 {{end}}
 {{end}}
 spec:
@@ -42,7 +42,7 @@ spec:
 {{if eq .ingress.protocol "https"}}
   tls:
 {{- range $hosts}}
-    - hosts: ['{{. | unquote}}']
+    - hosts: [{{.}}]
       secretName: "{{. | formatSubdomain}}-tls"
 {{- end }}
 {{end}}
