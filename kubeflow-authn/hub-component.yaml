@@ -16,12 +16,10 @@ parameters:
 # OIDC API endpoint, to register used to register OIDC application
 - name: dex.api.endpoint
 
-# If authproxy is unable to call the external endpoint of Dex for some reason (e.g. firewall),
-# specify the corresponding Kubernetes Service endpoint, e.g. http://dex.dex.svc.cluster.local:5556
-# defaults to ${dex.issuer}
-- name: dex.issuer.internal
-  value: ${dex.issuer}
-
+# OIDC auth url, must be external to the cluster
+- name: kubeflow.authn.oidcAuthUrl
+  value: ${dex.issuer}/auth
+  
 - name: istio
   parameters:
   - name: namespace
@@ -36,8 +34,6 @@ parameters:
     env: VERSION
   - name: authn.oidcProvider
     value: ${dex.issuer}      
-  - name: authn.oidcProviderInternal
-    value: ${dex.issuer.internal} 
   - name: authn.oidcRedirectURI
     value: ${ingress.protocol}://${ingress.hosts}/login/oidc
   - name: authn.oidcClientId
