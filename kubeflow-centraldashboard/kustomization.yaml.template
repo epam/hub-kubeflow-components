@@ -12,7 +12,7 @@ commonLabels:
 resources:
 - kustomize/overlays/istio/
 
-patches:
+patchesStrategicMerge:
 - centraldashboard-config.yaml
 
 configMapGenerator:
