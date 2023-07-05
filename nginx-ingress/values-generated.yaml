@@ -1,4 +1,0 @@
-controller:  
-  config:
-    entries:
-      external-status-address: nlb-calm-kohei-413-08dcca5bf1e8935f.elb.eu-central-1.amazonaws.com
