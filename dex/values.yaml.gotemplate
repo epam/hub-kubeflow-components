@@ -17,7 +17,7 @@ configSecret:
   create: true
 
 config:
-  issuer: "{{.ingress.protocol}}://{{.dex.issuerFqdn}}"
+  issuer: "{{.dex.issuer}}"
 
   storage:
     type: kubernetes
