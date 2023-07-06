@@ -26,11 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: hubctl-gh-project
     if: github.event.issue.state == 'open'
-    env:
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
     - name: project-data
       env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         ORGANIZATION: epam
         PROJECT_NUMBER: 8
         COLUMN_NAME: Todo
@@ -64,8 +63,12 @@ jobs:
         echo 'STATUS_FIELD_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
         echo 'TODO_OPTION_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="${{ env.COLUMN_NAME }}") |.id' project_data.json) >> $GITHUB_ENV
     - name: get issue id
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: echo ISSUE_NUMBER=$(gh api -q '.node_id' "repos/epam/${{ github.event.repository.name }}/issues/${{ github.event.issue.number }}") >> $GITHUB_ENV
     - name: Add issue to project
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         item_id="$( gh api graphql -f query='
           mutation($project:ID!, $content:ID!) {
@@ -79,6 +82,8 @@ jobs:
     - name: current date
       run: echo "CURR_DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
     - name: set status
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         gh api graphql -f query='
           mutation (
