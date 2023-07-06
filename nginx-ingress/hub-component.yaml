@@ -44,6 +44,9 @@ parameters:
     value: 3.0.1
   - name: loadBalancerSourceRanges
     empty: allow
+  - name: externalTrafficPolicy
+    value: Cluster
+
 - name: helm
   parameters:
   - name: chart

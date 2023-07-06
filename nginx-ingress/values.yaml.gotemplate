@@ -12,6 +12,7 @@ controller:
   ingressClass: "{{.ingress.class}}"
   setAsDefaultIngress: {{.ingress.isDefault}}
   service:
+    externalTrafficPolicy: "{{.nginx.externalTrafficPolicy}}" 
     type: "{{.nginx.serviceType}}" 
 {{- if .nginx.loadBalancerSourceRanges }}    
     loadBalancerSourceRanges: 
