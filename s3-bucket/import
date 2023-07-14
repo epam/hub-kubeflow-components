@@ -1,0 +1,6 @@
+#!/bin/sh -e
+# shellcheck disable=SC2154
+
+if gsutil -q ls -b "gs://$TF_VAR_name" > /dev/null 2>&1; then
+  terraform import 'aws_storage_bucket._' "$TF_VAR_name" || true
+fi
