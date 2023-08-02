@@ -11,7 +11,7 @@ controller:
   replicaCount: {{.nginx.replicaCount}}
   ingressClass: "{{.ingress.class}}"
   setAsDefaultIngress: {{.ingress.isDefault}}
-  enableSnippets: true
+  enableSnippets: {{.nginx.enableSnippets}}
   service:
     externalTrafficPolicy: "{{.nginx.externalTrafficPolicy}}" 
     type: "{{.nginx.serviceType}}" 
