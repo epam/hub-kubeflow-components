@@ -46,6 +46,8 @@ parameters:
     empty: allow
   - name: externalTrafficPolicy
     value: Cluster
+  - name: enableSnippets
+    value: true
 
 - name: helm
   parameters:
