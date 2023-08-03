@@ -1,3 +1,4 @@
+{{$hosts := .ingress.hosts | split | compact }}
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -6,11 +7,13 @@ metadata:
   name: kubeflow-gateway
 spec:
   selector:
-    app: "${istio.ingressGateway}"
+    app: "{{.istio.ingressGateway}}"
   servers:
   - port:
       number: 80
       name: http
       protocol: HTTP
     hosts:
-    - '${ingress.hosts}'
+{{- range $hosts}}
+    - '{{.}}'
+{{- end }}
