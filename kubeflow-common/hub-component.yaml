@@ -36,4 +36,10 @@ parameters:
 
 templates:
   files:
-    - "*.template"
+  - "*.template"
+  extra:
+  - kind: go
+    files:
+    - "*.gotemplate"
+
+    
