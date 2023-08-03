@@ -1,7 +1,7 @@
 # Name allows overriding the release name. Generally this should not be set
-name: "${hub.componentName}"
+name: "{{.hub.componentName}}"
 
-replicaCount: ${kubernetes.replicas}
+replicaCount: {{.kubernetes.replicas}}
 
 kind: Deployment
 
@@ -16,22 +16,21 @@ serviceAccount:
 
 service:
   # Type of service. Set to "None" to disable the service entirely
-  type: ${kubernetes.cluster.serviceType}
-  ports:
-  - name: http2
-    port: 808
-    protocol: TCP
-    targetPort: 80
+  type: {{.kubernetes.serviceType}}
 
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
+{{- range $key, $value := .kubernetes.requests }}
+    {{$key}}: {{$value}}
+{{- end}}
   limits:
-    cpu: 1800m
-    memory: 256Mi
+{{- range $key, $value := .kubernetes.limits }}
+    {{$key}}: {{$value}}
+{{- end}}
 
-# Labels to apply to all resources
-labels:
-  app: ${hub.componentName}
-  istio: ${hub.componentName}
+{{if .kubernetes.labels -}}
+labels: 
+{{- range $key, $value := .kubernetes.labels }}
+  {{$key}}: {{$value}}
+{{- end}}
+{{- end}}

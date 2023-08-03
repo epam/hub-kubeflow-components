@@ -11,21 +11,12 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
     kubernetes.io/tls-acme: "true"
 {{end}}
-{{if eq .ingress.class "nginx"}}
-    nginx.org/client-max-body-size: "{{.nginx.maxUploadSize}}"
-    nginx.org/websocket-services: "{{$component}}"
-    nginx.ingress.kubernetes.io/proxy-body-size: "{{.nginx.maxUploadSize}}"
-    nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "256m"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{.nginx.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "{{.nginx.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "{{.nginx.uploadTimeout}}"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "{{.nginx.readTimeout}}"
-{{end}}
 {{end}}
 spec:
 {{if ne .ingress.class ""}}
   ingressClassName: "{{.ingress.class}}"
 {{end}}
+{{- if .ingress.hosts }}
   rules:
 {{- range $hosts}}
   - host: '{{.}}'
@@ -38,6 +29,7 @@ spec:
               number: 80
         path: /
         pathType: Prefix
+{{- end}}
 {{- end}}
 {{if eq .ingress.protocol "https"}}
   tls:

@@ -1,7 +1,6 @@
 # Istio-ingressgateway
 
-Istiod provides service discovery, configuration and certificate management.
-Istiod converts high level routing rules that control traffic behavior into Envoy-specific configurations, and propagates them to the sidecars at runtime.
+The Istio Ingressgateway is an Envoy proxy deployed in a Kubernetes cluster that allows access to services running in the cluster from the outside. The Ingressgateway is configured using Istio's Gateway and VirtualService resources.
 
 ## TLDR
 
@@ -49,9 +48,9 @@ The component has the following directory structure:
 ```
 
 Deployment follows to the following algorithm:
-1. At the beginning hubctl need to create an EKS/GKE cluster and other dependency components.
-2. Then start deployment
-3. `post-deploy` sets up a custom kubectl command with a specific context `$HUB_DOMAIN_NAME`  and namespace `$NAMESPACE`, then conditionally applies an Ingress configuration defined in `ingress.yaml` only if the environment variable `$INGRESS_HOSTS` is not empty and the Ingress resource does not already exist in the specified context and namespace.
+
+1. Hubctl will use a helm chart from parameters `helm.repo` and `helm.chart` to deploy the Istio Ingressgateway.
+2. `post-deploy` sets up a custom kubectl command with a specific context `$HUB_DOMAIN_NAME` and namespace `$NAMESPACE`, then conditionally applies an Ingress configuration defined in `ingress.yaml` only if the environment variable `$INGRESS_HOSTS` is not empty and the Ingress resource does not already exist in the specified context and namespace.
 
 ## Outputs
 
@@ -59,10 +58,48 @@ Deployment follows to the following algorithm:
 |------------------------|---------------------------------------|------------------------|:--------:|
 | `istio.ingressGateway` | Name of Istio ingress gateway service | `${hub.componentName}` |          |
 
-## See also
+### Special Case for Labels
 
-* [Istio](https://istio.io/)
-* [Nginx](https://github.com/epam/hub-kubeflow-components/tree/main/nginx-ingress): ingress controller
-* [External DNS](https://github.com/kubernetes-sigs/external-dns)
-* [GKE cluster](https://github.com/agilestacks/google-components/tree/main/gke-gcloud)
-* [hub cli](https://github.com/agilestacks/hub/wiki)
+Istio CRD `Gateway` is using labels to discover service of Ingress Gateway. These labels can be defined by the user via `kubernetes.labels` parameter.
+
+```yaml
+parameters:
+- name: kubernetes.labels
+  value:
+    app: mygateway
+```
+
+Then the `Gateway` CRD will be created with the following selector
+
+```yaml
+selector:
+  matchLabels:
+    app: mygateway
+```
+
+### Expose as Ingress
+
+If `ingress.hosts` is defined then the Ingress resource will be created infront of the Ingress Gateway Service
+
+```yaml
+parameters:
+- name: ingress.hosts
+  value: |
+    myhost.example.com
+    myhost2.example.com
+```
+
+In this case ingress with two hosts will be crated
+
+### Expose as Service
+
+If `kubernetes.serviceType` is set to `LoadBalancer` (or maybe `NodePort`) then the Ingress Gateway Service will be exposed as LoadBalancer.
+
+By default however `kubernetes.serviceType` is set to `ClusterIP`. This can be used for internal traffic or exposed on behalf of the Ingress resource.
+
+## See Aslo
+
+- [Istio Discovery](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+- [Istio Base](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+- [Istio](https://istio.io/)
+- [Nginx](https://github.com/epam/hub-kubeflow-components/tree/main/nginx-ingress): ingress controller

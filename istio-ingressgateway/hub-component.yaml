@@ -7,6 +7,7 @@ requires:
   - helm
 
 parameters:
+  - name: hub.componentName
   - name: ingress
     empty: allow
     parameters:
@@ -17,20 +18,23 @@ parameters:
       - name: hosts
         env: INGRESS_HOSTS
 
-  - name: nginx
-    parameters:
-      - name: maxUploadSize
-        value: "1024m"
-      - name: uploadTimeout
-        value: "1800"
-      - name: readTimeout
-        value: "1800"
-
   - name: kubernetes
     parameters:
       - name: namespace
         value: istio-system
         env: NAMESPACE
+      - name: labels
+        value:
+          istio: ingressgateway
+          app: ingressgateway
+      - name: limits
+        value:
+          cpu: 1800m
+          memory: 256Mi
+      - name: requests
+        value:
+          cpu: 100m
+          memory: 128Mi
       - name: replicas
         value: 1
       - name: cluster.serviceType
@@ -50,13 +54,7 @@ parameters:
         env: CHART_VERSION
 
 outputs:
-  - name: istio.ingressGateway
-    value: ${hub.componentName}
-
+- name: kubernetes.labels
 templates:
-  files:
-    - "*.template"
-  extra:
-    - kind: go
-      files:
-        - "*.gotemplate"
+  kind: go
+  files: ["*.gotemplate"]
