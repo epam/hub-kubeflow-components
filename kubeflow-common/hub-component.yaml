@@ -49,4 +49,4 @@ parameters:
 templates:
   kind: go
   files:
-    - "*.gotemplate"
+  - "*.gotemplate"
