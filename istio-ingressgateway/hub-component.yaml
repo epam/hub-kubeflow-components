@@ -8,7 +8,6 @@ requires:
 
 parameters:
   - name: hub.componentName
-
   - name: ingress
     empty: allow
     parameters:
@@ -28,18 +27,33 @@ parameters:
       - name: readTimeout
         value: "1800"
 
-  - name: istio
+  - name: kubernetes
     parameters:
       - name: namespace
         value: istio-system
         env: NAMESPACE
-      - name: version
-        value: 1.15.0
-        env: CHART_VERSION
+      - name: labels
+        value:
+          istio: ingressgateway
+          app: ingressgateway
+      - name: limits
+        value:
+          cpu: 1800m
+          memory: 256Mi
+      - name: requests
+        value:
+          cpu: 100m
+          memory: 128Mi
       - name: replicas
         value: 1
       - name: serviceType
         value: ClusterIP
+
+  - name: istio
+    parameters:
+      - name: version
+        value: 1.15.0
+        env: CHART_VERSION
   - name: helm.chart
     parameters:
       - name: name
@@ -51,13 +65,7 @@ parameters:
         env: HELM_REPO
 
 outputs:
-  - name: istio.ingressGateway
-    value: ${hub.componentName}
-
+- name: kubernetes.labels
 templates:
-  files:
-    - "*.template"
-  extra:
-    - kind: go
-      files:
-        - "*.gotemplate"
+  kind: go
+  files: ["*.gotemplate"]

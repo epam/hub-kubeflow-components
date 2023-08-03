@@ -26,6 +26,7 @@ spec:
 {{if ne .ingress.class ""}}
   ingressClassName: "{{.ingress.class}}"
 {{end}}
+{{- if .ingress.hosts }}
   rules:
 {{- range $hosts}}
   - host: '{{.}}'
@@ -38,6 +39,7 @@ spec:
               number: 80
         path: /
         pathType: Prefix
+{{- end}}
 {{- end}}
 {{if eq .ingress.protocol "https"}}
   tls:
