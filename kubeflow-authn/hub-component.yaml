@@ -9,7 +9,7 @@ parameters:
   # Kubeflow protocol and host
   - name: ingress.protocol
   - name: ingress.hosts
-
+    empty: allow
   # Base endpoint of OIDC provider, for example: https://auth.fluffy-cat-21.epam.devops.delivery/
   - name: oidc.issuer
 
@@ -56,5 +56,6 @@ parameters:
         env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 templates:
+  kind: go
   files:
-    - "*.template"
+  - "*.gotemplate"

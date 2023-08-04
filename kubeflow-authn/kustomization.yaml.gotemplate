@@ -2,6 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 bases:
 - kustomize/base
+resources:
+- add-oidc-job.yaml
 
 # Warning: using deprecated filter name "envoy.http_connection_manager"; use "envoy.filters.network.http_connection_manager" instead
 patchesJSON6902:
@@ -10,13 +12,16 @@ patchesJSON6902:
     version: v1alpha3
     kind: EnvoyFilter
     name: authn-filter
-    namespace: ${istio.namespace}
+    namespace: "{{.kubernetes.namespace}}"
   patch: |-
+    {{- if .istio.ingressGateway.labels }}
     - op: replace
       path: /spec/workloadSelector/labels
       value:
-        app: ${istio.ingressGateway}
-        istio: ${istio.ingressGateway}
+      {{- range .istio.ingressGateway.labels | splitList " "}}
+        {{. | replace "=" ": "}}
+      {{- end}}
+    {{- end}}
     - op: replace
       path: /spec/configPatches/0/match/listener/filterChain/filter/name
       value: "envoy.filters.network.http_connection_manager"
@@ -27,14 +32,14 @@ patchesJSON6902:
   patch: |-
     - op: replace
       path: /spec/resources/requests/storage
-      value: ${kubeflow.authn.volumeSize}
+      value: "{{.kubeflow.authn.volumeSize}}"
 
 commonLabels:
   kustomize.component: kubeflow-authn
-  app.kubernetes.io/component: ${hub.componentName}
-  app.kubernetes.io/version: "${kubeflow.version}"
+  app.kubernetes.io/component: "{{.hub.componentName}}"
+  app.kubernetes.io/version: "{{.kubeflow.version}}"
 
-namespace: ${istio.namespace}
+namespace: "{{.kubernetes.namespace}}"
 
 generatorOptions:
   disableNameSuffixHash: true
@@ -49,13 +54,13 @@ configMapGenerator:
 - name: oidc-authservice-parameters
   behavior: merge
   literals:
-  - OIDC_PROVIDER=${kubeflow.authn.oidcProvider}
-  - OIDC_AUTH_URL=${kubeflow.authn.oidcAuthUrl}
-  - REDIRECT_URL=${kubeflow.authn.oidcRedirectURI}
-  - SKIP_AUTH_URI=${kubeflow.authn.oidcProvider}
-  - AFTER_LOGIN_URL=${kubeflow.authn.afterLogin}
-  - AUTHSERVICE_URL_PREFIX=${kubeflow.authn.oidcProvider}/authservice/
-  - SESSION_MAX_AGE=${kubeflow.authn.sessionMaxAge}
+  - OIDC_PROVIDER={{.kubeflow.authn.oidcProvider}}
+  - OIDC_AUTH_URL={{.kubeflow.authn.oidcProvider}}/auth
+  - REDIRECT_URL={{.kubeflow.authn.oidcRedirectURI}}
+  - SKIP_AUTH_URI={{.kubeflow.authn.oidcProvider}}
+  - AFTER_LOGIN_URL={{.kubeflow.authn.afterLogin}}
+  - AUTHSERVICE_URL_PREFIX={{.kubeflow.authn.oidcProvider}}/authservice/
+  - SESSION_MAX_AGE={{.kubeflow.authn.sessionMaxAge}}
   # This is a default name used by authn service.
   # You can change it to header name required by your auth provider
   - USERID_TOKEN_HEADER=kubeflow-userid-token
@@ -66,5 +71,5 @@ secretGenerator:
 - name: oidc-authservice-client
   behavior: merge
   literals:
-  - CLIENT_ID=${kubeflow.authn.oidcClientId}
-  - CLIENT_SECRET=${kubeflow.authn.oidcSecret}
+  - CLIENT_ID={{.kubeflow.authn.oidcClientId}}
+  - CLIENT_SECRET={{.kubeflow.authn.oidcSecret}}
