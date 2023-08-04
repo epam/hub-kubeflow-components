@@ -1,8 +1,43 @@
 # Authn HTTP Filter
 
-## Overview of the Authn HTTP Filter
+This is a rewrite for [ambassador-auth-oidc](https://github.com/ajmyyra/ambassador-auth-oidc) to serve authentication requests for Kubeflow.
 
-This is a HTTP filter for Istio (Envoy) that validates User session and redirects to OIDC provider for authentication (if invalid).
+In the nutshel this component installs an Istio EnvoyFilter that intercepts all HTTP requests to Kubeflow and validates the user session by checking session cookie:
+* If the session is invalid, the user is redirected to the OIDC provider (Dex) for authentication
+* If the session is valid, it will add a `kubeflow-userid` header and forward the request to Kubeflow. Kubeflow then will use this header to identify the user and lookup it's Kubeflow Profile.
+
+## Requirements
+
+* [kubectl](http://kubectl.docs.kubernetes.io)
+
+## Dependencies
+
+* `Istio Discovery`: Istio exist all required CRDs such as `Gateway` or `EnvoyFilter` available
+* `Istio Ingressgateway`: Istio ingress gateway service is available
+* `dex`
+
+## Parameters
+
+The following component level parameters has been defined for this component:
+
+| Name      | Description | Default Value | Required
+| --------- | ---------   | ---------     | :---: |
+| `ingress.protocol` | HTTP or HTTPS schema | `https` | `x`
+| `ingress.hosts` | HTTP or HTTPS schema | |
+| `oidc.issuer` | OIDC auth URL (Dex) |  | `x`
+| `kubeflow.authn.oidcProvider` | Kubeflow OIDC auth URL | `${oidc.issuer}` | `x`
+| `kubeflow.authn.oidcSecret` | Hard to guess OIDC secret passphrase between Kubeflow and Dex (recommended: randomly generated string) | | `x`
+| `kubeflow.authn.sessionMaxAge` | Max age (in seconds) for user session | `86400` | `x`
+| `kubernetes.namespace` | Target kubernetes namespace | `istio-system` | `x`
+| `kubeflow.version` | Kubeflow version | `v1.6.1` | `x`
+| `kubeflow.authn.oidcProvider` | TBD |  | `x`
+| `kubeflow.authn.oidcAuthUrl` | TBD |  | `x`
+| `kubeflow.authn.oidcRedirectURI` | TBD |  | `x`
+| `kubeflow.authn.afterLogin` | TBD |  | `x`
+| `kubeflow.authn.oidcClientId` | TBD |  `kubeflow-client` | `x`
+| `kubeflow.authn.sessionMaxAge` | Auth session max age |  `86400` | `x`
+| `kubeflow.authn.volumeSize` | Storage config for authn |  `10Gi` | `x`
+| `istio.ingressGateway.labels` | List of labels to match Istio ingress gateway service (in the format `foo=bar bar=baz`) |  | `x`
 
 ## Implementation Details
 
@@ -11,22 +46,99 @@ The component has the following directory structure:
 ```text
 ./
 ├── hub-component.yaml                  # Component definition
-└──  kustomization.yaml.template         # Kustomize config
+└── kustomization.yaml.template         # Kustomize config
 ```
 
-## Parameters
+Current component will deploy a Kubeflow Authn with the Kustomize. It will also expose it as OIDC application. Yet it will not do any authorization with the OIDC provider. This should be done via stack hook.
 
-The following component level parameters has been defined `hub-component.yaml`:
+### Register with OIDC provider
 
-| Name | Description | Default Value |
-| :--- | :---        | :---          |
-| `ingress.protocol` | HTTP or HTTPS schema | `https` |
-| `oidc.issuer` | OIDC auth URL (Dex) |  |
-| `kubeflow.authn.oidcProvider` | Kubeflow OIDC auth URL | `${oidc.issuer}` |
-| `kubeflow.authn.oidcSecret` | Hard to guess OIDC secret passphrase between Kubeflow and Dex (recommended: randomly generated string) | |
-| `kubeflow.authn.sessionMaxAge` | Max age (in seconds) for user session | `86400` |
-| `istio.namespace` | Kubernetes namespace for Istio | `istio-system` |
-| `istio.ingressGateway` | Name of Istio ingress gateway service | |
+In theory Authn should work with any OIDC provider. Yet it has been tested with Dex. To register Authn with Dex, you need to create a Dex client with the following configuration. Once this is done you need to update the `oidc.issuer` by running a `Job` 
+
+Please note `hub-componetn.yaml` deliberately exposes some of the paramters required for OIDC application registration as environment variables avalable for the stack level hook.
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: kubeflow-oidc-
+spec:
+  ttlSecondsAfterFinished: 120
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - image: ghcr.io/epam/dexctl:5d481d0
+          name: main
+          args:
+            - create
+            - oidc
+            - "--skip-exit-code"
+            - "--host=${oidc_api_endpoint}"
+            - "--client-id=${OIDC_CLIENT_ID}"
+            - "--client-secret=${OIDC_SECRET}"
+            - "--name=${OIDC_CLIENT_ID}"
+            - "--redirect-uris=${OIDC_REDIRECT_URI}"
+```
+
+### Istio IngressGateway
+
+The component will add an envoy filter to all requests that are coming from the Istio Ingress Gateway. For this reasons you may need to deploy a separate ingress gateway (a specially when you have other apps that should not be protected by Authn). 
+
+Link between Ingress Gateway and Authn is done via `istio.ingressGateway.labels` parameter. This parameter is a list of labels that will be used to match the Istio Ingress Gateway service. Run the command
+
+To check labels run the command:
+
+```bash
+kubectl -n istio-system get svc "istio-ingressgateway" -o jsonpath='{.metadata.labels}'
+# app=istio-ingressgateway istio=ingressgateway
+```
+
+These labels should be set as `istio.ingressGateway.labels` parameter.
+
+```yaml
+parameters:
+- name: istio.ingressGateway.labels
+  component: kubeflow-authn
+  value: >- 
+    app=istio-ingressgateway
+    istio=ingressgateway
+```
+
+### Add Custom CA Bundle
+
+> OPTIONAL
+
+Connectivity between Authn and OIDC provider should be secured with TLS. For places where this is not possible, you can add a custom CA bundle to the Authn container. This can be done by adding a `Secret` and mounting to the authn STS (yes, it's a bit hacky, but it works) as post-deploy hook
+
+```yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: authservice
+spec:
+  template:
+    spec:
+      volumes:
+      - name: cacerts
+        secret:
+          secretName: authservice-cacerts
+          optional: false
+      containers:
+      - name: authservice
+        env:
+        - name: CA_BUNDLE
+          value: /etc/ssl/certs/cacerts.pem
+        volumeMounts:
+        - name: cacerts
+          mountPath: /etc/ssl/certs
+```
+
+This is the patch that post-deploy hook may appliy. It features a secret that contains the bundle `authservice-cacerts` that has been mounted to the STS and linked as the `CA_BUNDLE` environment variable.
+
+After the patching all pods in STS should be restarted
+
 
 ## See Also
 

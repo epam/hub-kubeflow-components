@@ -9,28 +9,25 @@ parameters:
 # Kubeflow protocol and host
 - name: ingress.protocol
 - name: ingress.hosts
+  empty: allow
 
 # Base endpoint of OIDC provider, for example: https://auth.fluffy-cat-21.epam.devops.delivery/
 - name: oidc.issuer
 
-# OIDC auth url, must be external to the cluster
-- name: kubeflow.authn.oidcAuthUrl
-  value: ${oidc.issuer}/auth
-  
-- name: istio
-  parameters:
-  - name: namespace
-    value: istio-system
-    env: NAMESPACE
-  - name: ingressGateway
-    value: istio-ingressgateway
+- name: kubernetes.namespace
+  value: istio-system
+  env: NAMESPACE
+
 - name: kubeflow
   parameters:
   - name: version
     value: v1.6.1
     env: VERSION
   - name: authn.oidcProvider
-    value: ${oidc.issuer}      
+    value: ${oidc.issuer}   
+  # OIDC auth url, must be external to the cluster
+  - name: authn.oidcAuthUrl
+    value: ${oidc.issuer}/auth
   - name: authn.oidcRedirectURI
     value: ${ingress.protocol}://${ingress.hosts}/login/oidc
     env: OIDC_REDIRECT_URI
@@ -52,7 +49,7 @@ parameters:
 - name: kustomize.subpath
   value: common/oidc-authservice
   env: HUB_KUSTOMIZE_TARBALL_SUBPATH
-
 templates:
+  kind: go
   files:
-  - "*.template"
+  - "*.gotemplate"
