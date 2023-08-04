@@ -7,13 +7,23 @@ requires:
 
 parameters:
   - name: ingress.hosts
-
   - name: istio
     parameters:
       - name: namespace
         value: istio-system
       - name: ingressGateway
         value: istio-ingressgateway
+  - name: istio
+    parameters: 
+    - name: namespace
+      value: istio-system
+    - name: ingressGateway
+      breif: namespace/service-name of the ingress gateway
+    - name: ingressGateway.labels
+      brief: |
+        Labels to discover the ingress gateway. 
+        Defined as whitespace separated key=value pairs 
+        e.g. "app=istio-ingressgateway istio=ingressgateway"
 
   - name: kubeflow
     parameters:
@@ -37,9 +47,6 @@ parameters:
     env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
 
 templates:
+  kind: go
   files:
-    - "*.template"
-  extra:
-    - kind: go
-      files:
-        - "*.gotemplate"
+    - "*.gotemplate"

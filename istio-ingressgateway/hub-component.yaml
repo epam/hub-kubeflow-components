@@ -24,17 +24,17 @@ parameters:
         value: istio-system
         env: NAMESPACE
       - name: labels
-        value:
-          istio: ingressgateway
-          app: ingressgateway
+        value: >-
+          istio=${hub.componentName}
+          app=${hub.componentName}
       - name: limits
-        value:
-          cpu: 1800m
-          memory: 256Mi
+        value: >-
+          cpu=1800m
+          memory=256Mi
       - name: requests
-        value:
-          cpu: 100m
-          memory: 128Mi
+        value: >-
+          cpu=100m
+          memory=128Mi
       - name: replicas
         value: 1
       - name: cluster.serviceType
@@ -54,7 +54,16 @@ parameters:
         env: CHART_VERSION
 
 outputs:
-- name: kubernetes.labels
+- name: istio.ingressGateway.labels
+  value: ${kubernetes.labels}
+  brief: |
+    Labels to discover the ingress gateway. 
+    Defined as whitespace separated key=value pairs 
+    e.g. "app=istio-ingressgateway istio=ingressgateway"
+
+provides:
+  - istio-ingressgateway
+
 templates:
   kind: go
   files: ["*.gotemplate"]

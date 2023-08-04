@@ -20,17 +20,15 @@ service:
 
 resources:
   requests:
-{{- range $key, $value := .kubernetes.requests }}
-    {{$key}}: {{$value}}
+{{- range .kubernetes.requests | splitList " "}}
+    {{. | replace "=" ": "}}
 {{- end}}
   limits:
-{{- range $key, $value := .kubernetes.limits }}
-    {{$key}}: {{$value}}
+{{- range .kubernetes.requests | splitList " "}}
+    {{. | replace "=" ": "}}
 {{- end}}
 
-{{if .kubernetes.labels -}}
 labels: 
-{{- range $key, $value := .kubernetes.labels }}
-  {{$key}}: {{$value}}
-{{- end}}
+{{- range .kubernetes.labels | splitList " "}}
+  {{. | replace "=" ": "}}
 {{- end}}
