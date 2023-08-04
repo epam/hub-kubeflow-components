@@ -6,7 +6,9 @@ metadata:
   name: kubeflow-gateway
 spec:
   selector:
-    app: "${istio.ingressGateway}"
+  {{- range .istio.ingressGateway.labels | splitList " "}}
+    {{. | replace "=" ": "}}
+  {{- end}}
   servers:
   - port:
       number: 80
