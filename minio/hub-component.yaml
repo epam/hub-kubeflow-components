@@ -14,6 +14,9 @@ parameters:
     value: us-east-1
   - name: name
     value: default
+  - name: acl
+    brief: see more https://min.io/docs/minio/linux/administration/identity-access-management/policy-based-access-control.html
+    value: none
 
 - name: storage
   empty: allow
@@ -87,13 +90,13 @@ outputs:
 - name: bucket.kind
   value: minio
 - name: bucket.host
-  value: minio.${minio.namespace}.svc
+  value: minio.${kubernetes.namespace}.svc
 - name: bucket.port
   value: 9000
 - name: bucket.name
 - name: bucket.region
 - name: bucket.endpoint
-  value: http://minio.${minio.namespace}.svc:9000
+  value: http://minio.${kubernetes.namespace}.svc:9000
 
 templates:
   kind: go

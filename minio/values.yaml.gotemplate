@@ -34,7 +34,7 @@ users:
 
 buckets:
 - name: {{.bucket.name}}
-  policy: none
+  policy: {{.bucket.policy}}
   purge: false
   # versioning: false
 
