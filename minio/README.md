@@ -20,6 +20,7 @@ The following component level parameters has been defined `hub-component.yaml`:
 | `bucket.accessKey` | MinIO access key | | `x` |
 | `bucket.secretKey` | MinIO secret key | | `x` |
 | `bucket.region` | Storage bucket region  | `us-east-1` | `x` |
+| `bucket.acl` | Bucket policy see [here](https://min.io/docs/minio/linux/administration/identity-access-management/policy-based-access-control.html)  | `none` | `x` |
 | `minio.mode` | MinIO mode, i.e. standalone or distributed or gateway |  `distributed or standalone if kubernetes.replicas = 1` | `x` |
 | `minio.logLevel` | Log level for minio container | `info` | `x` |
 | `ingress.protocol` | HTTP or HTTPS schema | `http` | |
