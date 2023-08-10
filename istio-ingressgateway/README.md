@@ -8,7 +8,7 @@ The Istio Ingressgateway is an Envoy proxy deployed in a Kubernetes cluster that
 
 ## Dependencies
 
-* Kubernetes cluster
+* Kubernetes
 * Istio
 
 ## Parameters

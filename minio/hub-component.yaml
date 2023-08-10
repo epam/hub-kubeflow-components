@@ -1,4 +1,3 @@
----
 version: 1
 kind: component
 
@@ -7,7 +6,6 @@ requires:
 - helm
 
 parameters:
-
 - name: bucket
   parameters:
   - name: accessKey
@@ -17,26 +15,29 @@ parameters:
   - name: name
     value: default
 
-- name: storage.class
-  value: default
+- name: storage
+  empty: allow
+  parameters: 
+  - name: class
+  - name: claim
+  - name: size
+    value: 20Gi
 
-- name: minio
+- name: kubernetes
   parameters:
   - name: namespace
     value: minio
     env: NAMESPACE
   - name: replicas
     value: 4
-  - name:  existingClaim
-    empty: allow
-  - name: storageSize
-    value: 20Gi
-  - name: requests.memory
-    value: 4Gi
-  - name: mode
-    value: distributed
-  - name: requests.ram
-    value: 1Gi
+  - name: requests
+    value: >-
+      memory=1Gi
+
+- name: minio
+  parameters:
+  - name: mode  
+    value: "#{kubernetes.replicas == 1 ? 'standalone' : 'distributed'}"
   - name: logLevel
     value: info
 
@@ -67,16 +68,12 @@ parameters:
     value: RELEASE.2022-12-13T00-23-28Z
 
 - name: ingress
+  empty: allow
   parameters:
   - name: protocol
     value: http
   - name: hosts
-    empty: allow
-  - name: fileSize
-    empty: allow
-    value: 640m
   - name: class
-    empty: allow
 
 - name: nginx
   empty: allow
@@ -99,9 +96,6 @@ outputs:
   value: http://minio.${minio.namespace}.svc:9000
 
 templates:
+  kind: go
   files:
-  - "*.template"
-  extra:
-  - kind: go
-    files:
-    - "*.gotemplate"
+  - "*.gotemplate"
