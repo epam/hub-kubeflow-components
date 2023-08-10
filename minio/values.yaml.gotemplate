@@ -1,0 +1,47 @@
+# see all values here: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
+image:
+  repository: {{.docker.image}}
+  tag: {{.docker.tag}}
+  pullPolicy: IfNotPresent
+
+mcImage:
+  repository: {{.docker.mcImage}}
+  tag: {{.docker.mcTag}}
+  pullPolicy: IfNotPresent
+
+## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
+mode: {{.minio.mode}}
+
+replicas: {{.minio.replicas}}
+persistence:
+  enabled: true
+{{- if .storage.claim}}}
+  existingClaim: "{{.storage.claim}}"
+{{- end}}
+{{- if .storage.class}}
+  storageClass: "{{.storage.class}}"
+{{- end}}
+  VolumeName: ""
+  accessMode: ReadWriteOnce
+{{- if .storage.size}}
+  size: {{.storage.size}}
+{{- end}}
+
+users:
+- accessKey: "{{.bucket.accessKey}}"
+  secretKey: "{{.bucket.secretKey}}"
+  policy: consoleAdmin
+
+buckets:
+- name: {{.bucket.name}}
+  policy: none
+  purge: false
+  # versioning: false
+
+{{- if .kubernetes.requests}}
+resources:
+  requests:
+{{- range .kubernetes.requests | splitList " "}}
+    {{. | replace "=" ": "}}
+{{- end}}
+{{- end}}

@@ -1,8 +1,46 @@
 # MinIO
 
-## Overview of the MinIO
+MinIO is a Kubernetes-native object store designed to S3 compatible storage for cloud-native workloads
 
-MinIO is a Kubernetes-native object store designed to provide high performance with an S3-compatible API.
+## Dependencies
+
+* [Helm](https://helm.sh/docs/intro/install/)
+
+## Requirements
+
+* Kubernetes
+
+## Parameters
+
+The following component level parameters has been defined `hub-component.yaml`:
+
+| Name | Description | Default Value | Required |
+| :--- | :---        | :---          | :---:     |
+| `bucket.name` | Storage bucket name | `default` | `x` |
+| `bucket.accessKey` | MinIO access key | | `x` |
+| `bucket.secretKey` | MinIO secret key | | `x` |
+| `bucket.region` | Storage bucket region  | `us-east-1` | `x` |
+| `minio.mode` | MinIO mode, i.e. standalone or distributed or gateway |  `distributed or standalone if kubernetes.replicas = 1` | `x` |
+| `minio.logLevel` | Log level for minio container | `info` | `x` |
+| `ingress.protocol` | HTTP or HTTPS schema | `http` | |
+| `ingress.hosts` | Space separated list of hosts for ingress | | | 
+| `ingress.class` | Name of ingress class in kubernetes | | |
+| `kubernetes.namespace` | Name of kubernetes namesapce where to deploy MinIO | `minio` | `x` |
+| `kubernetes.replicas` | Amount of MinIO replicas | `4` | `x` |
+| `kubernetes.requests` | Kubernetes requests in the format: space separated list of `key=value` | `memory=1Gi` | |
+| `storage.class` | Name of kubernetes storage class | | |
+| `storage.claim` | A manually managed Persistent Volume and Claim | | |
+| `storage.size` | Storage size | `20Gi` | |
+| `helm.repo` | Helm chart repository URL | `https://charts.min.io/` | `x` |
+| `helm.chart` | Helm chart name | `minio` | `x` |
+| `helm.version` | Helm chart version | `4.0.2` | `x` |
+| `helm.baseValuesFile` | Helm base values file | `values.yaml` | `x` |
+| `docker.image` | MinIO docker image | `quay.io/minio/minio` | `x` |
+| `docker.tag` | MinIO docker image tag | `RELEASE.2022-06-02T02-11-04Z` | `x` |
+| `docker.mcImage` | MinIO client docker image | `quay.io/minio/mc` | `x` |
+| `docker.mcTag` | MinIO client docker image tag | | `x` |
+| `docker.jqImage` | JQ docker image | `bskim45/helm-kubectl-jq` | `x` |
+| `docker.jqTag` | JQ docker image tag | `3.1.0` | `x` |
 
 ## Implementation Details
 
@@ -11,45 +49,23 @@ The component has the following directory structure:
 ```text
 ./
 ├── hub-component.yaml              # Component definition
-├── values-ingress.yaml.gotemplate  # Helm chart ingress value template
-└── values.yaml.template            # Helm chart value template
+├── values-ingress.yaml.gotemplate  # Ingress specific helm chart values 
+└── values.yaml.gotemplate          # Helm chart value template
 ```
 
-## Parameters
+### Minio Mode
 
-The following component level parameters has been defined `hub-component.yaml`:
+Parameter `minio.mode` is a `cel` expression: it can be either `distributed` or `standalone` depending on the value of `kubernetes.replicas` parameter. Another allowed parameter `gateway` is not supported yet.
 
-| Name | Description | Default Value |
-| :--- | :---        | :---          |
-| `component.ingress.protocol` | HTTP or HTTPS schema | `http` |
-| `component.ingress.host` | Ingress host | `${hub.componentName}.${dns.domain}` |
-| `component.ingress.class` | Name of ingress class in kubernetes | |
-| `component.bucket.region` | Storage bucket region  | `us-east-1` |
-| `component.bucket.name` | Storage bucket name | `default` |
-| `component.storage-class.name` | Name of kubernetes storage class | `default` |
-| `component.minio.accessKey` | MinIO access key | |
-| `component.minio.secretKey` | MinIO secret key | |
-| `component.minio.namespace` | Name of kubernetes namesapce where to deploy MinIO | `minio` |
-| `component.minio.replicas` | Amount of MinIO replicas | `4` |
-| `component.minio.volumeType` | Persistence volume type | `gp2` |
-| `component.minio.existingClaim` | A manually managed Persistent Volume and Claim | |
-| `component.minio.storageSize` | Storage size | `20Gi` |
-| `component.minio.requests.memory` | Resource memory request | `4Gi` |
-| `component.minio.mode` | MinIO mode, i.e. standalone or distributed or gateway | `distributed` |
-| `component.minio.requests.ram` | | `1Gi` |
-| `helm.repo` | Helm chart repository URL | `https://charts.min.io/` |
-| `helm.chart` | Helm chart name | `minio` |
-| `helm.version` | Helm chart version | `4.0.2` |
-| `helm.baseValuesFile` | Helm base values file | `values.yaml` |
-| `helm.logLevel` | Helm log level | `info` |
-| `docker.image` | MinIO docker image | `quay.io/minio/minio` |
-| `docker.tag` | MinIO docker image tag | `RELEASE.2022-06-02T02-11-04Z` |
-| `docker.mcImage` | MinIO client docker image | `quay.io/minio/mc` |
-| `docker.mcTag` | MinIO client docker image tag | |
-| `docker.jqImage` | JQ docker image | `bskim45/helm-kubectl-jq` |
-| `docker.jqTag` | JQ docker image tag | `3.1.0` |
+## Ingress
+
+Leave `ingress.hosts` empty if you don't want to deploy ingress resource
+
+> Note: nginx parameters are deprecated and will be moved to the `pre-deploy` hooks at the stack level
 
 ## See Also
 
+* [S3 Component](https://github.com/epam/hub-kubeflow-components/tree/develop/s3-bucket)
+* [GS Bucket Component](https://github.com/epam/hub-google-components/tree/develop/gsbucket)
 * [MinIO](https://min.io/)
 * MinIO documentation for [Hybrid Cloud](https://docs.min.io/minio/k8s/)

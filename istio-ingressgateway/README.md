@@ -13,10 +13,10 @@ The Istio Ingressgateway is an Envoy proxy deployed in a Kubernetes cluster that
         subDir: istio-ingressgateway
 ```
 
-## Requirements
+## Dependencies
 
-- Helm
-- Kubernetes
+* Kubernetes
+* Istio
 
 ## Parameters
 
@@ -113,7 +113,7 @@ This component is using `kubernetes.labels` values of this parameter however may
 
 ## See Aslo
 
-- [Istio Discovery](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
-- [Istio Base](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
-- [Istio](https://istio.io/)
-- [Nginx](https://github.com/epam/hub-kubeflow-components/tree/main/nginx-ingress): ingress controller
+* [Istio Discovery](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+* [Istio Base](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+* [Istio](https://istio.io/)
+* [Nginx](https://github.com/epam/hub-kubeflow-components/tree/main/nginx-ingress): ingress controller
