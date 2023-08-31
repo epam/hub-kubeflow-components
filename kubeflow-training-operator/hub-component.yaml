@@ -5,24 +5,18 @@ requires:
   - kubernetes
 
 parameters:
-- name: component.kubeflow
+- name: kubernetes.namespace
+  env: NAMESPACE
+  value: kubeflow
+- name: kubeflow
   parameters:
-    - name: namespace
-      value: kubeflow
-      env: NAMESPACE
     - name: version
       value: v1.5.1
       env: VERSION
-    - name: volumes.kustomize.tarball
-      value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
-      env: HUB_KUSTOMIZE_TARBALL_URL      
-    - name: volumes.kustomize.subpath
-      value: apps/training-operator/upstream
-      env: HUB_KUSTOMIZE_TARBALL_SUBPATH      
-# - name: component.istio
-#   parameters:
-#   - name: namespace
-#   - name: ingressGateway
-# - name: hub.backup.file
-#   empty: allow
-#   env: BACKUP_FILE
+
+- name: kustomize.tarball.url
+  value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
+  env: HUB_KUSTOMIZE_TARBALL_URL
+- name: kustomize.subpath
+  value: apps/training-operator/upstream
+  env: HUB_KUSTOMIZE_TARBALL_SUBPATH

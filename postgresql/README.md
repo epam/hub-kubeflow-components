@@ -21,7 +21,7 @@ The following component level parameters has been defined `hub-component.yaml`
 | :--- | :---        | :---          |
 | `dns.domain` | Domain name of the kubeflow stack | |
 | `component.storage-class.name` | | |
-| `postgresql.namespace` | | `database` |
+| `kubernetes.namespace` | | `database` |
 | `postgresql.port` | | `3306` |
 | `postgresql.user` | database user | |
 | `postgresql.password` | database password | |

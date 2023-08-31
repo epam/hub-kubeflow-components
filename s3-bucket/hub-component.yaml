@@ -6,20 +6,25 @@ requires:
   - terraform
 
 parameters:
-  - name: bucket.name
-    env: TF_VAR_name
-  - name: bucket.acl
-    value: "private"
-    env: TF_VAR_acl
-  - name: cloud.region
-    value: "eu-central-1"
-    fromEnv: AWS_REGION
-  - name: cloud.profile
-    value: "default"
-    fromEnv: AWS_PROFILE
-  - name: bucket.region
-    value: ${cloud.region}
-    env: TF_VAR_bucket_region
+  - name: bucket
+    parameters:
+    - name: name
+      env: TF_VAR_name
+    - name: acl
+      value: "private"
+      env: TF_VAR_acl
+    - name: region
+      value: ${cloud.region}
+      env: TF_VAR_bucket_region
+
+  - name: cloud
+    parameters:
+    - name: region
+      value: "eu-central-1"
+      fromEnv: AWS_REGION
+    - name: profile
+      value: "default"
+      fromEnv: AWS_PROFILE
 
 outputs:
   - name: bucket.kind

@@ -7,12 +7,13 @@ requires:
 
 parameters:
 
+  - name: kubernetes.namespace
+    env: NAMESPACE
+    value: kubeflow
   - name: kubeflow
     parameters:
       - name: name
         value: kubeflow-pipelines
-      - name: namespace
-        env: NAMESPACE
       - name: version
         value: v1.6.1
         env: VERSION
@@ -42,12 +43,12 @@ parameters:
       - name: port
       - name: name
 
-  - name: kustomize.tarball
+  - name: kustomize.tarball.url
     value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
     env: HUB_KUSTOMIZE_TARBALL_URL
   - name: kustomize.subpath
     value: "apps/pipeline/upstream/base: apps/pipeline/upstream/third-party/metacontroller/base:crds/metacontroller"
-    env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
+    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 templates:
   files:

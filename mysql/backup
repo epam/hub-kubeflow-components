@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 if test -z "$HUB_BACKUP_DIR"; then
     echo "Error: HUB_BACKUP_DIR has not been defined"

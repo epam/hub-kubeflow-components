@@ -6,6 +6,9 @@ requires:
 
 parameters:
 - name: hub.componentName
+- name: kubernetes.namespace
+  env: NAMESPACE
+  value: mlflow
 
 - name: ingress
   empty: allow
@@ -16,9 +19,6 @@ parameters:
 
 - name: mlflow
   parameters:
-  - name: namespace
-    env: NAMESPACE
-    value: mlflow
   - name: version
     value: 2.3.0
   - name: image.name

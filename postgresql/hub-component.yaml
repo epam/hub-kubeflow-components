@@ -11,11 +11,12 @@ parameters:
   env: COMPONENT_NAME
 - name: storage.class
   empty: allow
+- name: kubernetes.namespace
+  value: postgresql
+  env: NAMESPACE
+
 - name: postgresql
   parameters:
-  - name: namespace
-    value: postgresql
-    env: NAMESPACE
   - name: port
     value: 5432
   - name: user
@@ -46,7 +47,7 @@ parameters:
 
 outputs:
 - name: postgresql.host
-  value: ${hub.componentName}.${postgresql.namespace}.svc
+  value: ${hub.componentName}.${kubernetes.namespace}.svc
 - name: postgresql.port
 - name: postgresql.database
 - name: postgresql.user

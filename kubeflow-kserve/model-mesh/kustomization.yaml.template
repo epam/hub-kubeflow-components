@@ -6,7 +6,7 @@ generatorOptions:
 bases:
 - kustomize/default
 
-namespace: "${component.kserve.modelmesh.namespace}"
+namespace: "${kserve.modelmesh.namespace}"
 
 patchesJson6902:
 - target:

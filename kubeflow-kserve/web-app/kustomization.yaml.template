@@ -3,7 +3,7 @@ kind: Kustomization
 generatorOptions:
   disableNameSuffixHash: true
 
-namespace: "${component.kubeflow.namespace}"
+namespace: "${kubernetes.namespace}"
 
 bases:
 - kustomize/overlays/kubeflow

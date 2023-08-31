@@ -6,7 +6,7 @@ requires:
   - kubernetes
 
 parameters:
-  - name: kubeflow.namespace
+  - name: kubernetes.namespace
     env: NAMESPACE
   - name: kubeflow.version
     value: v1.6.1
@@ -14,7 +14,7 @@ parameters:
   - name: kustomize.tarball.url
     value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
     env: HUB_KUSTOMIZE_TARBALL_URL
-  - name: kustomize.tarball.dirs
+  - name: kustomize.subpath
     value: "apps/admission-webhook/upstream"
     env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 

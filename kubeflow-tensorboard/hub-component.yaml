@@ -5,7 +5,7 @@ requires:
   - kubernetes
 
 parameters:
-  - name: kubeflow.namespace
+  - name: kubernetes.namespace
     value: kubeflow
     env: NAMESPACE
   - name: kubeflow.version
@@ -14,8 +14,8 @@ parameters:
   - name: kustomize.tarball.url
     value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
     env: HUB_KUSTOMIZE_TARBALL_URL
-  - name: kustomize.tarball.dirs
-    env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
+  - name: kustomize.subpath
+    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
     value: "apps/tensorboard/tensorboard-controller/upstream:../tensorboard-controller/kustomize apps/tensorboard/tensorboards-web-app/upstream:../tensorboards-web-app/kustomize"
 
 templates:

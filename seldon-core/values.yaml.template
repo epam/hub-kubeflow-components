@@ -5,7 +5,7 @@ ambassador:
   singleNamespace: false
 istio:
   enabled: true
-  gateway: ${component.seldon.namespace}/${hub.componentName}-gateway
+  gateway: ${kubernetes.namespace}/${hub.componentName}-gateway
 keda:
   enabled: false
 certManager:

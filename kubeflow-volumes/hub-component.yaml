@@ -5,7 +5,7 @@ requires:
   - kubernetes
 
 parameters:
-  - name: kubeflow.namespace
+  - name: kubernetes.namespace
     env: NAMESPACE
     value: kubeflow
   - name: kubeflow.version
