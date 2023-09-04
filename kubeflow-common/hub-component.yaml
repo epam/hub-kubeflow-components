@@ -7,6 +7,7 @@ requires:
 
 parameters:
   - name: ingress.hosts
+<<<<<<< HEAD
   - name: istio
     parameters:
       - name: namespace
@@ -24,6 +25,15 @@ parameters:
         Labels to discover the ingress gateway. 
         Defined as whitespace separated key=value pairs 
         e.g. "app=istio-ingressgateway istio=ingressgateway"
+=======
+
+  - name: istio
+    parameters:
+      - name: namespace
+        value: istio-system
+      - name: ingressGateway
+        value: istio-ingressgateway
+>>>>>>> 91ee8ac (Standardize parameters and README for components:)
 
   - name: kubeflow
     parameters:

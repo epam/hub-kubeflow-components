@@ -1,10 +1,14 @@
-# Istio-ingressgateway
+# Istio Ingress Gateway
 
-The Istio Ingressgateway is an Envoy proxy deployed in a Kubernetes cluster that allows access to services running in the cluster from the outside. The Ingressgateway is configured using Istio's Gateway and VirtualService resources.
+The Istio Ingress Gateway is an Envoy proxy deployed in a Kubernetes cluster that allows access to services running in the cluster from the outside. The Ingressgateway is configured using Istio's Gateway and VirtualService resources.
 
-## TLDR
+## TL;DR
+
+To enable component add the following to the `hub.yaml` file:
 
 ```yaml
+components:
+>>>>>>> a306329 (Standardize parameters and README for components:)
   - name: istio-ingressgateway
     source:
       dir: components/istio-ingressgateway
@@ -13,32 +17,38 @@ The Istio Ingressgateway is an Envoy proxy deployed in a Kubernetes cluster that
         subDir: istio-ingressgateway
 ```
 
+To deploy component run:
+
+```bash
+hubctl stack deploy -c "istio-ingressgateway"
+```
+
 ## Dependencies
 
 * Kubernetes
-* Istio
+* Helm
+* [Istio Discovery](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+* Optional: Kubernetes Ingress Controller (e.g. [nginx](https://github.com/epam/hub-kubeflow-components/tree/develop/nginx-ingress))
 
 ## Parameters
 
 This compnent consumes following parameters
 
-| Name      | Description | Default Value | Required
-| --------- | ---------   | ---------     | :---: |
-| `kubernetes.namespace` | Should be the same as istio  | `istio-system` | `x`
-| `kubernetes.replicas` | ReplicaCount definition  | `1` | `x`
-| `kubernetes.serviceType` | Defines kubernetes service type to expose ingressgateway | `ClusterIP` | `x`
-| `kubernetes.labels` | key-value pairs separated by `=` and ` ` to define ingress gateway service selector | `x`
-| `kubernetes.requests` | similar to `kubernetes.labels` request quota definition | see component | `x`
-| `kubernetes.limits` | similar to `kubernetes.labels` request limit quota definition | see component | `x`
-| `istio.version` | Version of istio control plane | `v1.15.0` | `x`
-| `ingress.hosts` | If defined then Ingress resource will be created infront the Kubernetes Service |  | 
-| `ingress.class` | Ingress class reference |  | 
-| `ingress.protocol` | Controls `tls` configuration for ingress (when `https`) |  | 
-| `nginx.*` | Deprecated, these parameters should go to stack  level hook |  | 
-| `helm.repo` | Reference to the helm chart repository | [link](https://istio-release.storage.googleapis.com/charts) | `x`
-| `helm.name` | Helm chart name to use | `gateway` | `x`
+| Name                             | Description                                           | Default Value                                         | Required |
+|----------------------------------|-------------------------------------------------------|-------------------------------------------------------|:--------:|
+| `ingress.protocol`               | Ingress traffic protocol (schema)                     | `http`                                                |          |
+| `ingress.class`                  | Name of ingress class in kubernetes                   |                                                       |          |
+| `ingress.hosts`                  | Whitespace separated list of ingress hosts |                                                       |          |
+| `kubernetes.namespace`           | Kubernetes namespace                                  | `istio-system`                                        |          |
+| `kubernetes.replicas`            | Amount of replicas                                    | `1`                                                   |          |
+| `kubernetes.serviceType` | Kubernetes types of services                          | `ClusterIP`                                           |          |
+| `helm.chart`                     | Helm chart name                                       | `gateway`                                              |          |
+| `helm.repo`                      | Helm chart repository URL                             | [URL](https://istio-release.storage.googleapis.com/charts)|          |
+| `helm.version`                   | Helm chart version                                    | `1.15.0`                                              |          |
 
 ### Outputs
+
+This component produces following outputs
 
 | Name      | Description | Value 
 | --------- | ---------   | --------- 
@@ -68,7 +78,7 @@ Deployment follows to the following algorithm:
 |------------------------|---------------------------------------|------------------------|:--------:|
 | `istio.ingressGateway` | Name of Istio ingress gateway service | `${hub.componentName}` |          |
 
-### Special Case for Labels
+### Special Note for Labels
 
 Istio CRD `Gateway` is using labels to discover service of Ingress Gateway. These labels can be defined by the user via `kubernetes.labels` parameter.
 
@@ -115,5 +125,14 @@ This component is using `kubernetes.labels` values of this parameter however may
 
 * [Istio Discovery](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
 * [Istio Base](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+<<<<<<< HEAD
 * [Istio](https://istio.io/)
 * [Nginx](https://github.com/epam/hub-kubeflow-components/tree/main/nginx-ingress): ingress controller
+=======
+
+## See also
+
+* [Istio Ingress Gateway](https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/)
+* [Istio Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/)
+
+>>>>>>> a306329 (Standardize parameters and README for components:)

@@ -7,15 +7,19 @@ In the nutshel this component installs an Istio EnvoyFilter that intercepts all 
 * If the session is invalid, the user is redirected to the OIDC provider (Dex) for authentication
 * If the session is valid, it will add a `kubeflow-userid` header and forward the request to Kubeflow. Kubeflow then will use this header to identify the user and lookup it's Kubeflow Profile.
 
-## Requirements
+## TL;DR
 
-* [kubectl](http://kubectl.docs.kubernetes.io)
+To deploy current component add the following stanza to your `hub.yaml`
 
-## Dependencies
-
-* `Istio Discovery`: Istio exist all required CRDs such as `Gateway` or `EnvoyFilter` available
-* `Istio Ingressgateway`: Istio ingress gateway service is available
-* `dex`
+```yaml
+components:
+- name: kubeflow-authn
+  source:
+    dir: components/kubeflow-authn
+    git:
+      remote: https://github.com/epam/kubeflow-components.git
+      subDir: kubeflow-authn
+```
 
 ## Parameters
 
@@ -24,21 +28,29 @@ The following component level parameters has been defined for this component:
 | Name      | Description | Default Value | Required
 | --------- | ---------   | ---------     | :---: |
 | `ingress.protocol` | HTTP or HTTPS schema | `https` | `x`
-| `ingress.hosts` | HTTP or HTTPS schema | |
+| `ingress.hosts` | Whitespace separated list of ingress hosts. However first will be used for OIDC auth flow | |
 | `oidc.issuer` | OIDC auth URL (Dex) |  | `x`
 | `kubeflow.authn.oidcProvider` | Kubeflow OIDC auth URL | `${oidc.issuer}` | `x`
 | `kubeflow.authn.oidcSecret` | Hard to guess OIDC secret passphrase between Kubeflow and Dex (recommended: randomly generated string) | | `x`
-| `kubeflow.authn.sessionMaxAge` | Max age (in seconds) for user session | `86400` | `x`
+| `kubeflow.authn.sessionMaxAge` | Max age (in seconds) for user session | `86400` |
 | `kubernetes.namespace` | Target kubernetes namespace | `istio-system` | `x`
-| `kubeflow.version` | Kubeflow version | `v1.6.1` | `x`
-| `kubeflow.authn.oidcProvider` | TBD |  | `x`
+| `kubeflow.version` | Kubeflow version | `v1.6.1` | 
+| `kubeflow.authn.oidcProvider` | TBD |  | 
 | `kubeflow.authn.oidcAuthUrl` | TBD |  | `x`
 | `kubeflow.authn.oidcRedirectURI` | TBD |  | `x`
 | `kubeflow.authn.afterLogin` | TBD |  | `x`
 | `kubeflow.authn.oidcClientId` | TBD |  `kubeflow-client` | `x`
 | `kubeflow.authn.sessionMaxAge` | Auth session max age |  `86400` | `x`
-| `kubeflow.authn.volumeSize` | Storage config for authn |  `10Gi` | `x`
-| `istio.ingressGateway.labels` | List of labels to match Istio ingress gateway service (in the format `foo=bar bar=baz`) |  | `x`
+| `storage.volumeSize` | PV volue size to be allocated for authn replica |  `10Gi` | `x`
+
+## Dependencies
+
+* Kubenretes Cluster
+* [Helm](https://helm.sh/docs/intro/install/)
+* [Istio](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+* [Istio Ingress Gateway](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-ingressgateway)
+* Kubenretes Ingress Controller (e.g. [nginx](https://github.com/epam/hub-kubeflow-components/tree/develop/nginx-ingress))
+* OIDC Provider (e.g. [Dex](https://github.com/epam/hub-kubeflow-components/tree/develop/dex))
 
 ## TL;DR
 

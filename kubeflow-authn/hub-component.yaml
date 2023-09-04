@@ -4,56 +4,59 @@ kind: component
 
 requires:
   - kubernetes
+  - istio-ingressgateway
 
 parameters:
-  # Kubeflow protocol and host
-  - name: ingress.protocol
-  - name: ingress.hosts
-    empty: allow
-  # Base endpoint of OIDC provider, for example: https://auth.fluffy-cat-21.epam.devops.delivery/
-  - name: oidc.issuer
+- name: ingress
+  empty: allow
+  parameters:
+  - name: protocol
+    value: http
+  - name: hosts
 
-  # OIDC auth url, must be external to the cluster
-  - name: kubeflow.authn.oidcAuthUrl
+- name: oidc.issuer
+  breif: >
+    Base endpoint of OIDC provider
+    i.e. https://auth.fluffy-cat-21.epam.devops.delivery/
+
+- name: kubernetes.namespace
+  value: istio-system
+  env: NAMESPACE
+
+- name: kubeflow
+  parameters:
+  - name: version
+    value: v1.6.1
+    env: VERSION
+  - name: authn.oidcProvider
+    value: ${oidc.issuer}   
+  - name: authn.oidcAuthUrl
+    brief: OIDC auth url, must be external to the cluster
     value: ${oidc.issuer}/auth
-
-  - name: istio
-    parameters:
-      - name: namespace
-        value: istio-system
-        env: NAMESPACE
-      - name: ingressGateway
-        value: istio-ingressgateway
-  - name: kubeflow
-    parameters:
-      - name: version
-        value: v1.6.1
-        env: VERSION
-      - name: authn.oidcProvider
-        value: ${oidc.issuer}
-      - name: authn.oidcRedirectURI
-        value: ${ingress.protocol}://${ingress.hosts}/login/oidc
-        env: OIDC_REDIRECT_URI
-      - name: authn.oidcClientId
-        value: kubeflow-client
-        env: OIDC_CLIENT_ID
-      - name: authn.afterLogin
-        value: ${ingress.protocol}://${ingress.hosts}
-      - name: authn.oidcSecret
-        value: OpenID connect client mutual trust secret between oidc and Kubeflow
-        env: OIDC_SECRET
-      - name: authn.sessionMaxAge
-        value: 86400
-      - name: authn.volumeSize
-        value: 10Gi
-  - name: kustomize
-    parameters:
-      - name: tarball.url
-        value: "https://github.com/kubeflow/manifests/archive/${kubeflow.version}.tar.gz"
-        env: HUB_KUSTOMIZE_TARBALL_URL
-      - name: subpath
-        value: common/oidc-authservice
-        env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+  - name: authn.oidcRedirectURI
+    value: ${ingress.protocol}://${ingress.hosts|first}/login/oidc
+    env: OIDC_REDIRECT_URI
+  - name: authn.oidcClientId
+    value: kubeflow-client
+    env: OIDC_CLIENT_ID
+  - name: authn.afterLogin
+    value: ${ingress.protocol}://${ingress.hosts|first}
+  - name: authn.oidcSecret
+    value: OpenID connect client mutual trust secret between oidc and Kubeflow
+    env: OIDC_SECRET
+  - name: authn.sessionMaxAge
+    value: 86400
+- name: storage.volumeSize
+  value: 10Gi    
+- name: kustomize
+  parameters:
+  - name: tarball.url
+    value: "https://github.com/kubeflow/manifests/archive/${kubeflow.version}.tar.gz"
+    env: HUB_KUSTOMIZE_TARBALL_URL
+  - name: subpath
+    value: common/oidc-authservice
+    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+>>>>>>> a306329 (Standardize parameters and README for components:)
 
 templates:
   kind: go

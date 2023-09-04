@@ -7,7 +7,6 @@ requires:
   - helm
 
 parameters:
-  - name: hub.componentName
   - name: ingress
     empty: allow
     parameters:
@@ -39,18 +38,16 @@ parameters:
         value: 1
       - name: cluster.serviceType
         value: ClusterIP
-
   - name: helm
     parameters:
       - name: chart
-        value: "gateway"
+        value: gateway
         env: HELM_CHART
       - name: repo
-        empty: allow
         value: https://istio-release.storage.googleapis.com/charts
         env: HELM_REPO
       - name: version
-        value: 1.15.0
+        value: 1.18.0
         env: CHART_VERSION
 
 outputs:
@@ -62,7 +59,7 @@ outputs:
     e.g. "app=istio-ingressgateway istio=ingressgateway"
 
 provides:
-  - istio-ingressgateway
+- istio-ingressgateway
 
 templates:
   kind: go

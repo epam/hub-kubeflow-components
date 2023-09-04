@@ -19,16 +19,22 @@ service:
   type: {{.kubernetes.serviceType}}
 
 resources:
+{{- if .kubernetes.requests }}
   requests:
 {{- range .kubernetes.requests | splitList " "}}
     {{. | replace "=" ": "}}
 {{- end}}
+{{- end}}
+{{- if .kubernetes.limits }}
   limits:
 {{- range .kubernetes.requests | splitList " "}}
     {{. | replace "=" ": "}}
 {{- end}}
+{{- end}}
 
+{{- if .kubernetes.labels }}
 labels: 
 {{- range .kubernetes.labels | splitList " "}}
   {{. | replace "=" ": "}}
+{{- end}}
 {{- end}}
