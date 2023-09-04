@@ -8,9 +8,11 @@ requires:
 parameters:
   - name: kubernetes.namespace
     env: NAMESPACE
+
   - name: kubeflow.version
     value: v1.6.1
     env: VERSION
+
   - name: kustomize.tarball.url
     value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
     env: HUB_KUSTOMIZE_TARBALL_URL

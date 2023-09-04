@@ -8,14 +8,13 @@ parameters:
 - name: kubernetes.namespace
   env: NAMESPACE
   value: kubeflow
-- name: kubeflow
-  parameters:
-    - name: version
-      value: v1.5.1
-      env: VERSION
+
+- name: kubeflow.version
+  value: v1.5.1
+  env: VERSION
 
 - name: kustomize.tarball.url
-  value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}"
+  value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
   env: HUB_KUSTOMIZE_TARBALL_URL
 - name: kustomize.subpath
   value: apps/training-operator/upstream

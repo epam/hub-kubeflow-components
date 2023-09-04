@@ -1,6 +1,7 @@
-# Kubeflow Volumes Web Application
+# Kubeflow Training Operator
 
-This web application allows user to review and delete persistent volumes that they do not need anymore
+Training operator provides Kubernetes custom resources that makes it easy to run distributed or
+non-distributed TensorFlow/PyTorch/Apache MXNet/XGBoost/MPI jobs on Kubernetes.
 
 ## TL;DR
 
@@ -15,16 +16,14 @@ requires:
   - kubernetes
   
 components:  
-  - name: kubeflow-volumes
+  - name: kubeflow-training-operator
     source:
-      dir: components/kubeflow-volumes
+      dir: components/kubeflow-training-operator
       git:
         remote: https://github.com/epam/kubeflow-components.git
-        subDir: kubeflow-volumes
+        subDir: kubeflow-training-operator
     depends:
-      - kubeflow-common
-      - kubeflow-profiles
-      - istio-ingressgateway
+      - kubeflow-common  
 EOF
 
 hubctl stack init
@@ -33,10 +32,9 @@ hubctl stack deploy
 
 ## Requirements
 
-- Requires [kustomize](https://kustomize.io)
+- Kubernetes
+- [kustomize](https://kustomize.io) CLI.
 - [kubeflow-common](/kubeflow-common)
-- [kubeflow-profiles](/kubeflow-profiles)
-- [istio-ingressgateway](/istio-ingressgateway)
 
 ## Parameters
 
@@ -45,10 +43,9 @@ The following component level parameters has been defined `hub-component.yaml`:
 | Name                    | Description                                    | Default Value                                                               | Required 
 |-------------------------|------------------------------------------------|-----------------------------------------------------------------------------|:--------:|
 | `kubernetes.namespace`  | Target Kubernetes namespace for this component | `kubeflow`                                                                  |          |
-| `kubeflow.version`      | Version of Kubeflow                            | `v1.6.1`                                                                    |          |
+| `kubeflow.version`      | Version of Kubeflow                            | `v1.5.1`                                                                    |          |
 | `kustomize.tarball.url` | URL to kubeflow tarball archive                | `https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}` |          |
-| `kustomize.subpath`     | Directories from kubeflow tarball archive      | `apps/volumes-web-app/upstream`                                                                            |          |
-
+| `kustomize.subpath`     | Directories from kubeflow tarball archive      |                                                                             |          |
 
 ## Implementation Details
 
@@ -62,3 +59,6 @@ The component has the following directory structure:
 ```
 This component uses Kustomize extension and follows common design guidelines for Kustomize components.
 
+## See Also
+
+* Kubeflow training operator [github](https://github.com/kubeflow/training-operator)

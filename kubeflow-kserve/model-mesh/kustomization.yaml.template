@@ -19,11 +19,11 @@ patchesJson6902:
       value: |-
         {
           "type": "s3",
-          "access_key_id": "${component.bucket.accessKey}",
-          "secret_access_key": "${component.bucket.secretKey}",
-          "endpoint_url": "${component.bucket.endpoint}",
-          "default_bucket": "${component.bucket.name}",
-          "region": "${component.bucket.region}"
+          "access_key_id": "${bucket.accessKey}",
+          "secret_access_key": "${bucket.secretKey}",
+          "endpoint_url": "${bucket.endpoint}",
+          "default_bucket": "${bucket.name}",
+          "region": "${bucket.region}"
         }
 - target:
     version: v1
@@ -34,6 +34,6 @@ patchesJson6902:
       path: /stringData/etcd_connection
       value: |
         {
-          "endpoints": "${component.etcd.endpoint}",
+          "endpoints": "${etcd.endpoint}",
           "root_prefix": "modelmesh-serving"
         }

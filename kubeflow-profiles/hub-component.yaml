@@ -9,6 +9,7 @@ parameters:
   - name: kubernetes.namespace
     env: NAMESPACE
     value: kubeflow
+
   - name: kubeflow.version
     value: v1.5.1
     env: VERSION
