@@ -7,23 +7,23 @@ requires:
   - helm
 
 parameters:
-  - name: istio
+  - name: kubernetes
     parameters:
       - name: namespace
         value: istio-system
         env: NAMESPACE
+
+  - name: helm
+    parameters:
+      - name: repo
+        value: https://istio-release.storage.googleapis.com/charts
+        env: HELM_REPO
+      - name: chart
+        env: HELM_CHART
+        value: "base"
       - name: version
         value: 1.15.0
         env: CHART_VERSION
-  - name: helm.chart
-    parameters:
-      - name: name
-        value: "base"
-        env: HELM_CHART
-      - name: repo
-        empty: allow
-        value: https://istio-release.storage.googleapis.com/charts
-        env: HELM_REPO
 
 templates:
   files:

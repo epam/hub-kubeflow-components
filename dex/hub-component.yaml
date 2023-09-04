@@ -7,79 +7,78 @@ requires:
   - helm
 
 parameters:
-
-- name: ingress
-  parameters:
-  - name: protocol
-    value: https
-    env: INGRESS_PROTOCOL
-  - name: class
-    empty: allow
-  - name: ssoUrlPrefix
-    value: dex
-  - name: hosts
-    empty: allow
-
-- name: kubernetes
-  parameters:
-  - name: namespace
-    value: kube-ingress
-    env: NAMESPACE
-
-- name: dex
-  parameters:
-  - name: issuer
-    value: ${ingress.protocol}://${ingress.hosts}
-  - name: image.repo
-    value: ghcr.io/dexidp/dex
-  - name: image.tag
-    value: v2.32.0
-
-  - name: passwordDb
-    empty: allow
+  - name: ingress
     parameters:
-    - name: email
-    - name: password
+      - name: protocol
+        value: https
+        env: INGRESS_PROTOCOL
+      - name: class
+        empty: allow
+      - name: ssoUrlPrefix
+        value: dex
+      - name: hosts
+        empty: allow
 
-  - name: connectors
-    empty: allow
+  - name: kubernetes
     parameters:
-    - name: ldap
-      empty: allow
-      parameters:
-      - name: host
-      - name: dn
-      - name: usernamePrompt
-        value: Username
-      - name: password
-      - name: search.dn
-      - name: search.usernameAttr
-        value: uid
-      - name: search.filter
-        value: (objectClass=user)
-      - name: search.idAttr
-        value: uid
-      - name: groupSearch.dn
-        value: ${dex.connectors.ldap.search.dn}
+      - name: namespace
+        value: kube-system
+        env: NAMESPACE
 
-    - name: okta
-      empty: allow
-      parameters:
+  - name: dex
+    parameters:
       - name: issuer
-      - name: clientId
-      - name: clientSecret
+        value: ${ingress.protocol}://${ingress.hosts}
+      - name: image.repo
+        value: ghcr.io/dexidp/dex
+      - name: image.tag
+        value: v2.32.0
 
-- name: helm
-  parameters:
-  - name: repo
-    value: https://charts.dexidp.io
-    env: HELM_REPO
-  - name: chart
-    value: dex
-    env: HELM_CHART
-  - name: version
-    value: 0.13.0
-    env: HELM_CHART_VERSION
+      - name: passwordDb
+        empty: allow
+        parameters:
+          - name: email
+          - name: password
+
+      - name: connectors
+        empty: allow
+        parameters:
+          - name: ldap
+            empty: allow
+            parameters:
+              - name: host
+              - name: dn
+              - name: usernamePrompt
+                value: Username
+              - name: password
+              - name: search.dn
+              - name: search.usernameAttr
+                value: uid
+              - name: search.filter
+                value: (objectClass=user)
+              - name: search.idAttr
+                value: uid
+              - name: groupSearch.dn
+                value: ${dex.connectors.ldap.search.dn}
+
+          - name: okta
+            empty: allow
+            parameters:
+              - name: issuer
+              - name: clientId
+              - name: clientSecret
+
+  - name: helm
+    parameters:
+      - name: repo
+        value: https://charts.dexidp.io
+        env: HELM_REPO
+      - name: chart
+        value: dex
+        env: HELM_CHART
+      - name: version
+        value: 0.13.0
+        env: HELM_CHART_VERSION
 
 outputs:
   - name: dex.api.endpoint
@@ -88,6 +87,6 @@ outputs:
 
 templates:
   extra:
-  - kind: go
-    files:
-    - "*.gotemplate"
+    - kind: go
+      files:
+        - "*.gotemplate"

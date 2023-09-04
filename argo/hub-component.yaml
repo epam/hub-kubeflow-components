@@ -2,85 +2,82 @@ version: 1
 kind: component
 
 requires:
-- kubernetes
-- helm
-
-lifecycle:
-  verbs:
-  - deploy
-  - undeploy
-  - backup
+  - kubernetes
+  - helm
 
 parameters:
-- name: ingress
-  parameters:
-  - name: protocol
-    value: http
-  - name: hosts
-    empty: allow
-    env: INGRESS_HOSTS
-
-- name: argo
-  parameters:
-  - name: namespace
-    value: argo
-    env: NAMESPACE
-  - name: workflowNamespace
-    value: ${argo.namespace}
-  - name: version
-    value: v3.4.5
-  - name: executor
+  - name: ingress
     parameters:
-    - name: registry
-      value: "quay.io"
-    - name: repository
-      value: "argoproj/argoexec"
-    - name: tag
-      empty: allow
+      - name: protocol
+        value: http
+      - name: hosts
+        empty: allow
+        env: INGRESS_HOSTS
 
-- name: helm
-  parameters:
-  - name: repo
-    env: HELM_REPO
-    value: https://argoproj.github.io/argo-helm
-  - name: chart
-    value: argo-workflows
-    env: HELM_CHART
-  - name: chartVersion
-    value: 0.22.15
-    env: HELM_CHART_VERSION
-  - name: valuesFile
-    value: values.yaml
-    env: CHART_VALUES_FILE
+  - name: kubernetes
+    parameters:
+      - name: namespace
+        value: argo
+        env: NAMESPACE
+      - name: version
+        value: v3.4.5
 
-- name: bucket
-  empty: allow
-  parameters:
-  - name: host
-    env: BUCKET_HOST
-  - name: port
-  - name: region
-  - name: accessKey
-  - name: secretKey
-  - name: name
+  - name: argo
+    parameters:
+      - name: workflowNamespace
+        value: ${kubernetes.namespace}
+      - name: executor
+        parameters:
+          - name: registry
+            value: "quay.io"
+          - name: repository
+            value: "argoproj/argoexec"
+          - name: tag
+            empty: allow
 
-- name: azure.storageAccount
-  empty: allow
-  parameters:
-  - name: name
-    env: AZURE_STORAGE_ACCOUNT_NAME
-  - name: containerName
-  - name: accessKey
+  - name: helm
+    parameters:
+      - name: repo
+        env: HELM_REPO
+        value: https://argoproj.github.io/argo-helm
+      - name: chart
+        value: argo-workflows
+        env: HELM_CHART
+      - name: version
+        value: 1.11.1
+        env: HELM_CHART_VERSION
+      - name: valuesFile
+        value: values.yaml
+        env: CHART_VALUES_FILE
 
-- name: hub.backup.file
-  empty: allow
-  env: BACKUP_FILE
+  - name: bucket
+    empty: allow
+    parameters:
+      - name: host
+        env: BUCKET_HOST
+      - name: port
+      - name: region
+      - name: accessKey
+      - name: secretKey
+      - name: name
+
+  - name: azure.storageAccount
+    empty: allow
+    parameters:
+      - name: name
+        env: AZURE_STORAGE_ACCOUNT_NAME
+      - name: containerName
+      - name: accessKey
+
+  - name: hub.backup.file
+    empty: allow
+    env: BACKUP_FILE
 
 templates:
   files:
-  - "*.template"
+    - "*.template"
   extra:
     - kind: go
-      files: 
-      - "*.gotemplate"
-      - "resources/*.gotemplate"
+      files:
+        - "*.gotemplate"
+        - "resources/*.gotemplate"

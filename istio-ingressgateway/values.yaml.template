@@ -1,7 +1,7 @@
 # Name allows overriding the release name. Generally this should not be set
 name: "${hub.componentName}"
 
-replicaCount: ${istio.replicas}
+replicaCount: ${kubernetes.replicas}
 
 kind: Deployment
 
@@ -16,10 +16,10 @@ serviceAccount:
 
 service:
   # Type of service. Set to "None" to disable the service entirely
-  type: ${istio.serviceType}
+  type: ${kubernetes.cluster.serviceType}
   ports:
   - name: http2
-    port: 80
+    port: 808
     protocol: TCP
     targetPort: 80
 

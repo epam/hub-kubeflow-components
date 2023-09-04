@@ -5,23 +5,23 @@ requires:
   - kubernetes
 
 parameters:
-- name: knative
-  parameters:
-  - name: version
-    value: v1.9.2
-  - name: namespace
-    env: NAMESPACE
-    value: knative-eventing
-- name: kustomize
-  parameters: 
-  - name: crd
-    env: CRD
-    value: https://github.com/knative/eventing/releases/download/knative-${knative.version}/eventing-crds.yaml
-  - name: resources
-    env: HUB_KUSTOMIZE_RESOURCES
-    value: >-
-      https://github.com/knative/eventing/releases/download/knative-${knative.version}/eventing-core.yaml
-      https://github.com/knative/eventing/releases/download/knative-${knative.version}/in-memory-channel.yaml
+  - name: kubernetes
+    parameters:
+      - name: version
+        value: v1.9.2
+      - name: namespace
+        env: NAMESPACE
+        value: knative-eventing
+  - name: kustomize
+    parameters:
+      - name: crd
+        env: CRD
+        value: https://github.com/knative/eventing/releases/download/knative-${kubernetes.version}/eventing-crds.yaml
+      - name: resources
+        env: HUB_KUSTOMIZE_RESOURCES
+        value: >-
+          https://github.com/knative/eventing/releases/download/knative-${kubernetes.version}/eventing-core.yaml
+          https://github.com/knative/eventing/releases/download/knative-${kubernetes.version}/in-memory-channel.yaml
 
 templates:
   files:

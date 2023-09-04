@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 # shellcheck disable=SC2154,SC2250
 kubectl="kubectl --context=${HUB_DOMAIN_NAME} --namespace=${NAMESPACE} --ignore-not-found=true"

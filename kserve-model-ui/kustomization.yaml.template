@@ -3,7 +3,7 @@ kind: Kustomization
 generatorOptions:
   disableNameSuffixHash: true
 
-namespace: ${kserve.namespace}
+namespace: ${kubernetes.namespace}
 
 resources:
 - kustomize/base

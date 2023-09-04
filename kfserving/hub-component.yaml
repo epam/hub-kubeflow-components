@@ -5,14 +5,20 @@ requires:
   - kubernetes
 
 parameters:
-- name: component.kfserving
-  parameters:
-    - name: version
-      value: v1.5.0
-      env: VERSION
-    - name: kustomize.tarball
-      value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kfserving.version}"
-      env: HUB_KUSTOMIZE_TARBALL_URL      
-    - name: kustomize.subpath
-      value: apps/kfserving/upstream
-      env: HUB_KUSTOMIZE_TARBALL_SUBPATH      
+  - name: kubernetes
+    parameters:
+      - name: namespace
+        value: kubeflow
+        env: NAMESPACE
+      - name: version
+        value: v1.5.0
+        env: VERSION
+
+  - name: kustomize
+    parameters:
+      - name: tarball.url
+        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubernetes.version}"
+        env: HUB_KUSTOMIZE_TARBALL_URL
+      - name: subpath
+        value: apps/kfserving/upstream
+        env: HUB_KUSTOMIZE_TARBALL_SUBPATH

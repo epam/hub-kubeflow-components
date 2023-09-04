@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: selfsigned-ca-issuer
-  namespace: "${knative.namespace}"
+  namespace: "${kubernetes.namespace}"
 spec:
   selfSigned: {}
 ---
@@ -10,7 +10,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: self-signed-ca
-  namespace: "${knative.namespace}"
+  namespace: "${kubernetes.namespace}"
 spec:
   isCA: true
   commonName: localhost
@@ -26,7 +26,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: selfsigned-issuer
-  namespace: "${knative.namespace}"
+  namespace: "${kubernetes.namespace}"
 spec:
   ca:
     secretName: self-signed-ca
@@ -35,13 +35,13 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: webhook-cert
-  namespace: "${knative.namespace}"
+  namespace: "${kubernetes.namespace}"
 spec:
   commonName:  webhook
   dnsNames:
-    - webhook.${knative.namespace}
-    - webhook.${knative.namespace}.svc
-    - webhook.${knative.namespace}.svc.cluster.local
+    - webhook.${kubernetes.namespace}
+    - webhook.${kubernetes.namespace}.svc
+    - webhook.${kubernetes.namespace}.svc.cluster.local
   issuerRef:
     kind: Issuer
     name: selfsigned-issuer
@@ -51,13 +51,13 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: domainmapping-webhook
-  namespace: "${knative.namespace}"
+  namespace: "${kubernetes.namespace}"
 spec:
   commonName: domainmapping-webhook
   dnsNames:
-    - domainmapping-webhook.${knative.namespace}
-    - domainmapping-webhook.${knative.namespace}.svc
-    - domainmapping-webhook.${knative.namespace}.svc.cluster.local
+    - domainmapping-webhook.${kubernetes.namespace}
+    - domainmapping-webhook.${kubernetes.namespace}.svc
+    - domainmapping-webhook.${kubernetes.namespace}.svc.cluster.local
   issuerRef:
     kind: Issuer
     name: selfsigned-issuer
@@ -67,13 +67,13 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: net-istio-webhook
-  namespace: "${knative.namespace}"
+  namespace: "${kubernetes.namespace}"
 spec:
   commonName: net-istio-webhook
   dnsNames:
-    - net-istio-webhook.${knative.namespace}
-    - net-istio-webhook.${knative.namespace}.svc
-    - net-istio-webhook.${knative.namespace}.svc.cluster.local
+    - net-istio-webhook.${kubernetes.namespace}
+    - net-istio-webhook.${kubernetes.namespace}.svc
+    - net-istio-webhook.${kubernetes.namespace}.svc.cluster.local
   issuerRef:
     kind: Issuer
     name: selfsigned-issuer

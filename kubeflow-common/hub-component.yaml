@@ -7,13 +7,13 @@ requires:
 
 parameters:
   - name: ingress.hosts
-  
+
   - name: istio
-    parameters: 
-    - name: namespace
-      value: istio-system
-    - name: ingressGateway
-      value: istio-ingressgateway
+    parameters:
+      - name: namespace
+        value: istio-system
+      - name: ingressGateway
+        value: istio-ingressgateway
 
   - name: kubeflow
     parameters:
@@ -22,22 +22,24 @@ parameters:
         value: kubeflow
       - name: version
         value: v1.6.1
-  - name: kustomize.tarball.url
-    value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
-    env: HUB_KUSTOMIZE_TARBALL_URL
 
-  - name: kustomize.tarball.dirs
-    value: >-
-      apps/pipeline/upstream/third-party/application/cluster-scoped:application
-      apps/pipeline/upstream/third-party/metacontroller/base/:metacontroller
-      common/kubeflow-roles/base:kubeflow-roles
-      common/istio-1-14/kubeflow-istio-resources/base:istio
+  - name: kustomize
+    parameters:
+      - name: tarball.url
+        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubernetes.version}"
+        env: HUB_KUSTOMIZE_TARBALL_URL
+      - name: subpath
+        value: >-
+          apps/pipeline/upstream/third-party/application/cluster-scoped:application
+          apps/pipeline/upstream/third-party/metacontroller/base/:metacontroller
+          common/kubeflow-roles/base:kubeflow-roles
+          common/istio-1-14/kubeflow-istio-resources/base:istio
     env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
 
 templates:
   files:
-  - "*.template"
+    - "*.template"
   extra:
-  - kind: go
-    files:
-    - "*.gotemplate"
+    - kind: go
+      files:
+        - "*.gotemplate"
