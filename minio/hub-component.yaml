@@ -89,10 +89,6 @@ parameters:
 outputs:
 - name: bucket.kind
   value: minio
-- name: bucket.host
-  value: minio.${kubernetes.namespace}.svc
-- name: bucket.port
-  value: 9000
 - name: bucket.name
 - name: bucket.region
 - name: bucket.endpoint

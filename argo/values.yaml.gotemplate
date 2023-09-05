@@ -3,7 +3,7 @@ images:
   tag: "{{.argo.version}}"
 
 crds:
-  install: true
+  install: false
   keep: true
 
 fullnameOverride: "{{.hub.componentName}}"
@@ -53,7 +53,7 @@ useStaticCredentials: true
 useDefaultArtifactRepo: true
 artifactRepository:
   archiveLogs: false
-{{- if and .azure.storageAccount.name .azure.storageAccount.containerName}}    
+{{- if and .azure.storageAccount.name }}    
   azure: 
     endpoint: https://{{.azure.storageAccount.name}}.blob.core.windows.net
     container: {{.azure.storageAccount.containerName}}
@@ -61,7 +61,7 @@ artifactRepository:
     accountKeySecret:
       name: {{.hub.componentName}}-artifacts
       key: accesskey  
-{{- else if and .bucket.name .bucket.host .bucket.port .bucket.region}}  
+{{- else if and .bucket.name }}  
   s3:
     accessKeySecret:
       name: {{.hub.componentName}}-artifacts
@@ -71,7 +71,7 @@ artifactRepository:
       key: secretkey
     insecure: true
     bucket: {{.bucket.name}}
-    endpoint: {{.bucket.host}}:{{.bucket.port}}
+    endpoint: {{index (.bucket.endpoint | urlParse) "host"}}
     region: {{.bucket.region}}
 {{- end}}
 
