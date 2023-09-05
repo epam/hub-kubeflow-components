@@ -8,6 +8,10 @@ provides:
   - cert-manager
 
 parameters:
+  - name: certmanager.version
+    value: v1.12.4
+    env: HELM_CHART_VERSION 
+
   - name: kubernetes
     parameters:
       - name: namespace
@@ -16,6 +20,8 @@ parameters:
       - name: serviceAccount
         env: SERVICE_ACCOUNT
         empty: allow
+      - name: replicas
+        value: 1
 
   - name: helm
     parameters:
@@ -25,13 +31,14 @@ parameters:
       - name: chart
         env: HELM_CHART
         value: "cert-manager"
-      - name: chart.version
-        value: v1.11.0
-        env: HELM_CHART_VERSION
       - name: crd
         env: CRD
-        value: https://github.com/jetstack/cert-manager/releases/download/${helm.version}/cert-manager.crds.yaml
+        value: https://github.com/jetstack/cert-manager/releases/download/${certmanager.version}/cert-manager.crds.yaml
+      - name: baseValues
+        value: values.yaml
+        env: CHART_VALUES_FILE
 
 templates:
+  kind: go
   files:
-    - "*.template"
+    - "*.gotemplate"

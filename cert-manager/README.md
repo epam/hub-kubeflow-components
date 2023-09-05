@@ -3,7 +3,9 @@
 Cert-manager adds certificates and certificate issuers as resource types in Kubernetes clusters, and simplifies the process of obtaining, renewing and using those certificates. 
 The helm based component deploys cloud native certificate management for Kubernetes.
 
-## TLDR
+## TL;DR
+
+To deploy this component add the following stanza to your 'hub.yaml' file:
 
 ```yaml
 - name: cert-manager
@@ -12,13 +14,12 @@ The helm based component deploys cloud native certificate management for Kuberne
     git:
       remote: https://github.com/epam/hub-kubeflow-components.git
       subDir: cert-manager
-
 ```
 
 ## Requirements
 
-- Helm
-- Kubernetes
+* [Helm](https://helm.sh/docs/intro/install/)
+* Kubernetes
 
 ## Parameters
 
@@ -26,14 +27,16 @@ The helm based component deploys cloud native certificate management for Kuberne
 |-----------------------------|-----------------------------|-----------------------------------------------------------------------------------------------------|:--------:|
 | `kubernetes.namespace`      | Kubernetes namespace        | `kube-system`                                                                                       |          |
 | `kubernetes.serviceAccount` | Kubernetes service Account  |                                                                                                     |          |
-| `helm.repo`                 | Helm chart repo             | <https://charts.jetstack.io>                                                                        |          |
+| `certmanager.version`              | Version of cert-manager     | `v1.12.4`                 |          |
+| `helm.repo`                 | Helm chart repo             | [jetstack](https://charts.jetstack.io)          |          |
 | `helm.chart`                | Helm chart name             | `cert-manager`                                                                                      |          |
-| `helm.version`              | Version of cert-manager     | `v1.11.1`                                                                                           |          |
-| `helm.crd`                  | Custom Resource Definitions | 'https://github.com/jetstack/cert-manager/releases/download/${helm.version}/cert-manager.crds.yaml` |          |
+| `helm.crd`                  | Custom Resource Definitions | [github](https://github.com/jetstack/cert-manager/releases/download/${helm.version}/cert-manager.crds.yaml) |          |
+| `helm.baseValues`                | Instructs hubctl to use values.yaml files from helm chart as a base | `values.yaml` |          |
 
 ## Implementation Details
 
 The component has the following directory structure:
+
 ```text
 ./
 ├── hub-component.yaml             # manifest file of the component with configuration and parameters
@@ -41,15 +44,73 @@ The component has the following directory structure:
 
 ```
 
-Deployment follows to the following algorithm:
-1. At the beginning hubctl need to create a Kubernetes cluster and other dependency components.
-2. It is recommended to create service account ${SERVICE_ACCOUNT} in namespace ${NAMESPACE} before deployment. Annotate `kubernetes.serviceAccount` service account in the`kubernetes.namespace` with aws role (for example, if it's for aws) or service agent gcp (if you're using the Google Cloud Platform (GCP)).
-3. Then start deployment
-4. In `post-deploy` it is recommended to create a ClusterIssuer named cert-manager which uses the ACME protocol to manage the issuance of certificates and performs DNS validation via Amazon Route 53 in the specified AWS region (for example if it is for aws) or CloudDNS to the project if you are using GCP.
+If `kubernetes.serviceAccount` is not specified, the component will create a new service account `cert-manager` in the `kubernetes.namespace` namespace.
+
+### Add Lets Encrypt Issuer
+
+Cert-manager have been deployed in the cluster without any specific configuration. It shoudl be added as the deployment hooks in the `hub.yaml`. Following example shows how to add a Lets Encrypt Cluster Issuer that uses Google Cloud DNS for DNS01 challenge.
+
+Create a file `bin/cert-manager-post-deploy.sh` with the following content:
+
+```bash
+#!/bin/sh -e
+
+cat <<EOF | kubectl apply -f - 
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cert-manager
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: devops@epam.com
+    privateKeySecretRef:
+      name: cert-manager-issuer
+    solvers:
+    - dns01:
+        cloudDNS:
+          project: ${GOOGLE_PROJECT}
+EOF
+```
+
+> Note: `GOOGLE_PROJECT` is a whell known environment variable set in the `.env` file stacks that requires `gcp`.
+
+Add execution rights to the `bin/cert-manager-post-deploy.sh` file
+
+```bash
+chmod +x bin/cert-manager-post-deploy.sh
+```
+
+Declare a post-deploy hooks for `cert-manager` component in the `hub.yaml` file:
+
+```yaml
+components:
+- name: cert-manager
+  # ...
+  hooks:
+  - file: bin/cert-manager-post-deploy.sh
+    triggers: [post-deploy]
+```
+
+### Additional parameters
+
+There are literally many ways how to configure cert-manager. We have got rather opinionated setup for Let's Encrypt. If you need to configure cert-manager in a different way, you can use `pre-deploy` hook to add extra configuration for helm chart.
+
+Look here for additional parameters you want to add: [all values]([Title](https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml))
+
+Create a file `bin/cert-manager-pre-deploy.sh` with execution rights
+
+```bash
+#/bin/sh -e
+cat << EOF > values-generated.yaml
+global:
+  logLevel: 0
+EOF
+```
+
+> Stanza above set log level to 0 (trace) for cert-manager. It is useful for debugging. See troubleshooting [guide](https://cert-manager.io/docs/troubleshooting//)
 
 ## See also
+
 * [Cert-manager](https://cert-manager.io/docs/)
-* [Helm](https://helm.sh/docs/intro/install/)
-* [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/)
-* [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
-* [hub cli](https://github.com/agilestacks/hub/wiki)
+* [Exterman DNS Component](https://github.com/epam/hub-kubeflow-components/tree/develop/external-dns)
