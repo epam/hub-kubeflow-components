@@ -12,7 +12,7 @@ mcImage:
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 mode: {{.minio.mode}}
 
-replicas: {{.minio.replicas}}
+replicas: {{.kubernetes.replicas}}
 persistence:
   enabled: true
 {{- if .storage.claim}}}
@@ -34,7 +34,7 @@ users:
 
 buckets:
 - name: {{.bucket.name}}
-  policy: {{.bucket.policy}}
+  policy: {{.bucket.acl}}
   purge: false
   # versioning: false
 
