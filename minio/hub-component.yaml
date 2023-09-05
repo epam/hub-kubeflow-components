@@ -97,6 +97,7 @@ outputs:
 - name: bucket.region
 - name: bucket.endpoint
   value: http://minio.${kubernetes.namespace}.svc:9000
+- name: minio.mode
 
 templates:
   kind: go
