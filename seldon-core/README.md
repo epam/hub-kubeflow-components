@@ -1,6 +1,53 @@
 # Seldon Core
 
-## Overview of the Seldon Core
+Seldon provides a set of tools for deploying machine learning models at scale.
+Deploy machine learning models in the cloud or on-premise.
+Get metrics and ensure proper governance and compliance for your running machine learning models
+
+## TL;DR
+
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
+
+```yaml
+components:
+  - name: seldon-core
+    source:
+      dir: components/seldon-core
+      git:
+        remote: https://github.com/epam/kubeflow-components.git
+        subDir: seldon-core
+```
+
+To initiate the deployment, run the following commands:
+
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting Name of the existing Kubernetes storage class: local-path
+# * Setting ingress class: traefik
+# * Setting parameter dex.passwordDb.password: <random>
+# * Setting executor: local
+hubctl stack deploy -c seldon-core
+```
+
+## Parameters
+
+The following component level parameters has been defined `hub-component.yaml`
+
+| Name                   | Description                                           | Default Value                                                  | Required 
+|:-----------------------|:------------------------------------------------------|:---------------------------------------------------------------|:--------:|
+| `kubernetes.namespace` | Kubernetes namespace for this component               | `kubeflow`                                                     |          |
+| `seldon.version`       |                                                       | `1.14.1`                                                       |
+| `helm.repo`            | Helm chart repository URL                             | `https://argoproj.github.io/argo-helm`                         |          |
+| `helm.chart`           | Helm chart name                                       | `argo-workflows`                                               |          |
+| `helm.version`         | Helm version                                          | `v1.11.1`                                                      |          |
+| `helm.valuesFile`      | Helm base values file                                 | `values.yaml`                                                  |          |         |
+| `ingress.hosts`        | List of ingress hosts (Note: only first will be used) |                                                                |          |
+| `ingress.protocol`     | Ingress traffic protocol (schema)                     | `http`                                                         |          |
+| `istio.namespace`      |                                                       | `istio-system`                                                 |
+| `istio.ingressGateway` |                                                       | `istio-ingressgateway`                                         |
+| `istio.gateway.name`   |                                                       | `${hub.componentName}`                                         |
+| `istio.gateway.hosts`  |                                                       | `${istio.ingressGateway}.${istio.namespace}.svc.cluster.local` |
 
 ## Implementation Details
 
@@ -8,66 +55,16 @@ The component has the following directory structure:
 
 ```text
 ./
-├── charts                      # Directory contains helm charts archives
-├── deploy.sh                   # Script to backup mysql data
-├── hub-component.yaml          # Parameters definitions
-├── istio-gateway.yaml.template # Parameters definitions
-├── undeploy.sh                 # Post deploy script to restore data from backup file if provided
-└── values.yaml.template        # Base helm values template
+├── bin                             # directory contains additional component hooks
+│   └── self-signed-ca.sh           # hook for generating self-signed certificates
+├── hub-component.yaml              # configuration and parameters file of Hub component
+├── istio-gateway.yaml.template     # Parameters definitions
+├── post-undeploy                   # script that is executed after undeploy of the current component
+├── pre-deploy                      # script that is executed before deploy of the current component
+├── seldon-edit.yaml.template       # cluster role template
+└── values.yaml.template            # helm values template
 ```
 
-## Parameters
-
-The following component level parameters has been defined `hub-component.yaml`
-
-| Name | Description | Default Value |
-| :--- | :---        | :---          |
-| `dns.domain` | Domain name of the kubeflow stack | |
-
-| `component.seldon.namespace` | | `seldon-system` |
-| `component.seldon.version` | | `1.5.0` |
-| `executor.resources.cpuLimit` | | `500m` |
-| `executor.resources.cpuRequest` | | `500m` |
-| `executor.resources.memoryLimit` | | `512Mi` |
-| `executor.resources.memoryRequest` | | `512Mi` |
-| `manager.cpuLimit` | | `500m` |
-| `manager.cpuRequest` | | `100m` |
-| `manager.memoryLimit` | | `300Mi` |
-| `manager.memoryRequest` | | `200Mi` |
-| `storageInitializer.cpuLimit` | | `"1"` |
-| `storageInitializer.cpuRequest` | | `100m` |
-| `storageInitializer.memoryLimit` | | `1Gi` |
-| `storageInitializer.memoryRequest` | | `100Mi` |
-| `engine.resources.cpuLimit` | | `500m` |
-| `engine.resources.cpuRequest` | | `500m` |
-| `engine.resources.memoryLimit` | | `512Mi` |
-| `engine.resources.memoryRequest` | | `512Mi` |
-| `component.seldon.docker.registry` | | `docker.io` |
-| `component.seldon.docker.operator.repository` | | `seldonio/seldon-core-operator` |
-| `component.seldon.docker.executor.repository` | | `seldonio/seldon-core-executor` |
-| `component.seldon.docker.engine.repository` | | `seldonio/engine` |
-| `component.seldon.docker.mlflow.image` | | `seldonio/mlflowserver` |
-| `component.seldon.docker.mlflow.tag` | | `"${component.seldon.version}"` |
-| `component.seldon.docker.sklearn.image` | | `seldonio/sklearnserver` |
-| `component.seldon.docker.sklearn.tag` | | `"${component.seldon.version}"` |
-| `component.seldon.docker.kfserving.image` | | `seldonio/mlserver` |
-| `component.seldon.docker.kfserving.tag` | | `0.1.1` |
-| `component.seldon.docker.tfServingProxy.image` | | `seldonio/tfserving-proxy` |
-| `component.seldon.docker.tfServingProxy.tag` | | `"${component.seldon.version}"` |
-| `component.seldon.docker.tfServing.image` | | `tensorflow/serving` |
-| `component.seldon.docker.tfServing.tag` | | `2.1.0` |
-| `component.seldon.docker.xgboost.image` | | `seldonio/xgboostserver` |
-| `component.seldon.docker.xgboost.tag` | | `"${component.seldon.version}"` |
-| `component.seldon.docker.alibiExplainer.image` | | `seldonio/alibiexplainer` |
-| `component.seldon.docker.alibiExplainer.tag` | | `"${component.seldon.version}"` |
-| `component.istio.namespace` | | `istio-system` |
-| `component.istio.ingressGateway` | | `istio-ingressgateway` |
-| `component.ingress.host` | | |
-
-## Outputs
-
-| Name | Description |
-| :--- | :---        |
-| `component.seldon.istioGateway` | Default istio gateway for seldon deployments |
-
 ## See Also
+
+- Seldon official [website](https://www.seldon.io/)

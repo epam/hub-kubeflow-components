@@ -76,6 +76,7 @@ parameters:
   - name: protocol
     value: http
   - name: hosts
+    empty: allow
   - name: class
 
 - name: nginx
@@ -85,7 +86,7 @@ parameters:
     value: "1800"
   - name: readTimeout
     value: "1800"
-  - name: fileSize # nginx.fileSize?
+  - name: fileSize
     empty: allow
     value: 640m
 

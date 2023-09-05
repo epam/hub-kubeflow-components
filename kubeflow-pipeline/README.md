@@ -92,7 +92,7 @@ hubctl stack deploy
 | `mysql.password`               | MySQL server user password (cannot be empty)              |                                                                                                           |          |
 | `mysql.database`               | MySQL server database (cannot be empty)                   |                                                                                                           |          |
 | `bucket.endpoint`              | Minio endpoint expected internal endpoint (cluster.local) |                                                                                                           |          |
-| `bucket.host`                  | Hostname part of of the endpoint                          |                                                                                                           |          |
+| `bucket.host`                  | Hostname part of the endpoint                             |                                                                                                           |          |
 | `bucket.port`                  | Minio service port                                        |                                                                                                           |          |
 | `bucket.region`                | Minio region                                              |                                                                                                           |          |
 | `bucket.accessKey`             | Minio access key id                                       |                                                                                                           |          |

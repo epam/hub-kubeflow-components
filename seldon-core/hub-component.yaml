@@ -16,17 +16,12 @@ lifecycle:
 
 parameters:
   - name: hub.componentName
-  - name: kubeflow.name
-    value: kubeflow
   - name: kubernetes.namespace
-    value: seldon-system
+    value: seldon-core
     env: NAMESPACE
 
-  - name: seldon
-    parameters:
-      - name: version
-        value: 1.14.1
-        env: HELM_CHART_VERSION
+  - name: seldon.version
+    value: 1.14.1
 
   - name: helm
     parameters:
@@ -36,6 +31,9 @@ parameters:
       - name: repo
         value: https://storage.googleapis.com/seldon-charts
         env: HELM_REPO
+      - name: version
+        value: ${seldon.version}
+        env: HELM_CHART_VERSION
       - name: valuesFile
         value: values.yaml
         env: CHART_VALUES_FILE

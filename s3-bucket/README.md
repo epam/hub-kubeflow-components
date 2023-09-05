@@ -6,6 +6,39 @@ Terraform is an efficient and secure tool designed for creating, modifying, and 
 
 In the context of Terraform, the "s3 bucket" provider is a Terraform provider that allows you to manage S3 resources, such as S3 buckets, using Terraform configuration files. You can use this provider to create, modify, and delete S3 bucket resources in your AWS account.
 
+## TL:DR
+
+```shell
+cat << EOF > hub.yaml
+version: 1
+kind: stack                                               
+  
+requires:                                                  
+  - aws
+
+components:                                               
+  - name: my-awshubctl-component                          
+    source:                                               
+      dir: components/s3-bucket                           
+
+extensions:                                               
+  init:                                                   
+    - aws
+  configure:                                              
+    - aws
+    - env
+  deploy:                                                 
+    before:                                               
+    - aws
+  undeploy:                                               
+    after:                                                
+    - aws 
+EOF
+
+hubctl stack init
+hubctl stack deploy
+```
+
 ## Requirements
 
 * [aws](https://aws.amazon.com/)
@@ -19,9 +52,9 @@ The following component level parameters has been defined `hub-component.yaml`
 |-----------------|---------------------------------------------------------------------------------------------|-----------------|:--------:|
 | `bucket.name`   | Value for the S3 bucket name parameter from hub stack name. This name must be unique for S3 | HUB_STACK_NAME  |          |
 | `bucket.acl `   | Parameter of the Access control list (ACL) of the bucket                                    | `private`       |          |
+| `bucket.region` | Parameter of the AWS bucket region                                                          | {cloud.region}  |          |
 | `cloud.region`  | AWS region that uses hubctl                                                                 | `eu-central-1`  |   `x`    |
 | `cloud.profile` | AWS profile that uses hubctl                                                                | `default`       |   `x`    |
-| `bucket.region` | Parameter of the AWS bucket region                                                          | {cloud.region}  |          |
 
 > Note: `bucket.region` parameter can be set by modifying `cloud.region` using the `hubctl stack configure` command.
 

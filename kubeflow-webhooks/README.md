@@ -57,7 +57,7 @@ The component has the following directory structure:
 ```text
 ./
 ├── bin                             # Directory contains additional component hooks
-│   └── self-signed-ca.sh           # Hook for generating self-signed certificates├── kustomization.yaml                          # Main kustomize file
+│   └── self-signed-ca.sh           # Hook for generating self-signed certificates
 ├── hub-component.yaml              # Configuration and parameters file of Hub component
 ├── kustomization.yaml.template     # Main kustomize template file                            
 ├── post-undeploy                   # Script that is executed after undeploy of the current component

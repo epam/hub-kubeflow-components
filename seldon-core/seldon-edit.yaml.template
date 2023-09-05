@@ -4,7 +4,7 @@ metadata:
   labels:
     rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin: "true"
     rbac.authorization.kubeflow.org/aggregate-to-kubeflow-edit: "true"
-  name: ${kubeflow.name}-seldon-edit
+  name: seldon-edit
 rules:
 - apiGroups: [ "machinelearning.seldon.io" ]
   resources:

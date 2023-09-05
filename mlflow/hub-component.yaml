@@ -6,6 +6,7 @@ requires:
 
 parameters:
 - name: hub.componentName
+
 - name: kubernetes.namespace
   env: NAMESPACE
   value: mlflow
