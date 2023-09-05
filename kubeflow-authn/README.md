@@ -19,6 +19,9 @@ components:
     git:
       remote: https://github.com/epam/kubeflow-components.git
       subDir: kubeflow-authn
+  depends:
+  - dex
+  - istio-ingressgateway
 ```
 
 ## Parameters
@@ -52,20 +55,6 @@ The following component level parameters has been defined for this component:
 * Kubenretes Ingress Controller (e.g. [nginx](https://github.com/epam/hub-kubeflow-components/tree/develop/nginx-ingress))
 * OIDC Provider (e.g. [Dex](https://github.com/epam/hub-kubeflow-components/tree/develop/dex))
 
-## TL;DR
-
-Add the following component to your stack definition:
-
-```yaml
-components:
-- name: kubeflow-authn
-  source:
-    dir: components/kubeflow-authn
-    git:
-      remote: https://github.com/epam/kubeflow-components.git
-      subDir: kubeflow-authn
-```
-
 ## Implementation Details
 
 The component has the following directory structure:
@@ -73,7 +62,7 @@ The component has the following directory structure:
 ```text
 ./
 ├── hub-component.yaml                  # Component definition
-└──  kustomization.yaml.template        # Kustomize config
+└── kustomization.yaml.gotemplate       # Kustomize config
 ```
 
 Deployment follows to the following algorithm:
