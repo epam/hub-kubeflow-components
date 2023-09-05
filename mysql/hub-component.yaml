@@ -7,19 +7,24 @@ requires:
   - helm
 
 parameters:
-- name: hub.componentName
-  env: COMPONENT_NAME
 - name: storage.class
   empty: allow
-- name: mysql
-  empty: allow
+- name: storage.size
+  value: 8Gi
+- name: kubernetes
   parameters:
   - name: namespace
     value: mysql
     env: NAMESPACE
+  - name: replicas
+    value: 2
+- name: mysql
+  empty: allow
+  parameters:
   - name: port
     value: 3306
   - name: user
+    value: mysql
     env: DB_USER
   - name: password
     env: DB_PASSWORD
@@ -27,8 +32,6 @@ parameters:
     env: DB_NAME
   - name: rootPassword
     env: MYSQL_ROOT_PASSWORD
-  - name: volumeSize
-    value: 8Gi
   - name: extra.databases
     empty: allow
     env: EXTRA_DATABASES
@@ -41,7 +44,7 @@ parameters:
     value: mysql
     env: HELM_CHART
   - name: version
-    value: 9.4.1
+    value: 9.11.2
     env: HELM_CHART_VERSION
   - name: valuesFile
     value: values.yaml
@@ -52,7 +55,7 @@ parameters:
 
 outputs:
 - name: mysql.host
-  value: ${hub.componentName}.${mysql.namespace}.svc.cluster.local
+  value: ${hub.componentName}.${kubernetes.namespace}.svc.cluster.local
 - name: mysql.port
 - name: mysql.database
 - name: mysql.user
@@ -62,8 +65,10 @@ outputs:
   kind: secret
 
 templates:
-  files:
-    - "*.template"
+  files: ["*.template"]
+  extra:
+  - kind: go
+    files: ["*.gotemplate"]
 
 lifecycle:
   verbs:

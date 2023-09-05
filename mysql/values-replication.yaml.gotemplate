@@ -1,0 +1,2 @@
+#secondary:
+#  replicaCount: {{.kubernetes.replicas | int | add -1 }}
