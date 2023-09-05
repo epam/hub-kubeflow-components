@@ -2,6 +2,8 @@
 
 This web application allows user to review and delete persistent volumes that they do not need anymore
 
+### Component is longer supported
+
 ## Requirements
 
 - Requires [kustomize](https://kustomize.io)
