@@ -1,6 +1,7 @@
 # Argo Workflows
 
 Argo Workflows is an open source container-native workflow engine for orchestrating parallel jobs on Kubernetes. Argo Workflows is implemented as a Kubernetes CRD.
+
 * Define workflows where each step in the workflow is a container.
 * Model multi-step workflows as a sequence of tasks or capture the dependencies between tasks using a graph (DAG).
 * Easily run compute intensive jobs for machine learning or data processing in a fraction of the time using Argo Workflows on Kubernetes.
@@ -15,7 +16,6 @@ Argo Workflows is an open source container-native workflow engine for orchestrat
       git:
         remote: https://github.com/epam/kubeflow-components.git
         subDir: argo
-  
 ```
 
 ## Dependencies
@@ -39,10 +39,11 @@ Component parameters described here
 | `helm.chart`   | Helm chart name | `argo-workflows` |
 | `helm.version` | Helm version | `v1.11.1`|
 | `helm.baseValuesFile` | Instructs hubctl to reuse values file from helm chart as base |`values.yaml` |
-| `ingress.protocol` | Ingress traffic protocol (schema) | `http` |
+| `helm.crd` | URL to install CRDs |`values.yaml` | [github](https://github.com/argoproj/argo-workflows/tree/master/manifests/base/crds/minimal) |
+| `ingress.protocol` | Ingress traffic protocol (scheme) | `http` |
 | `ingress.hosts`    | Whitespace separated list of hosts for ingress. Empty means no ingress should be created| |
 | `bucket.name` | S3 Bucket name to be used as Argo artifact storage. Empty means: do not use s3 storage | |
-| `bucket.endpoint` | Fully qualified URL for S3 bucket service, this URL should include sheme, host and port (e.g. http://minio:9000) | |
+| `bucket.endpoint` | Fully qualified URL for S3 bucket service, this URL should include sheme, host and port (e.g. `http://minio:9000`) | |
 | `bucket.region`   | S3 bucket region | `us-east-1` (default region for minio) |
 | `bucket.accessKey` | Static access key for S3 bucket | |
 | `bucket.secretKey` | Static secret key for the S3 bucket  | |
@@ -93,9 +94,10 @@ Argo executor is one of of the common source when user will want to use alternat
 cat <<EOF > values-generated.yaml
 executor:
   image:
-    registry: "${argo.executor.registry}"
-    repository: "${argo.executor.repository}"
-    tag: "${argo.executor.tag}"
+    registry: "quay.io"
+    repository: "argoproj/argoexec"
+    tag: "latest"
+    pullPolicy: ""
 EOF
 ```
 
@@ -109,6 +111,12 @@ components:
   - file: bin/argo-executor
     triggers: [pre-deploy, pre-undeploy]
 ```
+
+### Additional Values
+
+This component used helm chart hosted by Argo project. You can find all available values in the [helm value](https://github.com/argoproj/argo-helm/blob/main/charts/argo-workflows/values.yaml).
+
+To define extra values, use  deployment hook from the article [above](#customize-argo-image)
 
 ## See also
 

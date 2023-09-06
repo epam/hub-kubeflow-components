@@ -43,7 +43,7 @@ server:
   # this enables service HTTP protocol
   - "--secure=false"
 {{range .argo.server.authMode | splitList " " }}
-  - "--arg: {{.}}"
+  - "--auth-mode={{.}}"
 {{- end}}
   clusterWorkflowTemplates:
     enableEditing: true

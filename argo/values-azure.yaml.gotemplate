@@ -1,6 +1,3 @@
-useStaticCredentials: true
-useDefaultArtifactRepo: true
-
 artifactRepository:
   archiveLogs: false
 {{- if and .azure.storageAccount.name }}    

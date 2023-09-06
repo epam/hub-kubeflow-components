@@ -30,22 +30,6 @@ parameters:
         value: >- 
           server
           client
-
-  - name: helm
-    parameters:
-      - name: repo
-        env: HELM_REPO
-        value: https://argoproj.github.io/argo-helm
-      - name: chart
-        value: argo-workflows
-        env: HELM_CHART
-      - name: version
-        value: 0.33.1
-        env: HELM_CHART_VERSION
-      - name: valuesFile
-        value: values.yaml
-        env: CHART_VALUES_FILE
-
   - name: bucket
     empty: allow
     parameters:
@@ -65,6 +49,31 @@ parameters:
       - name: containerName
       - name: accessKey
 
+
+  - name: helm
+    parameters:
+      - name: repo
+        env: HELM_REPO
+        value: https://argoproj.github.io/argo-helm
+      - name: chart
+        value: argo-workflows
+        env: HELM_CHART
+      - name: version
+        value: 0.33.1
+        env: HELM_CHART_VERSION
+      - name: valuesFile
+        value: values.yaml
+        env: CHART_VALUES_FILE
+      - name: crd
+        env: CRD
+        value: >-
+          https://raw.githubusercontent.com/argoproj/argo-workflows/${argo.version}/manifests/base/crds/minimal/argoproj.io_clusterworkflowtemplates.yaml
+          https://raw.githubusercontent.com/argoproj/argo-workflows/${argo.version}/manifests/base/crds/minimal/argoproj.io_cronworkflows.yaml
+          https://raw.githubusercontent.com/argoproj/argo-workflows/${argo.version}/manifests/base/crds/minimal/argoproj.io_workflows.yaml
+          https://raw.githubusercontent.com/argoproj/argo-workflows/${argo.version}/manifests/base/crds/minimal/argoproj.io_workflowtemplates.yaml
+          https://raw.githubusercontent.com/argoproj/argo-workflows/${argo.version}/manifests/base/crds/minimal/argoproj.io_workfloweventbindings.yaml
+          https://raw.githubusercontent.com/argoproj/argo-workflows/${argo.version}/manifests/base/crds/minimal/argoproj.io_workflowtasksets.yaml
+          https://raw.githubusercontent.com/argoproj/argo-workflows/${argo.version}/manifests/base/crds/minimal/argoproj.io_workflowtaskresults.yaml
   - name: hub.backup.file
     empty: allow
     env: BACKUP_FILE

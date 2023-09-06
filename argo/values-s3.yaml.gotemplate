@@ -1,8 +1,6 @@
-useStaticCredentials: true
 useDefaultArtifactRepo: true
-
-{{$endpoint := .bucket.endpoint | urlParse -}}
-# {{$endpoint}}
+useStaticCredentials: {{.bucket.accessKey | ne "" -}}
+{{$endpoint := .bucket.endpoint | urlParse}}
 artifactRepository:
   archiveLogs: false
 {{if and .bucket.name -}}  
