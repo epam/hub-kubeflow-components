@@ -2,3 +2,4 @@
 /external-dns
 /nginx
 kubeflow-katib/.generated
+knative/kustomize

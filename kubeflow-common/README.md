@@ -1,8 +1,15 @@
 # Kubeflow Common
 
-The Kubeflow Common could refer to the shared concepts and practices that are part of the Kubeflow ecosystem to streamline and standardize machine learning workflows on Kubernetes. This component perform 3 operations.
+The Kubeflow Common component defines primarilly common Kubenretes roles for Kubeflow applications. Kubeflow is heavily relying on aggregating roles, so it can be used from the user's profile (namespace).
+
+Additionally this component defines an Istio Gateway. This gateway is used to expose all Kubeflow applications.
 
 ## TL;DR
+
+To deploy this component add the following stanza to your `hub.yaml`
+
+## TL;DR
+
 ```yaml
   - name: kubeflow-common
     source:
@@ -13,6 +20,7 @@ The Kubeflow Common could refer to the shared concepts and practices that are pa
 ```
 
 To initiate the deployment, run the following commands:
+
 ```bash
 hubctl stack init
 hubctl stack configure
@@ -22,35 +30,40 @@ hubctl stack deploy -c kubeflow-common
 
 ## Requirements
 
-- [Helm](https://helm.sh/docs/intro/install/)
-- Kubernetes
-- [Kustomize](https://kustomize.io)
+- Kubernetes Cluster
+- Istio
+- Istio Ingress Gateway
+- [kustomize](https://kustomize.io/)
+- or [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
 ## Parameters
 
-| Name                   | Description                                    | Default Value                                                              | Required |
-|------------------------|------------------------------------------------|----------------------------------------------------------------------------|:--------:|
-| `ingress.hosts`        | Hostname of the kubeflow stack                 |                                                                            |          |
-| `istio.namespace`      | Kubernetes namespace for Istio                 |                                                                            |          |
-| `istio.ingressGateway` | Name of Istio ingress gateway service          |                                                                            |          |
-| `kubeflow.namespace`   | Target Kubernetes namespace for this component |                                                                            |          |
-| `kubeflow.version`     | Version of Kubeflow                            | `v1.2.0`                                                                   |          |
-| `kubeflow.tarball`     | URL to kubeflow tarball archive                | `https://github.com/kubeflow/manifests/archive/${kubeflow.version}.tar.gz` |          |
+| Name  | Description | Default Value | Required |
+|:------|:------------|:-------------:|:--------:|
+| `ingress.hosts`| Whitespace separated list of kubeflow hosts to configure Istio Gateway. Empty means `*` will be used| |
+| `kubernetes.namespace` | Kubernetes namespace | `kubeflow` |
+| `istio.ingressGateway.labels` | Whitespace separated list of `key=value` labels to use as a Istio Gateway selector for the Gateway | `x` |
+| `kubeflow.version`     | Version of Kubeflow | `v1.6.1`|
+| `kubeflow.crd`     | URL links to the metacontroller and applicaiton CRDs | `URL` | x |
+| `kubeflow.tarball.url`     | URL to kubeflow manifests that correspond to the `kubeflow.version`| [github](https://github.com/kubeflow/manifests/archive/v1.6.1.tar.gz) |          |
+| `kubeflow.tarball.subpath` | Location of cluster roles in the kubernetes manifests tarball | see [hub-component.yaml](./hub-component.yaml) |  |
 
 ## Implementation Details
 
 The component has the following directory structure:
+
 ```text
 ./
-├── gateway.yaml.gotemplate         # Istio gateway definition template
+├── gateway.yaml.gotemplate         # Istio gateway for all kubeflow apps
 ├── hub-component.yaml              # Parameters definitions
-└── kustomization.yaml.template     # Kustomize file for ths component
+└── kustomization.yaml.gotemplate   # Kustomize file for ths component
 ```
 
 Deployment follows to the following algorithm:
-1. Creates istio gateway custom resource from `gateway.yaml.gotemplate`.
-2. [Application](https://github.com/kubernetes-sigs/application) that aggregates all kubeflow applications.
-3. Then start deployment
+
+1. Hubctl will download tarball and extract cluster-roles into `kustomize` directory.
+2. It will also install `metacontroller` and `application` CRDs. Metacontroller is not used anymore. however some Kubeflow apps are still declare some of these resources.
+3. Pass deployment to the `kustomize.yaml` file
 
 ## See also
 
