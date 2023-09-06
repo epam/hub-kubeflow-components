@@ -2,7 +2,7 @@
 
 Istio is an open-source platform that provides a set of tools for managing, securing, and monitoring microservices-based applications in a containerized environment, such as Kubernetes. Istio-base is the foundational components and functionality of the Istio service mesh.
 
-## TLDR
+## TL;DR
 
 ```yaml
   - name: istio-base
@@ -13,19 +13,27 @@ Istio is an open-source platform that provides a set of tools for managing, secu
         subDir: istio-base
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c istio-base
+```
+
 ## Requirements
 
-- Helm
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
 
 ## Parameters
 
-| Name                   | Description               | Default Value                                         | Required |
-|------------------------|---------------------------|-------------------------------------------------------|:--------:|
-| `kubernetes.namespace` | Kubernetes namespace      | `istio-system`                                        |          |
-| `helm.repo`            | Helm chart repository URL | <https://istio-release.storage.googleapis.com/charts> |          |
-| `helm.chart`           | Helm chart name           | `base`                                                |          |
-| `helm.version`         | Helm chart version        | `1.15.0`                                              |          |
+| Name                   | Description               | Default Value                                               | Required |
+|------------------------|---------------------------|-------------------------------------------------------------|:--------:|
+| `kubernetes.namespace` | Kubernetes namespace      | `istio-system`                                              |          |
+| `helm.repo`            | Helm chart repository URL | [repo](https://istio-release.storage.googleapis.com/charts) |          |
+| `helm.chart`           | Helm chart name           | `base`                                                      |          |
+| `helm.version`         | Helm chart version        | `1.15.0`                                                    |          |
 
 
 ## Implementation Details
@@ -43,6 +51,8 @@ Deployment follows to the following algorithm:
 
 ## See also
 
-* [hub cli](https://github.com/agilestacks/hub/wiki)
-* [External DNS](https://github.com/kubernetes-sigs/external-dns)
+* [Istio Discovery](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+* [Istio Base](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+* [Nginx](https://github.com/epam/hub-kubeflow-components/tree/main/nginx-ingress): ingress controller
 * [GKE cluster](https://github.com/agilestacks/google-components/tree/main/gke-gcloud)
+

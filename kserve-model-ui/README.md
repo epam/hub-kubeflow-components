@@ -6,7 +6,7 @@ The web app currently works with v1beta1 versions of InferenceService objects.
 
 The web app is also exposing information from the underlying Knative resources, like Conditions from the Knative Configurations, Route and Revisions as well as live logs from the Model server pod.
 
-## TLDR
+## TL;DR
 
 ```yaml
   - name: kserve-model-ui
@@ -17,11 +17,19 @@ The web app is also exposing information from the underlying Knative resources, 
         subDir: kserve-model-ui
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c kserve-model-ui
+```
+
 ## Requirements
 
-- Helm
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
-- Kustomize
+- [Kustomize](https://kustomize.io)
 
 ## Parameters
 

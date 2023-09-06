@@ -2,7 +2,7 @@
 
 The Kubeflow Central Dashboard is a central web-based interface within the Kubeflow ecosystem that serves as a control panel for managing various ML-related tasks and resources.
 
-## TLDR
+## TL;DR
 ```yaml
   - name: kubeflow-centraldashboard
     source:
@@ -12,11 +12,19 @@ The Kubeflow Central Dashboard is a central web-based interface within the Kubef
         subDir: kubeflow-centraldashboard
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c  kubeflow-centraldashboard
+```
+
 ## Requirements
 
-- Helm
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
-- Kustomize
+- [Kustomize](https://kustomize.io)
 
 ## Parameters
 

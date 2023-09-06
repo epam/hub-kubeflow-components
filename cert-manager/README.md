@@ -6,7 +6,6 @@ The helm based component deploys cloud native certificate management for Kuberne
 ## TL;DR
 
 To deploy this component add the following stanza to your 'hub.yaml' file:
-
 ```yaml
 - name: cert-manager
   source:
@@ -16,6 +15,14 @@ To deploy this component add the following stanza to your 'hub.yaml' file:
       subDir: cert-manager
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c cert-manager
+```
+
 ## Requirements
 
 * [Helm](https://helm.sh/docs/intro/install/)
@@ -23,15 +30,17 @@ To deploy this component add the following stanza to your 'hub.yaml' file:
 
 ## Parameters
 
-| Name                        | Description                 | Default Value                                                                                       | Required |
-|-----------------------------|-----------------------------|-----------------------------------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`      | Kubernetes namespace        | `kube-system`                                                                                       |          |
-| `kubernetes.serviceAccount` | Kubernetes service Account  |                                                                                                     |          |
-| `certmanager.version`              | Version of cert-manager     | `v1.12.4`                 |          |
-| `helm.repo`                 | Helm chart repo             | [jetstack](https://charts.jetstack.io)          |          |
-| `helm.chart`                | Helm chart name             | `cert-manager`                                                                                      |          |
-| `helm.crd`                  | Custom Resource Definitions | [github](https://github.com/jetstack/cert-manager/releases/download/${helm.version}/cert-manager.crds.yaml) |          |
-| `helm.baseValues`                | Instructs hubctl to use values.yaml files from helm chart as a base | `values.yaml` |          |
+The following component level parameters can be set in `hub-component.yaml`:
+
+| Name                        | Description                                                         | Default Value                                                   | Required |
+|-----------------------------|---------------------------------------------------------------------|-----------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`      | Kubernetes namespace                                                | `kube-system`                                                   |          |
+| `kubernetes.serviceAccount` | Kubernetes service Account                                          |                                                                 |          |
+| `certmanager.version`       | Version of cert-manager                                             | `v1.12.4`                                                       |          |
+| `helm.repo`                 | Helm chart repo                                                     | [jetstack](https://charts.jetstack.io)                          |          |
+| `helm.chart`                | Helm chart name                                                     | `cert-manager`                                                  |          |
+| `helm.crd`                  | Custom Resource Definitions                                         | [github](https://github.com/cert-manager/cert-manager/releases) |          |
+| `helm.baseValues`           | Instructs hubctl to use values.yaml files from helm chart as a base | `values.yaml`                                                   |          |
 
 ## Implementation Details
 

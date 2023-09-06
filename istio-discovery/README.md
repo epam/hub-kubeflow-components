@@ -2,7 +2,7 @@
 
 Istiod provides service discovery, configuration and certificate management. Istiod converts high level routing rules that control traffic behavior into Envoy-specific configurations, and propagates them to the sidecars at runtime.
 
-## TLDR
+## TL;DR
 
 ```yaml
   - name: istio-discovery
@@ -13,9 +13,17 @@ Istiod provides service discovery, configuration and certificate management. Ist
         subDir: istio-discovery
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c istio-discovery
+```
+
 ## Requirements
 
-- Helm
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
 
 ## Parameters
@@ -43,7 +51,7 @@ Deployment follows to the following algorithm:
 
 ## See also
 
-* [Istio](https://istio.io/)
-* [External DNS](https://github.com/kubernetes-sigs/external-dns)
+* [Istio Base](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+* [Istio Ingressgateway](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-ingressgateway)
+* [Nginx](https://github.com/epam/hub-kubeflow-components/tree/main/nginx-ingress): ingress controller
 * [GKE cluster](https://github.com/agilestacks/google-components/tree/main/gke-gcloud)
-* [hub cli](https://github.com/agilestacks/hub/wiki)

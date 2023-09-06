@@ -7,8 +7,9 @@ Argo Workflows is an open source container-native workflow engine for orchestrat
 * Easily run compute intensive jobs for machine learning or data processing in a fraction of the time using Argo Workflows on Kubernetes.
 * Run CI/CD pipelines natively on Kubernetes without configuring complex software development products.
 
-## TLDR
+## TL;DR
 
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
 ```yaml
   - name: argo
     source:
@@ -18,16 +19,22 @@ Argo Workflows is an open source container-native workflow engine for orchestrat
         subDir: argo
 ```
 
-## Dependencies
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c argo
+```
 
-* Kubernetes Cluster
-* [Helm](https://helm.sh/docs/intro/install/)
-* S3 Compatible store (S3, GCS or MinIO)
-* Azure Container Storage (not S3 compatible but can be used as alternative to S3)
+## Requirements
+
+- [Helm](https://helm.sh/docs/intro/install/)
+- S3 Compatible store (S3, GCS or MinIO)
+- Azure Container Storage (not S3 compatible but can be used as alternative to S3)
 
 ## Parameters
-
-Component parameters described here
+The following component level parameters can be set in `hub-component.yaml`:
 
 | Name | Description | Default Value | Required |
 |:---- |:----------- | :-------------: |:------:|

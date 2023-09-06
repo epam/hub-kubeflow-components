@@ -2,7 +2,7 @@
 
 ExternalDNS synchronizes exposed Kubernetes Services and Ingresses with DNS providers.
 
-## TLDR
+## TL;DR
 
 ```yaml
   - name: external-dns
@@ -13,9 +13,17 @@ ExternalDNS synchronizes exposed Kubernetes Services and Ingresses with DNS prov
         subDir: external-dns
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c external-dns
+```
+
 ## Requirements
 
-- Helm
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
 
 ## Parameters
@@ -50,6 +58,5 @@ Deployment follows to the following algorithm:
 
 ## See also
 
-* [hub cli](https://github.com/agilestacks/hub/wiki)
 * [External DNS](https://github.com/kubernetes-sigs/external-dns)
 * [GKE cluster](https://github.com/agilestacks/google-components/tree/main/gke-gcloud)

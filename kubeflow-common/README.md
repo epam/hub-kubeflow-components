@@ -2,7 +2,7 @@
 
 The Kubeflow Common could refer to the shared concepts and practices that are part of the Kubeflow ecosystem to streamline and standardize machine learning workflows on Kubernetes. This component perform 3 operations.
 
-## TLDR
+## TL;DR
 ```yaml
   - name: kubeflow-common
     source:
@@ -12,11 +12,19 @@ The Kubeflow Common could refer to the shared concepts and practices that are pa
         subDir: kubeflow-common
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c kubeflow-common
+```
+
 ## Requirements
 
-- Helm
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
-- Kustomize
+- [Kustomize](https://kustomize.io)
 
 ## Parameters
 

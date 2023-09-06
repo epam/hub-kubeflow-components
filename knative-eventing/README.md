@@ -2,7 +2,7 @@
 
 Knative eventing is based on the CloudEvents specification and provides a declarative way to bind event consumers to event sources. Knative eventing is designed to be extensible and declarative so that different event sources and event consumers can be bound without changing the eventing infrastructure.
 
-## TLDR
+## TL;DR
 
 ```yaml
   - name: kfserving
@@ -13,11 +13,19 @@ Knative eventing is based on the CloudEvents specification and provides a declar
         subDir: kfserving
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c kfserving
+```
+
 ## Requirements
 
-- Helm
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
-- Kustomize
+- [Kustomize](https://kustomize.io)
 
 ## Parameters
 

@@ -4,7 +4,7 @@ Dex is an identity service that uses [OpenID Connect](https://openid.net/connect
 
 Dex acts as a portal to other identity providers through [“connectors.”](https://dexidp.io/docs/connectors/) This lets Dex defer authentication to LDAP servers, SAML providers, or established identity providers like GitHub, Google, and Active Directory. Clients write their authentication logic once to talk to Dex, then Dex handles the protocols for a given backend.
 
-## TLDR
+## TL;DR
 
 ```yaml
 - name: dex
@@ -13,15 +13,24 @@ Dex acts as a portal to other identity providers through [“connectors.”](htt
     git:
       remote: https://github.com/epam/hub-kubeflow-components.git
       subDir: dex
+```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c dex
 ```
 
 ## Requirements
 
-- Helm
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
 
 ## Parameters
+
+The following component level parameters can be set in `hub-component.yaml`:
 
 | Name                                      | Description                                                       | Default Value                            | Required |
 |-------------------------------------------|-------------------------------------------------------------------|------------------------------------------|:--------:|
@@ -77,7 +86,4 @@ Deployment follows to the following algorithm:
 ## See also
 
 * [DEX](https://dexidp.io/)
-* [Helm](https://helm.sh/docs/intro/install/)
-* [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/)
-* [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
-* [hub cli](https://github.com/agilestacks/hub/wiki)
+* [GCS Bucket Component](https://github.com/epam/hub-google-components/tree/develop/gsbucket)

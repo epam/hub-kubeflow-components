@@ -4,7 +4,7 @@ KServe is a Kubernetes based platform to deploy your machine learning models on 
 
 KServe can optionally use knative to provide auto-scaling, traffic routing and canary rollout for inference services.
 
-## TLDR
+## TL;DR
 
 ```yaml
   - name: kserve
@@ -15,14 +15,22 @@ KServe can optionally use knative to provide auto-scaling, traffic routing and c
         subDir: kserve
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c kserve
+```
+
 ## Requirements
 
-- Helm
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
-- Kustomize
-* Cert Manager
-* Istio (requried for Serverless mode)
-* Knative-Serving (required for Serverless mode)
+- [Kustomize](https://kustomize.io)
+- [Cert Manager](https://github.com/epam/hub-kubeflow-components/tree/develop/cert-manager)
+- Istio (requried for Serverless mode)
+- [Knative-Serving](https://github.com/epam/hub-kubeflow-components/tree/develop/knative-serving): (required for Serverless mode)
 
 ## Parameters
  

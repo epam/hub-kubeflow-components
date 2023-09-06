@@ -4,7 +4,7 @@ ETCD is a distributed key-value store that provides a reliable way to store data
 
 Etcd is used by Kubernetes as the backing store for all cluster data. However, etcd can be used for other purposes as well such as backend for services such as KServe Model Mesh. In this case we don't want to mess with Kubernetes etcd, but rather use it as a separate service.
 
-## TLDR
+## TL;DR
 
 ```yaml
   - name: etcd
@@ -15,21 +15,32 @@ Etcd is used by Kubernetes as the backing store for all cluster data. However, e
         subDir: etcd
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c etcd
+```
+
 ## Requirements
-- Helm
+
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
 
 ## Parameters
 
-| Name                   | Description                                               | Default Value                        | Required |
-|------------------------|-----------------------------------------------------------|--------------------------------------|:--------:|
-| `kubernetes.namespace` | Target namespace to install etcd                          | `etcd`                               |          |
-| `etcd.rootPassword`    | Root password                                             |                                      |    x     |
-| `etcd.volumeSize`      | PVC size for etcd storage                                 | `8Gi`                                |          |
-| `storage.class`        | PV storage class                                          |                                      |          |
-| `helm.repo`            | Helm chart repository                                     | <https://charts.bitnami.com/bitnami> |          |
-| `helm.chart`           | Helm chart name                                           | `etcd`                               |          |
-| `helm.baseValuesFile`  | Instructs which file from the helm to use as values basis | `values.yaml`                        |          |
+The following component level parameters can be set in `hub-component.yaml`:
+
+| Name                   | Description                                               | Default Value                                | Required |
+|------------------------|-----------------------------------------------------------|----------------------------------------------|:--------:|
+| `kubernetes.namespace` | Target namespace to install etcd                          | `etcd`                                       |          |
+| `etcd.rootPassword`    | Root password                                             |                                              |   `x`    |
+| `etcd.volumeSize`      | PVC size for etcd storage                                 | `8Gi`                                        |          |
+| `storage.class`        | PV storage class                                          |                                              |          |
+| `helm.repo`            | Helm chart repository                                     | [charts](https://charts.bitnami.com/bitnami) |          |
+| `helm.chart`           | Helm chart name                                           | `etcd`                                       |          |
+| `helm.baseValuesFile`  | Instructs which file from the helm to use as values basis | `values.yaml`                                |          |
 
 ## Implementation Details
 
@@ -39,6 +50,7 @@ This component is using helm chart from [bitnami](https://charts.bitnami.com/bit
 ./
 ├── hub-component.yaml    # manifest file of the component with configuration and parameters
 └── values.yaml.template  # hubctl template of helm chart values
+
 ```
 
 Deployment follows to the following algorithm:
@@ -48,7 +60,4 @@ Deployment follows to the following algorithm:
 ## See also
 
 * [etcd](https://etcd.io)
-* [Helm](https://helm.sh/docs/intro/install/)
-* [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/)
-* [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine)
-* [hubctl](superhub.io)
+* [GCS Bucket Component](https://github.com/epam/hub-google-components/tree/develop/gsbucket)

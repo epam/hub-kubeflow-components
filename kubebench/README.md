@@ -2,7 +2,7 @@
 
 Kube-bench is valuable for organizations that want to ensure that their Kubernetes clusters are configured securely and compliant with industry standards. By running kube-bench regularly, administrators can identify and address security vulnerabilities and misconfigurations, reducing the risk of security breaches.
 
-## TLDR
+## TL;DR
 
 ```yaml
   - name: kubebench
@@ -13,11 +13,19 @@ Kube-bench is valuable for organizations that want to ensure that their Kubernet
         subDir: kubebench
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c kubebench
+```
+
 ## Requirements
 
-- Helm
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
-- Kustomize
+- [Kustomize](https://kustomize.io)
 
 ## Parameters
 
@@ -44,6 +52,4 @@ Deployment follows to the following algorithm:
 
 ## See also
 
-* [kustomize](https://kustomize.io)
 * [GKE cluster](https://github.com/agilestacks/google-components/tree/main/gke-gcloud)
-* [hub cli](https://github.com/agilestacks/hub/wiki)

@@ -24,6 +24,14 @@ components:
   - istio-ingressgateway
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c kubeflow-authn
+```
+
 ## Parameters
 
 The following component level parameters has been defined for this component:

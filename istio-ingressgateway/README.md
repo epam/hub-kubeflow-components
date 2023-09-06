@@ -8,7 +8,6 @@ To enable component add the following to the `hub.yaml` file:
 
 ```yaml
 components:
->>>>>>> a306329 (Standardize parameters and README for components:)
   - name: istio-ingressgateway
     source:
       dir: components/istio-ingressgateway
@@ -17,18 +16,20 @@ components:
         subDir: istio-ingressgateway
 ```
 
-To deploy component run:
-
+To initiate the deployment, run the following commands:
 ```bash
-hubctl stack deploy -c "istio-ingressgateway"
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c istio-ingressgateway
 ```
 
-## Dependencies
+## Requirements
 
-* Kubernetes
-* Helm
-* [Istio Discovery](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
-* Optional: Kubernetes Ingress Controller (e.g. [nginx](https://github.com/epam/hub-kubeflow-components/tree/develop/nginx-ingress))
+- [Helm](https://helm.sh/docs/intro/install/)
+- Kubernetes
+- [Istio Discovery](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+- Optional: Kubernetes Ingress Controller (e.g. [nginx](https://github.com/epam/hub-kubeflow-components/tree/develop/nginx-ingress))
 
 ## Parameters
 
@@ -50,9 +51,9 @@ This compnent consumes following parameters
 
 This component produces following outputs
 
-| Name      | Description | Value 
-| --------- | ---------   | --------- 
-| `istio.ingressGateway.labels` | Forward `kubernetes.labels` to avoid possible `kubeflow.labels` used by the compnents | `${kubernetes.labels}`
+| Name                          | Description                                                                           | Value                  |
+|-------------------------------|---------------------------------------------------------------------------------------|------------------------|
+| `istio.ingressGateway.labels` | Forward `kubernetes.labels` to avoid possible `kubeflow.labels` used by the compnents | `${kubernetes.labels}` |
 
 ## Implementation Details
 
@@ -72,12 +73,6 @@ Deployment follows to the following algorithm:
 1. Hubctl will use a helm chart from parameters `helm.repo` and `helm.chart` to deploy the Istio Ingressgateway.
 2. `post-deploy` sets up a custom kubectl command with a specific context `$HUB_DOMAIN_NAME` and namespace `$NAMESPACE`, then conditionally applies an Ingress configuration defined in `ingress.yaml` only if the environment variable `$INGRESS_HOSTS` is not empty and the Ingress resource does not already exist in the specified context and namespace.
 
-## Outputs
-
-| Name                   | Description                           | Default Value          | Required |
-|------------------------|---------------------------------------|------------------------|:--------:|
-| `istio.ingressGateway` | Name of Istio ingress gateway service | `${hub.componentName}` |          |
-
 ### Special Note for Labels
 
 Istio CRD `Gateway` is using labels to discover service of Ingress Gateway. These labels can be defined by the user via `kubernetes.labels` parameter.
@@ -96,6 +91,7 @@ selector:
   matchLabels:
     app: mygateway
 ```
+
 
 ### Expose as Ingress
 
@@ -125,14 +121,5 @@ This component is using `kubernetes.labels` values of this parameter however may
 
 * [Istio Discovery](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
 * [Istio Base](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
-<<<<<<< HEAD
-* [Istio](https://istio.io/)
 * [Nginx](https://github.com/epam/hub-kubeflow-components/tree/main/nginx-ingress): ingress controller
-=======
 
-## See also
-
-* [Istio Ingress Gateway](https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/)
-* [Istio Gateway](https://istio.io/latest/docs/reference/config/networking/gateway/)
-
->>>>>>> a306329 (Standardize parameters and README for components:)

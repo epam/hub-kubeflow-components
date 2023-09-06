@@ -2,7 +2,7 @@
 
 Knative Serving builds on Kubernetes to support deploying and serving of serverless applications and functions. Serving is easy to get started with and scales to support advanced scenarios. The Knative Serving project provides middleware primitives that enable: rapid deployment, autoscaling, routing, network programming and ingress, monitoring, and domain mappings.
 
-## TLDR
+## TL;DR
 
 ```yaml
   - name: knative-serving
@@ -13,11 +13,19 @@ Knative Serving builds on Kubernetes to support deploying and serving of serverl
         subDir: knative-serving
 ```
 
+To initiate the deployment, run the following commands:
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration 
+hubctl stack deploy -c knative-serving
+```
+
 ## Requirements
 
-- Helm
+- [Helm](https://helm.sh/docs/intro/install/)
 - Kubernetes
-- Kustomize
+- [Kustomize](https://kustomize.io)
 - `Issuer`
 - `Certificate`
 
