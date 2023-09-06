@@ -5,75 +5,48 @@ Katib supports hyperparameter tuning, early stopping and neural architecture sea
 
 ## TL;DR
 
-Set environment variables `MYSQL_HOST`,`MYSQL_USER`,`MYSQL_PORT`,`MYSQL_PASSWORD`,`MYSQL_DATABASE`.   
-Declare hubctl stack
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
 
-```shell
-cat << EOF > params.yaml
-parameters:
-- name: mysql
-  parameters:
-  - name: host
-    fromEnv: MYSQL_HOST
-  - name: user
-    fromEnv: MYSQL_USER
-  - name: port
-    value: MYSQL_PORT
-  - name: password
-    fromEnv: MYSQL_PASSWORD
-  - name: database
-    fromEnv: MYSQL_DATABASE
-EOF
-
-cat << EOF > hub.yaml
-version: 1
-kind: stack
-
-requires:
-  - kubernetes
-
-extensions:
-  include:
-    - params.yaml
-
-components:  
+```yaml
+components:
   - name: kubeflow-katib
     source:
       dir: components/kubeflow-katib
       git:
         remote: https://github.com/epam/kubeflow-components.git
         subDir: kubeflow-katib
-    depends:
-      - kubeflow-common
-      - mysql-katib  
-EOF
+```
 
+To initiate the deployment, run the following commands:
+
+```bash
 hubctl stack init
 hubctl stack deploy
+hubctl stack deploy -c kubeflow-katib
 ```
 
 ## Requirements
 
 - Kubernetes
-- [kustomize](https://kustomize.io) CLI
-- [Kubeflow-common](../kubeflow-common/README) component
-- [MySQL](../mysql/README) component
+- [Kustomize](https://kustomize.io) CLI
+- [Kubeflow-common](../kubeflow-common/README)
+- [MySQL](../mysql/README)
 
 ## Parameters
 
 The following component level parameters has been defined `hub-component.yaml`
 
-| Name                   | Description                                    | Default Value                                                                        | Required |
-|:-----------------------|:-----------------------------------------------|:-------------------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace` | Target Kubernetes namespace for this component | `kubeflow`                                                                           |          |
-| `kubeflow.version`     | Version of Kubeflow                            | `v1.5.1`                                                                             |          |
-| `kubeflow.tarball`     | URL to kubeflow tarball archive                | `https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz` |          |
-| `kubeflow.subpath`     | Directories from kubeflow tarball archive      | `apps/katib/upstream`                                                                |          |
-| `mysql.host`           | MySQL database host                            |                                                                                      |    x     |
-| `mysql.port`           | MySQL database port                            |                                                                                      |    x     |
-| `mysql.user`           | MySQL database user                            |                                                                                      |    x     |
-| `mysql.password`       | MySQL database password                        |                                                                                      |    x     |
-| `mysql.database`       | MySQL database name                            |                                                                                      |    x     |
+| Name                    | Description                                               | Default Value                                                                  | Required |
+|:------------------------|:----------------------------------------------------------|:-------------------------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`  | Target Kubernetes namespace for this component            | `kubeflow`                                                                     |          |
+| `kubeflow.version`      | Version of Kubeflow                                       | `v1.5.1`                                                                       |          |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive                           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)         |          |
+| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | [katib](https://github.com/kubeflow/manifests/tree/master/apps/katib/upstream) |          |
+| `mysql.host`            | MySQL database host                                       |                                                                                |   `x`    |
+| `mysql.port`            | MySQL database port                                       |                                                                                |   `x`    |
+| `mysql.user`            | MySQL database user                                       |                                                                                |   `x`    |
+| `mysql.password`        | MySQL database password                                   |                                                                                |   `x`    |
+| `mysql.database`        | MySQL database name                                       |                                                                                |   `x`    |
 
 ## Implementation Details
 
@@ -81,11 +54,11 @@ The component has the following directory structure:
 
 ```text
 ./
-├── bin                                   # Directory contains additional component hooks
-│   └── self-signed-ca.sh                 # Hook for generating self-signed certificates
-├── hub-component.yaml                    # Parameters definitions
-├── kustomization.yaml.template           # Kustomize file for this component
-└── pre-deploy                            # Script to download tarball from kubeflow distribution website and generate self-signed certs if no .certs directory
+├── bin                                   # directory contains additional component hooks
+│   └── self-signed-ca.sh                 # hook for generating self-signed certificates
+├── hub-component.yaml                    # parameters definitions
+├── kustomization.yaml.template           # kustomize file for this component
+└── pre-deploy                            # script to download tarball from kubeflow distribution website and generate self-signed certs if no .certs directory
 ```
 
 `pre-deploy` runs hook for generating certificates
