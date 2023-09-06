@@ -6,14 +6,13 @@ requires:
   - kubernetes
 
 parameters:
-  - name: kubeflow
-    parameters:
-      - name: namespace
-        value: kubeflow
-        env: NAMESPACE
-      - name: version
-        value: v1.5.1
-        env: VERSION
+  - name: kubernetes.namespace
+    env: NAMESPACE
+    value: kubeflow
+
+  - name: kubeflow.version
+    value: v1.5.1
+    env: VERSION
 
   - name: dex.passwordDb.email
     value: bdaml
@@ -24,7 +23,7 @@ parameters:
   - name: kustomize.tarball.url
     value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
     env: HUB_KUSTOMIZE_TARBALL_URL
-  - name: kustomize.tarball.subpath
+  - name: kustomize.subpath
     value: apps/profiles/upstream
     env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 

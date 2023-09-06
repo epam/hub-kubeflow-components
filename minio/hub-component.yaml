@@ -20,7 +20,7 @@ parameters:
 
 - name: storage
   empty: allow
-  parameters: 
+  parameters:
   - name: class
   - name: claim
   - name: size
@@ -39,7 +39,7 @@ parameters:
 
 - name: minio
   parameters:
-  - name: mode  
+  - name: mode
     value: "#{kubernetes.replicas == 1 ? 'standalone' : 'distributed'}"
   - name: logLevel
     value: info
@@ -55,7 +55,7 @@ parameters:
   - name: version
     value: 5.0.4
     env: HELM_CHART_VERSION
-  - name: baseValuesFile
+  - name: valuesFile
     value: values.yaml
     env: CHART_VALUES_FILE
 
@@ -76,6 +76,7 @@ parameters:
   - name: protocol
     value: http
   - name: hosts
+    empty: allow
   - name: class
 
 - name: nginx
@@ -85,6 +86,9 @@ parameters:
     value: "1800"
   - name: readTimeout
     value: "1800"
+  - name: fileSize
+    empty: allow
+    value: 640m
 
 outputs:
 - name: bucket.kind

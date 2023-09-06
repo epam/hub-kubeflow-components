@@ -4,11 +4,11 @@ metadata:
   name: "${hub.componentName}-gateway"
 spec:
   selector:
-    istio: "${component.istio.ingressGateway}"
+    istio: "${istio.ingressGateway}"
   servers:
   - hosts:
-    - "${component.ingress.host}"
-    - "${component.istio.ingressGateway}.${component.istio.namespace}.svc.cluster.local"
+    - "${ingress.hosts}"
+    - "${istio.ingressGateway}.${istio.namespace}.svc.cluster.local"
     port:
       name: http
       number: 80

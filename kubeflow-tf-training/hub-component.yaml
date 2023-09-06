@@ -6,21 +6,21 @@ requires:
   - kubernetes
 
 parameters:
-- name: dns.domain
-  env: DOMAIN_NAME
-- name: component.kubeflow
+
+- name: kubernetes.namespace
+  env: NAMESPACE
+  value: kubeflow
+
+- name: kubeflow
   parameters:
     - name: name
-    - name: namespace
-      env: NAMESPACE
     - name: version
-      # value: master
       value: "v1.2.0"
       env: VERSION
-    - name: tarball
-      value: "https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz"
-      env: URL      
 
+- name: kustomize.tarball.url
+  value: "https://github.com/kubeflow/manifests/archive/${kubeflow.version}.tar.gz"
+  env: HUB_KUSTOMIZE_TARBALL_URL
 
 templates:
   files:

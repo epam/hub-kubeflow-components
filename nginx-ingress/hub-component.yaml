@@ -60,7 +60,7 @@ parameters:
   - name: version
     value: 0.16.1
     env: HELM_CHART_VERSION
-  - name: baseValuesFile
+  - name: valuesFile
     value: values.yaml
     env: CHART_VALUES_FILE
 

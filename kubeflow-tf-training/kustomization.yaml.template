@@ -1,8 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: ${component.kubeflow.namespace}
+namespace: ${kubernetes.namespace}
 commonLabels:
-  app.kubernetes.io/version: "${component.kubeflow.version}"
+  app.kubernetes.io/version: "${kubeflow.version}"
   app.kubernetes.io/managed-by: "superhub.io"     
   app.kubernetes.io/component: tfjob
   app.kubernetes.io/name: tf-job-operator

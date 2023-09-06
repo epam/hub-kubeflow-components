@@ -6,19 +6,22 @@ requires:
 
 parameters:
 - name: dns.domain
-- name: component.kubeflow.namespace
+- name: kubernetes.namespace
   value: kubeflow
-- name: component.kserve
+
+- name: kserve
   parameters:
     - name: modelmesh.namespace
       value: kserve
       env: KSERVE_MODEL_MESH
-    - name: .version
+    - name: version
       value: v0.8.0
       env: KSERVE_VERSION
-- name: component.etcd.endpoint
+
+- name: etcd.endpoint
   value: http://etcd:2379
-- name: component.bucket
+
+- name: bucket
   parameters:
   - name: endpoint
     value: http://minio.kubeflow-data.svc:9000
