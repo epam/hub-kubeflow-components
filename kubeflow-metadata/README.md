@@ -6,37 +6,9 @@ more at [ML Metadata Get Started](https://github.com/google/ml-metadata/blob/mas
 
 ## TL;DR
 
-Set environment variables `MYSQL_HOST`,`MYSQL_USER`,`MYSQL_PORT`,`MYSQL_PASSWORD`,`MYSQL_DATABASE`.
-Declare hubctl stack with
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
 
-```shell
-cat << EOF > params.yaml
-parameters:
-- name: mysql
-  parameters:
-  - name: host
-    fromEnv: MYSQL_HOST
-  - name: user
-    fromEnv: MYSQL_USER
-  - name: port
-    value: MYSQL_PORT
-  - name: password
-    fromEnv: MYSQL_PASSWORD
-  - name: database
-    fromEnv: MYSQL_DATABASE
-EOF
-
-cat << EOF > hub.yaml
-version: 1
-kind: stack
-
-requires:
-  - kubernetes
-
-extensions:
-  include:
-    - params.yaml
-  
+```yaml
 components:  
   - name: kubeflow-metadata
     source:
@@ -44,38 +16,39 @@ components:
       git:
         remote: https://github.com/epam/kubeflow-components.git
         subDir: kubeflow-metadata
-    depends:
-      - kubeflow-common
-      - mysql-metadata
-EOF
+```
 
+To initiate the deployment, run the following commands:
+
+```bash
 hubctl stack init
 hubctl stack deploy
+hubctl stack deploy -c kubeflow-metadata
 ```
 
 ## Requirements
 
 - Kubernetes
 - [kustomize](https://kustomize.io) CLI.
-- [Kubeflow-common](../kubeflow-common/README) component
-- [MySQL](../mysql/README) component
+- [Kubeflow-common](../kubeflow-common/README)
+- [MySQL](../mysql/README)
 
 ## Parameters
 
 The following component level parameters has been defined `hub-component.yaml`
 
-| Name                    | Description                                    | Default Value                                                               | Required |
-|:------------------------|:-----------------------------------------------|:----------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`  | Target Kubernetes namespace for this component | `kubeflow`                                                                  |          |
-| `kubeflow.version`      | Version of Kubeflow                            | `v1.5.1`                                                                    |          |
-| `kustomize.tarball.url` | URL to kubeflow tarball archive                | `https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}` |          |
-| `kustomize.subpath`     | Directories from kubeflow tarball archive      | `apps/pipeline/upstream/base`                                               |          |
-| `mysql.host`            | MySQL database host                            |                                                                             |          |
-| `mysql.user`            | MySQL database user                            | `root`                                                                      |          |
-| `mysql.port`            | MySQL database port                            | `3306`                                                                      |          |
-| `mysql.password`        | MySQL database password                        |                                                                             |          |
-| `mysql.database`        | MySQL database database                        | `metadb`                                                                    |          |
-| `mysql.emptyPassword`   | Flag indicate that password is empty           | `#{size(component.mysql.password) == 0}`                                    |          |
+| Name                    | Description                                    | Default Value                                                                                  | Required |
+|:------------------------|:-----------------------------------------------|:-----------------------------------------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`  | Target Kubernetes namespace for this component | `kubeflow`                                                                                     |          |
+| `kubeflow.version`      | Version of Kubeflow                            | `v1.5.1`                                                                                       |          |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive                | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                         |          |
+| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located      | [pipeline base](https://github.com/kubeflow/manifests/tree/master/apps/pipeline/upstream/base) |          |
+| `mysql.host`            | MySQL database host                            |                                                                                                |          |
+| `mysql.user`            | MySQL database user                            | `root`                                                                                         |          |
+| `mysql.port`            | MySQL database port                            | `3306`                                                                                         |          |
+| `mysql.password`        | MySQL database password                        |                                                                                                |          |
+| `mysql.database`        | MySQL database database                        | `metadb`                                                                                       |          |
+| `mysql.emptyPassword`   | Flag indicate that password is empty           | `#{size(component.mysql.password) == 0}`                                                       |          |
 
 ## Implementation Details
 
@@ -83,9 +56,8 @@ The component has the following directory structure:
 
 ```text
 ./
-├── hub-component.yaml          # Parameters definitions
-├── kustomization.yaml.template # Kustomize file for ths component
-└── README                      
+├── hub-component.yaml          # configuration and parameters file of Hub component
+└── kustomization.yaml.template # main kustomize template file
 ```
 
 ## See also
