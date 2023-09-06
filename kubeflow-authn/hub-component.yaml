@@ -31,7 +31,7 @@ parameters:
   - name: authn.oidcProvider
     value: ${oidc.issuer}   
   - name: authn.oidcAuthUrl
-    brief: OIDC auth url, must be external to the cluster
+    #  OIDC auth url, must be external to the cluster
     value: ${oidc.issuer}/auth
   - name: authn.oidcRedirectURI
     value: ${ingress.protocol}://${ingress.hosts|first}/login/oidc
@@ -42,7 +42,7 @@ parameters:
   - name: authn.afterLogin
     value: ${ingress.protocol}://${ingress.hosts|first}
   - name: authn.oidcSecret
-    value: OpenID connect client mutual trust secret between oidc and Kubeflow
+    # OpenID connect client mutual trust secret between oidc and Kubeflow
     env: OIDC_SECRET
   - name: authn.sessionMaxAge
     value: 86400
@@ -56,7 +56,6 @@ parameters:
   - name: subpath
     value: common/oidc-authservice
     env: HUB_KUSTOMIZE_TARBALL_SUBPATH
->>>>>>> a306329 (Standardize parameters and README for components:)
 
 templates:
   kind: go
