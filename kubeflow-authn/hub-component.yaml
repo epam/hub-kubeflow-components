@@ -4,7 +4,6 @@ kind: component
 
 requires:
   - kubernetes
-  - istio-ingressgateway
 
 parameters:
 - name: ingress
