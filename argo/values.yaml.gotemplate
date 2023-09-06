@@ -42,38 +42,11 @@ server:
   extraArgs:
   # this enables service HTTP protocol
   - "--secure=false"
-  - "--auth-mode=server"
-  - "--auth-mode=client"
-  # - "--auth-mode=sso"
-
+{{range .argo.server.authMode | splitList " " }}
+  - "--arg: {{.}}"
+{{- end}}
   clusterWorkflowTemplates:
     enableEditing: true
-
-useStaticCredentials: true
-useDefaultArtifactRepo: true
-artifactRepository:
-  archiveLogs: false
-{{- if and .azure.storageAccount.name }}    
-  azure: 
-    endpoint: https://{{.azure.storageAccount.name}}.blob.core.windows.net
-    container: {{.azure.storageAccount.containerName}}
-    useSDKCreds: false
-    accountKeySecret:
-      name: {{.hub.componentName}}-artifacts
-      key: accesskey  
-{{- else if and .bucket.name }}  
-  s3:
-    accessKeySecret:
-      name: {{.hub.componentName}}-artifacts
-      key: accesskey
-    secretKeySecret:
-      name: {{.hub.componentName}}-artifacts
-      key: secretkey
-    insecure: true
-    bucket: {{.bucket.name}}
-    endpoint: {{index (.bucket.endpoint | urlParse) "host"}}
-    region: {{.bucket.region}}
-{{- end}}
 
 workflow:
   serviceAccount:

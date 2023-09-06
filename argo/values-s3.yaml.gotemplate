@@ -1,0 +1,20 @@
+useStaticCredentials: true
+useDefaultArtifactRepo: true
+
+{{$endpoint := .bucket.endpoint | urlParse -}}
+# {{$endpoint}}
+artifactRepository:
+  archiveLogs: false
+{{if and .bucket.name -}}  
+  s3:
+    accessKeySecret:
+      name: {{.hub.componentName}}-artifacts
+      key: accesskey
+    secretKeySecret:
+      name: {{.hub.componentName}}-artifacts
+      key: secretkey
+    insecure: {{ $endpoint.scheme | ne "https" }}
+    bucket: {{.bucket.name}}
+    endpoint: {{$endpoint.host}}
+    region: {{.bucket.region}}
+{{- end}}

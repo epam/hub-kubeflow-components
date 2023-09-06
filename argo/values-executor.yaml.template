@@ -1,5 +1,0 @@
-executor:
-  image:
-    registry: "${argo.executor.registry}"
-    repository: "${argo.executor.repository}"
-    tag: "${argo.executor.tag}"

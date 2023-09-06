@@ -25,15 +25,11 @@ parameters:
       - name: workflowNamespace
         value: ${kubernetes.namespace}
       - name: version
-        value: v3.4.10
-      - name: executor
-        parameters:
-          - name: registry
-            value: "quay.io"
-          - name: repository
-            value: "argoproj/argoexec"
-          - name: tag
-            value: ${argo.version}
+        value: v3.3.10
+      - name: server.authMode
+        value: >- 
+          server
+          client
 
   - name: helm
     parameters:
@@ -54,8 +50,8 @@ parameters:
     empty: allow
     parameters:
       - name: endpoint
-      - name: port
       - name: region
+        value: us-east-1
       - name: accessKey
       - name: secretKey
       - name: name
