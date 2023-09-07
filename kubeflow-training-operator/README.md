@@ -36,12 +36,12 @@ hubctl stack deploy -c kubeflow-training-operator
 
 The following component level parameters has been defined `hub-component.yaml`:
 
-| Name                    | Description                                    | Default Value                                                                                          | Required |
-|-------------------------|------------------------------------------------|--------------------------------------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`  | Target Kubernetes namespace for this component | `kubeflow`                                                                                             |          |
-| `kubeflow.version`      | Version of Kubeflow                            | `v1.5.1`                                                                                               |          |
-| `kustomize.tarball.url` | URL to kubeflow tarball archive                | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                                 |          |
-| `kustomize.subpath`     | Directories from kubeflow tarball archive      | [training operator](https://github.com/kubeflow/manifests/tree/master/apps/training-operator/upstream) |          |
+| Name                    | Description                                               | Default Value                                                                                          | Required |
+|-------------------------|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`  | Target Kubernetes namespace for this component            | `kubeflow`                                                                                             |          |
+| `kubeflow.version`      | Version of Kubeflow                                       | `v1.5.1`                                                                                               |          |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive                           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                                 |          |
+| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | [training operator](https://github.com/kubeflow/manifests/tree/master/apps/training-operator/upstream) |          |
 
 ## Implementation Details
 

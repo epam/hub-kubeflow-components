@@ -9,46 +9,42 @@ described in the PodDefault spec.
 
 ## TL;DR
 
-Declare hubctl stack with
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
 
-```shell
-cat << EOF > hub.yaml
-version: 1
-kind: stack
-
-requires:
-  - kubernetes
-  
-components:  
+```yaml
+components:
   - name: kubeflow-webhooks
     source:
       dir: components/kubeflow-webhooks
       git:
         remote: https://github.com/epam/kubeflow-components.git
         subDir: kubeflow-webhooks
-    depends:
-      - kubeflow-common
-EOF
+```
 
+To initiate the deployment, run the following commands:
+
+```bash
 hubctl stack init
-hubctl stack deploy
+hubctl stack configure
+# * Setting parameters for configuration
+hubctl stack deploy -c kubeflow-webhooks
 ```
 
 ## Requirements
 
 - Requires [kustomize](https://kustomize.io)
-- [kubeflow-common](/kubeflow-common)
+- [kubeflow-common](../kubeflow-common)
 
 ## Parameters
 
 The following component level parameters has been defined `hub-component.yaml`:
 
-| Name                    | Description                                    | Default Value                                                               | Required 
-|-------------------------|------------------------------------------------|-----------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`  | Target Kubernetes namespace for this component | `kubeflow`                                                                  |          |
-| `kubeflow.version`      | Version of Kubeflow                            | `v1.6.1`                                                                    |          |
-| `kustomize.tarball.url` | URL to kubeflow tarball archive                | `https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}` |          |
-| `kustomize.subpath`     | Directories from kubeflow tarball archive      | `apps/volumes-web-app/upstream`                                             |          |
+| Name                    | Description                                               | Default Value                                                                                          | Required |
+|-------------------------|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`  | Target Kubernetes namespace for this component            | `kubeflow`                                                                                             |          |
+| `kubeflow.version`      | Version of Kubeflow                                       | `v1.6.1`                                                                                               |          |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive                           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                                 |          |
+| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | [admission webhook](https://github.com/kubeflow/manifests/tree/master/apps/admission-webhook/upstream) |          |
 
 ## Implementation Details
 
@@ -56,13 +52,12 @@ The component has the following directory structure:
 
 ```text
 ./
-├── bin                             # Directory contains additional component hooks
-│   └── self-signed-ca.sh           # Hook for generating self-signed certificates
-├── hub-component.yaml              # Configuration and parameters file of Hub component
-├── kustomization.yaml.template     # Main kustomize template file                            
-├── post-undeploy                   # Script that is executed after undeploy of the current component
-├── pre-deploy                      # Script that is executed before deploy of the current component
-└── README.md                       
+├── bin                             # directory contains additional component hooks
+│   └── self-signed-ca.sh           # hook for generating self-signed certificates
+├── hub-component.yaml              # configuration and parameters file of Hub component
+├── kustomization.yaml.template     # main kustomize template file                            
+├── post-undeploy                   # script that is executed after undeploy of the current component
+└── pre-deploy                      # script that is executed before deploy of the current component
 ```
 
 This component uses Kustomize extension and follows common design guidelines for Kustomize components.

@@ -36,12 +36,12 @@ hubctl stack deploy -c kubeflow-tensorboard
 
 The following component level parameters has been defined `hub-component.yaml`:
 
-| Name                    | Description                               | Default Value                                                                     | Required |
-|-------------------------|-------------------------------------------|-----------------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`  | Kubernetes namespace for this component   | `kubeflow`                                                                        |          |
-| `kubeflow.version`      | Kubeflow version                          | `v1.6.1`                                                                          |          |
-| `kustomize.tarball.url` | URL to kubeflow tarball archive           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)            |          |
-| `kustomize.subpath`     | Directories from kubeflow tarball archive | [tensorboard](https://github.com/kubeflow/manifests/tree/master/apps/tensorboard) |          | 
+| Name                    | Description                                               | Default Value                                                                     | Required |
+|-------------------------|-----------------------------------------------------------|-----------------------------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`  | Kubernetes namespace for this component                   | `kubeflow`                                                                        |          |
+| `kubeflow.version`      | Kubeflow version                                          | `v1.6.1`                                                                          |          |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive                           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)            |          |
+| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | [tensorboard](https://github.com/kubeflow/manifests/tree/master/apps/tensorboard) |          | 
 
 ## Implementation Details
 

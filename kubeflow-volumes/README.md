@@ -4,51 +4,44 @@ This web application allows user to review and delete persistent volumes that th
 
 ## TL;DR
 
-Declare hubctl stack with
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
 
-```shell
-cat << EOF > hub.yaml
-version: 1
-kind: stack
-
-requires:
-  - kubernetes
-  
-components:  
+```yaml
+components:
   - name: kubeflow-volumes
     source:
       dir: components/kubeflow-volumes
       git:
         remote: https://github.com/epam/kubeflow-components.git
         subDir: kubeflow-volumes
-    depends:
-      - kubeflow-common
-      - kubeflow-profiles
-      - istio-ingressgateway
-EOF
+```
 
+To initiate the deployment, run the following commands:
+
+  ```bash
 hubctl stack init
-hubctl stack deploy
+hubctl stack configure
+# * Setting parameters for configuration
+hubctl stack deploy -c kubeflow-volumes
 ```
 
 ## Requirements
 
 - Requires [kustomize](https://kustomize.io)
-- [kubeflow-common](/kubeflow-common)
-- [kubeflow-profiles](/kubeflow-profiles)
-- [istio-ingressgateway](/istio-ingressgateway)
+- [kubeflow-common](../kubeflow-common)
+- [kubeflow-profiles](../kubeflow-profiles)
+- [istio-ingressgateway](../istio-ingressgateway)
 
 ## Parameters
 
 The following component level parameters has been defined `hub-component.yaml`:
 
-| Name                    | Description                                    | Default Value                                                               | Required 
-|-------------------------|------------------------------------------------|-----------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`  | Target Kubernetes namespace for this component | `kubeflow`                                                                  |          |
-| `kubeflow.version`      | Version of Kubeflow                            | `v1.6.1`                                                                    |          |
-| `kustomize.tarball.url` | URL to kubeflow tarball archive                | `https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}` |          |
-| `kustomize.subpath`     | Directories from kubeflow tarball archive      | `apps/volumes-web-app/upstream`                                                                            |          |
-
+| Name                    | Description                                               | Default Value                                                                                      | Required |
+|-------------------------|-----------------------------------------------------------|----------------------------------------------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`  | Target Kubernetes namespace for this component            | `kubeflow`                                                                                         |          |
+| `kubeflow.version`      | Version of Kubeflow                                       | `v1.6.1`                                                                                           |          |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive                           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                             |          |
+| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | [volumes web app](https://github.com/kubeflow/manifests/tree/master/apps/volumes-web-app/upstream) |          |
 
 ## Implementation Details
 
@@ -56,9 +49,11 @@ The component has the following directory structure:
 
 ```text
 ./
-├── kustomization.yaml                          # Main kustomize file
-├── README.md                                   
-└── hub-component.yaml                          # Configuration and parameters file of Hub component
+├── kustomization.yaml                          # main kustomize file
+└── hub-component.yaml                          # configuration and parameters file of Hub component
 ```
+
 This component uses Kustomize extension and follows common design guidelines for Kustomize components.
+
+## See also
 

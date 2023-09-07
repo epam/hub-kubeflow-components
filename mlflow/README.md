@@ -6,14 +6,9 @@ and Model Registry
 
 ## TL;DR
 
-```shell
-cat << EOF > hub.yaml
-version: 1
-kind: stack
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
 
-requires:
-  - kubernetes
-  
+```yaml  
 components:
   - name: mlflow
     source:
@@ -21,64 +16,68 @@ components:
       git:
         remote: https://github.com/epam/kubeflow-components.git
         subDir: mlflow
-EOF
+```
 
+To initiate the deployment, run the following commands:
+
+```bash
 hubctl stack init
-hubctl stack deploy      
+hubctl stack configure
+# * Setting parameters for configuration
+hubctl stack deploy -c mlflow
 ```
 
 ## Requirements
 
 - Kubernetes
 - [kustomize](https://kustomize.io)
-- [postgres](/postgresql)
-- [mysql](/mysql)
-- [istio-ingressgateway](/istio-ingressgateway)
+- [postgres](../postgresql)
+- [mysql](../mysql)
+- [istio-ingressgateway](../istio-ingressgateway)
 
 ## Parameters
 
 The following component level parameters has been defined `hub-component.yaml`:
 
-| Name                                 | Description                                        | Default Value                        | Required 
-|:-------------------------------------|:---------------------------------------------------|:-------------------------------------|:--------:|
-| `kubernetes.namespace`               | Name of kubernetes namesapce where to deploy MinIO | `minio`                              |          |
-| `ingress.protocol`                   | HTTP or HTTPS schema                               | `http`                               |          |
-| `ingress.hosts`                      | Ingress host                                       | `${hub.componentName}.${dns.domain}` |          |
-| `mlflow.version`                     | MLFlow version                                     | `2.3.0`                              |          |
-| `mlflow.image.name`                  | MLFlow image name                                  | `ghcr.io/mlflow/mlflow`              |          |
-| `mlflow.image.tag`                   | MLFlow image tag                                   | `v${mlflow.version}`                 |          |
-| `postgresql.host`                    | Postgresql host                                    |                                      |          |
-| `postgresql.user`                    | Postgresql user                                    |                                      |          |
-| `postgresql.port`                    | Postgresql port                                    |                                      |          |
-| `postgresql.password`                | Postgresql password                                |                                      |          |
-| `postgresql.database`                | Postgresql database                                |                                      |          |
-| `mysql.host`                         | Mysql host                                         |                                      |          |
-| `mysql.user`                         | Mysql user                                         |                                      |          |
-| `mysql.port`                         | Mysql port                                         |                                      |          |
-| `mysql.password`                     | Mysql password                                     |                                      |          |
-| `mysql.database`                     | Mysql database                                     |                                      |          |
-| `bucket.region`                      | Storage bucket region                              | `us-east-1`                          |          |
-| `bucket.endpoint`                    | Storage bucket endpoint                            |                                      |          |
-| `bucket.accessKey`                   | Storage access key                                 |                                      |   `x`    |
-| `bucket.secretKey`                   | Storage secret key                                 |                                      |   `x`    |
-| `azure.storageAccount.name`          | Storage Account name                               |                                      |          |
-| `azure.storageAccount.containerName` | Storage Account name                               |                                      |          |
-| `azure.storageAccount.accessKey`     | Storage Account name                               |                                      |          |
+| Name                                 | Description                             | Default Value                        | Required |
+|:-------------------------------------|:----------------------------------------|:-------------------------------------|:--------:|
+| `kubernetes.namespace`               | Kubernetes namespace for this component | `mlflow`                             |          |
+| `ingress.protocol`                   | HTTP or HTTPS schema                    | `http`                               |          |
+| `ingress.hosts`                      | Ingress host                            | `${hub.componentName}.${dns.domain}` |          |
+| `mlflow.version`                     | MLFlow version                          | `2.3.0`                              |          |
+| `mlflow.image.name`                  | MLFlow image name                       | `ghcr.io/mlflow/mlflow`              |          |
+| `mlflow.image.tag`                   | MLFlow image tag                        | `v${mlflow.version}`                 |          |
+| `postgresql.host`                    | Postgresql host                         |                                      |          |
+| `postgresql.user`                    | Postgresql user                         |                                      |          |
+| `postgresql.port`                    | Postgresql port                         |                                      |          |
+| `postgresql.password`                | Postgresql password                     |                                      |          |
+| `postgresql.database`                | Postgresql database                     |                                      |          |
+| `mysql.host`                         | Mysql host                              |                                      |          |
+| `mysql.user`                         | Mysql user                              |                                      |          |
+| `mysql.port`                         | Mysql port                              |                                      |          |
+| `mysql.password`                     | Mysql password                          |                                      |          |
+| `mysql.database`                     | Mysql database                          |                                      |          |
+| `bucket.region`                      | Storage bucket region                   | `us-east-1`                          |          |
+| `bucket.endpoint`                    | Storage bucket endpoint                 |                                      |          |
+| `bucket.accessKey`                   | Storage access key                      |                                      |   `x`    |
+| `bucket.secretKey`                   | Storage secret key                      |                                      |   `x`    |
+| `azure.storageAccount.name`          | Storage Account name                    |                                      |          |
+| `azure.storageAccount.containerName` | Storage Account name                    |                                      |          |
+| `azure.storageAccount.accessKey`     | Storage Account name                    |                                      |          |
 
 ## Implementation Details
 
 ```text
 ./
-├── base                        # Backend for UI and operator for tensorboards
-│   ├── deployment.yaml         # Deployment manifest
-│   ├── kustomization.yaml      # Kustomize deployment manifest
-│   └── service.yaml            # Service manifest
-├── hub-component.yaml              # Configuration and parameters file of Hub component
-├── ingress.yaml.gotemplate         # Helm chart template
-├── kustomization.yaml.gotemplate   # Contains kustomize scr
-├── post-undeploy                   # Script that is executed after undeploy of the current component
-├── pre-deploy                      # Script that is executed before deploy of the current component
-└── README                  
+├── base                        # backend for UI and operator for tensorboards
+│   ├── deployment.yaml         # deployment manifest
+│   ├── kustomization.yaml      # kustomize deployment manifest
+│   └── service.yaml            # service manifest
+├── hub-component.yaml              # configuration and parameters file of Hub component
+├── ingress.yaml.gotemplate         # helm chart template
+├── kustomization.yaml.gotemplate   # contains kustomize scr
+├── post-undeploy                   # script that is executed after undeploy of the current component
+└── pre-deploy                      # script that is executed before deploy of the current component
 ```
 
 ## See Also

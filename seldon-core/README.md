@@ -23,10 +23,7 @@ To initiate the deployment, run the following commands:
 ```bash
 hubctl stack init
 hubctl stack configure
-# * Setting Name of the existing Kubernetes storage class: local-path
-# * Setting ingress class: traefik
-# * Setting parameter dex.passwordDb.password: <random>
-# * Setting executor: local
+# * Setting parameters for configuration
 hubctl stack deploy -c seldon-core
 ```
 
@@ -34,20 +31,20 @@ hubctl stack deploy -c seldon-core
 
 The following component level parameters has been defined `hub-component.yaml`
 
-| Name                   | Description                                           | Default Value                                                  | Required 
+| Name                   | Description                                           | Default Value                                                  | Required |
 |:-----------------------|:------------------------------------------------------|:---------------------------------------------------------------|:--------:|
 | `kubernetes.namespace` | Kubernetes namespace for this component               | `kubeflow`                                                     |          |
-| `seldon.version`       |                                                       | `1.14.1`                                                       |
+| `seldon.version`       | Seldon version                                        | `1.14.1`                                                       |          |
 | `helm.repo`            | Helm chart repository URL                             | `https://argoproj.github.io/argo-helm`                         |          |
 | `helm.chart`           | Helm chart name                                       | `argo-workflows`                                               |          |
 | `helm.version`         | Helm version                                          | `v1.11.1`                                                      |          |
 | `helm.valuesFile`      | Helm base values file                                 | `values.yaml`                                                  |          |         |
 | `ingress.hosts`        | List of ingress hosts (Note: only first will be used) |                                                                |          |
 | `ingress.protocol`     | Ingress traffic protocol (schema)                     | `http`                                                         |          |
-| `istio.namespace`      |                                                       | `istio-system`                                                 |
-| `istio.ingressGateway` |                                                       | `istio-ingressgateway`                                         |
-| `istio.gateway.name`   |                                                       | `${hub.componentName}`                                         |
-| `istio.gateway.hosts`  |                                                       | `${istio.ingressGateway}.${istio.namespace}.svc.cluster.local` |
+| `istio.namespace`      |                                                       | `istio-system`                                                 |          |
+| `istio.ingressGateway` |                                                       | `istio-ingressgateway`                                         |          |
+| `istio.gateway.name`   |                                                       | `${hub.componentName}`                                         |          |
+| `istio.gateway.hosts`  |                                                       | `${istio.ingressGateway}.${istio.namespace}.svc.cluster.local` |          |
 
 ## Implementation Details
 
@@ -58,7 +55,7 @@ The component has the following directory structure:
 ├── bin                             # directory contains additional component hooks
 │   └── self-signed-ca.sh           # hook for generating self-signed certificates
 ├── hub-component.yaml              # configuration and parameters file of Hub component
-├── istio-gateway.yaml.template     # Parameters definitions
+├── istio-gateway.yaml.template     # parameters definitions
 ├── post-undeploy                   # script that is executed after undeploy of the current component
 ├── pre-deploy                      # script that is executed before deploy of the current component
 ├── seldon-edit.yaml.template       # cluster role template
