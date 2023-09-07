@@ -20,9 +20,10 @@ components:
 To initiate the deployment, run the following commands:
 
   ```bash
-  hubctl stack init
-  hubctl stack configure
-  hubctl stack deploy -c kubeflow-jupyter
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration
+hubctl stack deploy -c kubeflow-jupyter
 ```
 
 ## Requirements
@@ -41,7 +42,7 @@ The following component level parameters has been defined `hub-component.yaml`:
 | Name                    | Description                                               | Default Value                                                                                                                                                                                                                 | Required 
 |-------------------------|-----------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------:|
 | `kubernetes.namespace`  | Kubernetes namespace for this component                   | `kubeflow`                                                                                                                                                                                                                    |          |
-| `kubeflow.version`      | Version of Kubeflow                                       | `v1.5.1`                                                                                                                                                                                                                      |          |
+| `kubeflow.version`      | Kubeflow version                                       | `v1.5.1`                                                                                                                                                                                                                      |          |
 | `kustomize.tarball.url` | URL to kubeflow tarball archive                           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                                                                                                                                                        |          |
 | `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | [jupyter-web-app](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/jupyter-web-app/upstream) [notebook-controller](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/notebook-controller/upstream) |          |
 | `storage.class`         | PV storage class                                          |                                                                                                                                                                                                                               |          |

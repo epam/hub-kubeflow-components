@@ -6,15 +6,12 @@ requires:
   - kubernetes
 
 parameters:
-
   - name: kubernetes.namespace
     env: NAMESPACE
     value: kubeflow
 
   - name: kubeflow
     parameters:
-      - name: name
-        value: kubeflow-pipelines
       - name: version
         value: v1.6.1
         env: VERSION

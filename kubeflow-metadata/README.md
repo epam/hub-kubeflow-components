@@ -22,7 +22,8 @@ To initiate the deployment, run the following commands:
 
 ```bash
 hubctl stack init
-hubctl stack deploy
+hubctl stack configure
+# * Setting parameters for configuration 
 hubctl stack deploy -c kubeflow-metadata
 ```
 
@@ -30,8 +31,8 @@ hubctl stack deploy -c kubeflow-metadata
 
 - Kubernetes
 - [kustomize](https://kustomize.io) CLI.
-- [Kubeflow-common](../kubeflow-common/README)
-- [MySQL](../mysql/README)
+- [Kubeflow-common](../kubeflow-common)
+- [MySQL](../mysql)
 
 ## Parameters
 

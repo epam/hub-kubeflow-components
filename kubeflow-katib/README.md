@@ -21,7 +21,8 @@ To initiate the deployment, run the following commands:
 
 ```bash
 hubctl stack init
-hubctl stack deploy
+hubctl stack configure
+# * Setting parameters for configuration 
 hubctl stack deploy -c kubeflow-katib
 ```
 
