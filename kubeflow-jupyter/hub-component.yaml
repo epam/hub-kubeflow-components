@@ -10,8 +10,7 @@ parameters:
     value: kubeflow
 
   - name: kubeflow.version
-    value: v1.5.1
-    env: VERSION
+    value: v1.6.1
 
   - name: kustomize.tarball.url
     value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
