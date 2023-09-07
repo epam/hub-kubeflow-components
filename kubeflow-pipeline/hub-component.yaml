@@ -25,7 +25,9 @@ parameters:
     value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
     env: HUB_KUSTOMIZE_TARBALL_URL
   - name: kustomize.subpath
-    value: "apps/pipeline/upstream/base: apps/pipeline/upstream/third-party/metacontroller/base:crds/metacontroller"
+    value: >-
+      apps/pipeline/upstream/base
+      apps/pipeline/upstream/third-party/metacontroller/base:crds/metacontroller
     env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
   - name: mysql
@@ -39,13 +41,12 @@ parameters:
 
   - name: bucket
     parameters:
-      - name: endpoint
+      - name: name
       - name: region
+        value: us-east-1
       - name: accessKey
       - name: secretKey
-      - name: host
-      - name: port
-      - name: name
+      - name: endpoint
 
 templates:
   files:
