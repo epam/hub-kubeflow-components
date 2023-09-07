@@ -24,7 +24,4 @@ parameters:
 
 templates:
   files:
-  # - "envs/*.template"
-  # - "resources/*.template"
-  # - "patches/*.template"
   - "*.template"

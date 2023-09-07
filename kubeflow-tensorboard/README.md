@@ -4,14 +4,9 @@ This web application provides Web UI to manage Tensorboard instances in the user
 
 ## TL;DR
 
-```shell
-cat << EOF > hub.yaml
-version: 1
-kind: stack
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
 
-requires:
-  - kubernetes
-  
+```yaml  
 components:
   - name: kubeflow-tensorboard
     source:
@@ -19,33 +14,34 @@ components:
       git:
         remote: https://github.com/epam/kubeflow-components.git
         subDir: kubeflow-tensorboard
-    depends:
-      - kubeflow-common
-      - kubeflow-profiles
-      - istio-ingressgateway
-EOF
+```
 
+To initiate the deployment, run the following commands:
+
+```bash
 hubctl stack init
-hubctl stack deploy      
+hubctl stack configure
+# * Setting parameters for configuration
+hubctl stack deploy -c kubeflow-tensorboard
 ```
 
 ## Requirements
 
 - [kustomize](https://kustomize.io)
-- [kubeflow-common](/kubeflow-common)
-- [kubeflow-profiles](/kubeflow-profiles)
-- [istio-ingressgateway](/istio-ingressgateway)
+- [kubeflow-common](../kubeflow-common)
+- [kubeflow-profiles](../kubeflow-profiles)
+- [istio-ingressgateway](../istio-ingressgateway)
 
 ## Parameters
 
 The following component level parameters has been defined `hub-component.yaml`:
 
-| Name                    | Description                                    | Default Value                                                               | Required 
-|-------------------------|------------------------------------------------|-----------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`  | Target Kubernetes namespace for this component | `kubeflow`                                                                  |          |
-| `kubeflow.version`      | Version of Kubeflow                            | `v1.6.1`                                                                    |          |
-| `kustomize.tarball.url` | URL to kubeflow tarball archive                | `https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}` |          |
-| `kustomize.subpath`     | Directories from kubeflow tarball archive      |                                                                             |          | 
+| Name                    | Description                               | Default Value                                                                     | Required |
+|-------------------------|-------------------------------------------|-----------------------------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`  | Kubernetes namespace for this component   | `kubeflow`                                                                        |          |
+| `kubeflow.version`      | Kubeflow version                          | `v1.6.1`                                                                          |          |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)            |          |
+| `kustomize.subpath`     | Directories from kubeflow tarball archive | [tensorboard](https://github.com/kubeflow/manifests/tree/master/apps/tensorboard) |          | 
 
 ## Implementation Details
 
@@ -56,12 +52,12 @@ This component will deploy two services of the Tensorboard
 
 ```text
 ./
-├── tensorboard-controller              # Backend for UI and operator for tensorboards
-│   └── kustomization.yaml.template     # Kustomize deployment manifest
-├── tensorboards-web-app                # Contains kustomize scr
-│   └── kustomization.yaml.template     # Kustomize deployment manifest
-├── hub-component.yaml                  # Configuration and parameters file of Hub component
-└── kustomization.yaml.template         # Main kustomize template file
+├── tensorboard-controller              # backend for UI and operator for tensorboards
+│   └── kustomization.yaml.template     # kustomize deployment manifest
+├── tensorboards-web-app                # contains kustomize scr
+│   └── kustomization.yaml.template     # kustomize deployment manifest
+├── hub-component.yaml                  # configuration and parameters file of Hub component
+└── kustomization.yaml.template         # main kustomize template file
 ```
 
 ## See Also

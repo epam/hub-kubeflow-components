@@ -5,16 +5,9 @@ non-distributed TensorFlow/PyTorch/Apache MXNet/XGBoost/MPI jobs on Kubernetes.
 
 ## TL;DR
 
-Declare hubctl stack with
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
 
-```shell
-cat << EOF > hub.yaml
-version: 1
-kind: stack
-
-requires:
-  - kubernetes
-  
+```yaml
 components:  
   - name: kubeflow-training-operator
     source:
@@ -22,30 +15,33 @@ components:
       git:
         remote: https://github.com/epam/kubeflow-components.git
         subDir: kubeflow-training-operator
-    depends:
-      - kubeflow-common  
-EOF
+```
 
+To initiate the deployment, run the following commands:
+
+  ```bash
 hubctl stack init
-hubctl stack deploy
+hubctl stack configure
+# * Setting parameters for configuration
+hubctl stack deploy -c kubeflow-training-operator
 ```
 
 ## Requirements
 
 - Kubernetes
 - [kustomize](https://kustomize.io) CLI.
-- [kubeflow-common](/kubeflow-common)
+- [kubeflow-common](../kubeflow-common)
 
 ## Parameters
 
 The following component level parameters has been defined `hub-component.yaml`:
 
-| Name                    | Description                                    | Default Value                                                               | Required 
-|-------------------------|------------------------------------------------|-----------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`  | Target Kubernetes namespace for this component | `kubeflow`                                                                  |          |
-| `kubeflow.version`      | Version of Kubeflow                            | `v1.5.1`                                                                    |          |
-| `kustomize.tarball.url` | URL to kubeflow tarball archive                | `https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}` |          |
-| `kustomize.subpath`     | Directories from kubeflow tarball archive      |                                                                             |          |
+| Name                    | Description                                    | Default Value                                                                                          | Required |
+|-------------------------|------------------------------------------------|--------------------------------------------------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`  | Target Kubernetes namespace for this component | `kubeflow`                                                                                             |          |
+| `kubeflow.version`      | Version of Kubeflow                            | `v1.5.1`                                                                                               |          |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive                | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                                 |          |
+| `kustomize.subpath`     | Directories from kubeflow tarball archive      | [training operator](https://github.com/kubeflow/manifests/tree/master/apps/training-operator/upstream) |          |
 
 ## Implementation Details
 
@@ -53,10 +49,10 @@ The component has the following directory structure:
 
 ```text
 ./
-├── kustomization.yaml                          # Main kustomize file
-├── README.md                                   
-└── hub-component.yaml                          # Configuration and parameters file of Hub component
+├── kustomization.yaml                          # main kustomize file
+└── hub-component.yaml                          # configuration and parameters file of Hub component
 ```
+
 This component uses Kustomize extension and follows common design guidelines for Kustomize components.
 
 ## See Also
