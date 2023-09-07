@@ -2,8 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 bases:
 - kustomize/base
-resources:
-- add-oidc-job.yaml
 
 # Warning: using deprecated filter name "envoy.http_connection_manager"; use "envoy.filters.network.http_connection_manager" instead
 patchesJSON6902:
@@ -32,12 +30,7 @@ patchesJSON6902:
   patch: |-
     - op: replace
       path: /spec/resources/requests/storage
-      value: "{{.kubeflow.authn.volumeSize}}"
-
-commonLabels:
-  kustomize.component: kubeflow-authn
-  app.kubernetes.io/component: "{{.hub.componentName}}"
-  app.kubernetes.io/version: "{{.kubeflow.version}}"
+      value: "{{.storage.size}}"
 
 namespace: "{{.kubernetes.namespace}}"
 

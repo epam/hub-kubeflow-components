@@ -22,14 +22,15 @@ components:
   depends:
   - dex
   - istio-ingressgateway
+
 ```
 
 To initiate the deployment, run the following commands:
+
 ```bash
 hubctl stack init
 hubctl stack configure
-# * Setting parameters for configuration 
-hubctl stack deploy -c kubeflow-authn
+hubctl stack deploy -c "kubeflow-authn"
 ```
 
 ## Parameters
@@ -44,9 +45,9 @@ The following component level parameters has been defined for this component:
 | `kubeflow.authn.oidcProvider` | Kubeflow OIDC auth URL | `${oidc.issuer}` | `x`
 | `kubeflow.authn.oidcSecret` | Hard to guess OIDC secret passphrase between Kubeflow and Dex (recommended: randomly generated string) | | `x`
 | `kubeflow.authn.sessionMaxAge` | Max age (in seconds) for user session | `86400` |
-| `kubernetes.namespace` | Target kubernetes namespace | `istio-system` | `x`
-| `kubeflow.version` | Kubeflow version | `v1.6.1` | 
-| `kubeflow.authn.oidcProvider` | TBD |  | 
+| `kubernetes.namespace` | Namespace where envoy filter will be created| `istio-system` | `x`
+| `kubeflow.version` | Kubeflow version | `v1.6.1` |
+| `kubeflow.authn.oidcProvider` | TBD |  |
 | `kubeflow.authn.oidcAuthUrl` | TBD |  | `x`
 | `kubeflow.authn.oidcRedirectURI` | TBD |  | `x`
 | `kubeflow.authn.afterLogin` | TBD |  | `x`
@@ -81,9 +82,11 @@ Deployment follows to the following algorithm:
 
 Current component will deploy a Kubeflow Authn with the Kustomize. It will also expose it as OIDC application. Yet it will not do any authorization with the OIDC provider. This should be done via stack hook.
 
-### Register with OIDC provider
+### Add OIDC Application to Dex
 
-In theory Authn should work with any OIDC provider. Yet it has been tested with Dex. To register Authn with Dex, you need to create a Dex client with the following configuration. Once this is done you need to update the `oidc.issuer` by running a `Job`
+By design this component works with any OIDC provider. Because Dex is the default SSO for Kubeflow here we will describe how to add an OIDC application to Dex.
+
+To register Authn with Dex, you need to create a Dex client with the following configuration. Once this is done you need to update the `oidc.issuer` by running a `Job`
 
 Please note `hub-componetn.yaml` deliberately exposes some of the paramters required for OIDC application registration as environment variables avalable for the stack level hook.
 
@@ -105,7 +108,7 @@ spec:
             - create
             - oidc
             - "--skip-exit-code"
-            - "--host=${oidc_api_endpoint}"
+            - "--host=dex.example.com"
             - "--client-id=${OIDC_CLIENT_ID}"
             - "--client-secret=${OIDC_SECRET}"
             - "--name=${OIDC_CLIENT_ID}"
