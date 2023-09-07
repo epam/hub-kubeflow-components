@@ -9,7 +9,7 @@ more at [ML Metadata Get Started](https://github.com/google/ml-metadata/blob/mas
 To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
 
 ```yaml
-components:  
+components:
   - name: kubeflow-metadata
     source:
       dir: components/kubeflow-metadata
@@ -38,18 +38,18 @@ hubctl stack deploy -c kubeflow-metadata
 
 The following component level parameters has been defined `hub-component.yaml`
 
-| Name                    | Description                                    | Default Value                                                                                  | Required |
-|:------------------------|:-----------------------------------------------|:-----------------------------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`  | Target Kubernetes namespace for this component | `kubeflow`                                                                                     |          |
-| `kubeflow.version`      | Version of Kubeflow                            | `v1.5.1`                                                                                       |          |
-| `kustomize.tarball.url` | URL to kubeflow tarball archive                | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                         |          |
-| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located      | [pipeline base](https://github.com/kubeflow/manifests/tree/master/apps/pipeline/upstream/base) |          |
-| `mysql.host`            | MySQL database host                            |                                                                                                |          |
-| `mysql.user`            | MySQL database user                            | `root`                                                                                         |          |
-| `mysql.port`            | MySQL database port                            | `3306`                                                                                         |          |
-| `mysql.password`        | MySQL database password                        |                                                                                                |          |
-| `mysql.database`        | MySQL database database                        | `metadb`                                                                                       |          |
-| `mysql.emptyPassword`   | Flag indicate that password is empty           | `#{size(component.mysql.password) == 0}`                                                       |          |
+| Name                    | Description                                               | Default Value                                                                                  | Required |
+|:------------------------|:----------------------------------------------------------|:-----------------------------------------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`  | Target Kubernetes namespace for this component            | `kubeflow`                                                                                     |          |
+| `kubeflow.version`      | Kubeflow version                                          | `v1.5.1`                                                                                       |          |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive                           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                         |          |
+| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | [pipeline base](https://github.com/kubeflow/manifests/tree/master/apps/pipeline/upstream/base) |          |
+| `mysql.host`            | MySQL database host                                       |                                                                                                |          |
+| `mysql.user`            | MySQL database user                                       | `root`                                                                                         |          |
+| `mysql.port`            | MySQL database port                                       | `3306`                                                                                         |          |
+| `mysql.password`        | MySQL database password                                   |                                                                                                |          |
+| `mysql.database`        | MySQL database database                                   | `metadb`                                                                                       |          |
+| `mysql.emptyPassword`   | Flag indicate that password is empty                      | `#{size(component.mysql.password) == 0}`                                                       |          |
 
 ## Implementation Details
 

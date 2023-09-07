@@ -30,19 +30,19 @@ hubctl stack deploy -c kubeflow-jupyter
 
 - Kubernetes
 - [kustomize](https://kustomize.io) CLI.
-- [Istio Ingress Gateway](/istio-ingressgateway)
-- [Kubeflow common](/kubeflow-common)
-- [Kubeflow profiles](/kubeflow-profiles)
-- [Kubeflow webhooks](/kubeflow-webhooks)
+- [Istio Ingress Gateway](../istio-ingressgateway)
+- [Kubeflow common](../kubeflow-common)
+- [Kubeflow profiles](../kubeflow-profiles)
+- [Kubeflow webhooks](../kubeflow-webhooks)
 
 ## Parameters
 
 The following component level parameters has been defined `hub-component.yaml`:
 
-| Name                    | Description                                               | Default Value                                                                                                                                                                                                                 | Required 
+| Name                    | Description                                               | Default Value                                                                                                                                                                                                                 | Required |
 |-------------------------|-----------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------:|
 | `kubernetes.namespace`  | Kubernetes namespace for this component                   | `kubeflow`                                                                                                                                                                                                                    |          |
-| `kubeflow.version`      | Kubeflow version                                       | `v1.5.1`                                                                                                                                                                                                                      |          |
+| `kubeflow.version`      | Kubeflow version                                          | `v1.5.1`                                                                                                                                                                                                                      |          |
 | `kustomize.tarball.url` | URL to kubeflow tarball archive                           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                                                                                                                                                        |          |
 | `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | [jupyter-web-app](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/jupyter-web-app/upstream) [notebook-controller](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/notebook-controller/upstream) |          |
 | `storage.class`         | PV storage class                                          |                                                                                                                                                                                                                               |          |

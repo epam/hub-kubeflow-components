@@ -30,8 +30,8 @@ hubctl stack deploy -c kubeflow-katib
 
 - Kubernetes
 - [Kustomize](https://kustomize.io) CLI
-- [Kubeflow-common](../kubeflow-common/README)
-- [MySQL](../mysql/README)
+- [Kubeflow-common](../kubeflow-common)
+- [MySQL](../mysql)
 
 ## Parameters
 
@@ -40,7 +40,7 @@ The following component level parameters has been defined `hub-component.yaml`
 | Name                    | Description                                               | Default Value                                                                  | Required |
 |:------------------------|:----------------------------------------------------------|:-------------------------------------------------------------------------------|:--------:|
 | `kubernetes.namespace`  | Target Kubernetes namespace for this component            | `kubeflow`                                                                     |          |
-| `kubeflow.version`      | Version of Kubeflow                                       | `v1.5.1`                                                                       |          |
+| `kubeflow.version`      | Kubeflow version                                          | `v1.5.1`                                                                       |          |
 | `kustomize.tarball.url` | URL to kubeflow tarball archive                           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)         |          |
 | `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | [katib](https://github.com/kubeflow/manifests/tree/master/apps/katib/upstream) |          |
 | `mysql.host`            | MySQL database host                                       |                                                                                |   `x`    |
