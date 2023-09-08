@@ -12,14 +12,19 @@ parameters:
   - name: kubeflow.version
     value: v1.6.1
 
-  - name: kustomize.tarball.url
-    value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
-    env: HUB_KUSTOMIZE_TARBALL_URL
-  - name: kustomize.subpath
-    value: >-
-      apps/jupyter/jupyter-web-app/upstream:../jupyter-web-app/kustomize
-      apps/jupyter/notebook-controller/upstream:../notebook-controller/kustomize
-    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+  - name: kustomize.tarball
+    parameters:
+    - name: url
+      value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
+      env: HUB_KUSTOMIZE_TARBALL_URL
+    - name: subpath
+      value: >-
+        apps/jupyter/jupyter-web-app/upstream:jupyter-web-app/upstream
+        apps/jupyter/notebook-controller/upstream:notebook-controller/upstream
+      env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+    - name: dir
+      value: "."
+      env: HUB_KUSTOMIZE_TARBALL_DIR
 
   - name: storage.class
     brief: |

@@ -5,7 +5,7 @@ commonLabels:
   app.kubernetes.io/component: notebook-controller
 
 resources:
-- kustomize/overlays/kubeflow
+- upstream/overlays/kubeflow
 
 configMapGenerator:
 - name: config

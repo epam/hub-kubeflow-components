@@ -5,7 +5,7 @@ commonLabels:
   app.kubernetes.io/component: jupyter-web-app
 
 resources:
-- kustomize/overlays/istio
+- upstream/overlays/istio
 
 patchesStrategicMerge:
 - configs/logos-configmap.yaml

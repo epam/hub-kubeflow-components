@@ -47,7 +47,7 @@ parameters:
   value: "https://github.com/kubeflow/manifests/archive/${kubeflow.version}.tar.gz"
   env: HUB_KUSTOMIZE_TARBALL_URL
 - name: kustomize.subpath
-  value: common/oidc-authservice
+  value: common/oidc-authservice/base
   env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 templates:

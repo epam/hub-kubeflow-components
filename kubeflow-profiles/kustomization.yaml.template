@@ -9,7 +9,7 @@ commonLabels:
   app.kubernetes.io/part-of: "kubeflow"
 
 resources:
-- kustomize/overlays/kubeflow
+- kustomize/upstream/overlays/kubeflow
 
 configMapGenerator:
 - name: config

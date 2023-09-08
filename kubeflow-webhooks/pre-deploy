@@ -18,8 +18,3 @@ cat <<EOF > ".generated/patch.yaml"
   path: /webhooks/0/clientConfig/caBundle
   value: $(openssl enc -a -A < ".generated/ca-cert.pem")
 EOF
-
-kustomize edit add patch \
-  --group admissionregistration.k8s.io \
-  --kind MutatingWebhookConfiguration \
-  --path ".generated/patch.yaml"

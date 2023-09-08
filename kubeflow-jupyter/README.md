@@ -39,13 +39,14 @@ hubctl stack deploy -c kubeflow-jupyter
 
 The following component level parameters has been defined `hub-component.yaml`:
 
-| Name                    | Description                                               | Default Value                                                                                                                                                                                                                 | Required |
-|-------------------------|-----------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`  | Kubernetes namespace for this component                   | `kubeflow`                                                                                                                                                                                                                    |          |
-| `kubeflow.version`      | Kubeflow version                                          | `v1.5.1`                                                                                                                                                                                                                      |          |
-| `kustomize.tarball.url` | URL to kubeflow tarball archive                           | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                                                                                                                                                        |          |
-| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | [jupyter-web-app](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/jupyter-web-app/upstream) [notebook-controller](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/notebook-controller/upstream) |          |
-| `storage.class`         | PV storage class                                          |                                                                                                                                                                                                                               |          |
+| Name | Description | Default Value | Required |
+|:-----|:------------|:--------------|:--------:|
+| `kubernetes.namespace`  | Kubernetes namespace for this component                   | `kubeflow` | |
+| `kubeflow.version`      | Kubeflow version | `v1.6.1`| |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)|          |
+| `kustomize.tarball.subpath` | Tarball archive subpath where kustomize files are located | [jupyter-web-app](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/jupyter-web-app/upstream) [notebook-controller](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/notebook-controller/upstream) |          |
+| `kustomize.tarball.dir` | Instructs hubctl to use a specific directory relative to it should extract tarball | `.` |
+| `storage.class` | PV storage class. Empty means default see [spawner config](https://github.com/kubeflow/manifests/blob/v1.5.1/apps/jupyter/jupyter-web-app/upstream/base/configs/spawner_ui_config.yaml#L84) | | |
 
 ## Implementation Details
 

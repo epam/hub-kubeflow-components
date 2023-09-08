@@ -29,7 +29,7 @@ parameters:
           https://raw.githubusercontent.com/kubeflow/manifests/${kubeflow.version}/apps/pipeline/upstream/third-party/metacontroller/base/crd.yaml
       - name: tarball.url
         env: HUB_KUSTOMIZE_TARBALL_URL
-        value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
+        value: https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}
       - name: tarball.subpath
         env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
         value: >-

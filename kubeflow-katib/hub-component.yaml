@@ -11,7 +11,7 @@ parameters:
     value: kubeflow
 
   - name: kubeflow.version
-    value: v1.5.1
+    value: v1.6.1
     env: VERSION
 
   - name: kustomize.tarball.url

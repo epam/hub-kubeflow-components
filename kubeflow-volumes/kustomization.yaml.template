@@ -11,4 +11,4 @@ commonLabels:
   app.kubernetes.io/part-of: "kubeflow"
 
 resources:
-- kustomize/overlays/istio
+- kustomize/upstream/overlays/istio
