@@ -82,7 +82,7 @@ The outputs are written in the file output.tf
 | Name                 | Description                                                       | Default Value                                         |
 |:---------------------|:------------------------------------------------------------------|:------------------------------------------------------|
 | `s3_bucket_region`   | The AWS region this bucket resides in                             | module.s3_bucket.s3_bucket_region                     |
-| `s3_bucket_endpoint` | The endpoint is the URL of the entry point for an AWS web service | s3.${module.s3_bucket.s3_bucket_region}.amazonaws.com |
+| `s3_bucket_endpoint` | The endpoint is the URL of the entry point for an AWS web service | http://s3.${module.s3_bucket.s3_bucket_region}.amazonaws.com |
 
 ## See also
 

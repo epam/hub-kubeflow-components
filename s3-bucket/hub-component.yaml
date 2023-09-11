@@ -32,7 +32,5 @@ outputs:
   - name: bucket.region
     fromTfVar: s3_bucket_region
   - name: bucket.name
-  - name: bucket.host
+  - name: bucket.endpoint
     fromTfVar: s3_bucket_endpoint
-  - name: bucket.port
-    value: 443
