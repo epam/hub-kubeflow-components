@@ -9,11 +9,6 @@ requires:
 provides:
   - seldon
 
-lifecycle:
-  verbs:
-    - deploy
-    - undeploy
-
 parameters:
   - name: hub.componentName
   - name: kubernetes.namespace

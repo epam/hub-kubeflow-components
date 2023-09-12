@@ -27,7 +27,7 @@ hubctl stack deploy -c kubeflow-tensorboard
 
 ## Requirements
 
-- [kustomize](https://kustomize.io)
+- [Kustomize](https://kustomize.io)
 - [kubeflow-common](../kubeflow-common)
 - [kubeflow-profiles](../kubeflow-profiles)
 - [istio-ingressgateway](../istio-ingressgateway)

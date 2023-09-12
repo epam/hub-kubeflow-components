@@ -33,6 +33,15 @@ hubctl stack configure
 hubctl stack deploy -c "kubeflow-authn"
 ```
 
+## Requirements
+
+* Kubenretes
+* [Helm](https://helm.sh/docs/intro/install/)
+* [Istio](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
+* [Istio Ingress Gateway](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-ingressgateway)
+* Kubenretes Ingress Controller (e.g. [nginx](https://github.com/epam/hub-kubeflow-components/tree/develop/nginx-ingress))
+* OIDC Provider (e.g. [Dex](https://github.com/epam/hub-kubeflow-components/tree/develop/dex))
+
 ## Parameters
 
 The following component level parameters has been defined for this component:
@@ -55,14 +64,6 @@ The following component level parameters has been defined for this component:
 | `kubeflow.authn.sessionMaxAge` | Auth session max age |  `86400` | `x`
 | `storage.volumeSize` | PV volue size to be allocated for authn replica |  `10Gi` | `x`
 
-## Dependencies
-
-* Kubenretes Cluster
-* [Helm](https://helm.sh/docs/intro/install/)
-* [Istio](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
-* [Istio Ingress Gateway](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-ingressgateway)
-* Kubenretes Ingress Controller (e.g. [nginx](https://github.com/epam/hub-kubeflow-components/tree/develop/nginx-ingress))
-* OIDC Provider (e.g. [Dex](https://github.com/epam/hub-kubeflow-components/tree/develop/dex))
 
 ## Implementation Details
 

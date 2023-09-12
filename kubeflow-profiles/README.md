@@ -33,7 +33,7 @@ hubctl stack deploy -c kubeflow-profiles
 ## Requirements
 
 - Kubernetes
-- [kustomize](https://kustomize.io) cli
+- [Kustomize](https://kustomize.io) 
 - [Istio Ingress Gateway](../istio-ingressgateway)
 - [Kubeflow common](../kubeflow-common)
 - [Kubeflow Authn](../kubeflow-authn)

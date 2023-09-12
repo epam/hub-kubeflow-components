@@ -30,10 +30,10 @@ hubctl stack deploy -c mlflow
 ## Requirements
 
 - Kubernetes
-- [kustomize](https://kustomize.io)
-- [postgres](../postgresql)
-- [mysql](../mysql)
-- [istio-ingressgateway](../istio-ingressgateway)
+- [Kustomize](https://kustomize.io)
+- [Postgresql](../postgresql)
+- [Mysql](../mysql)
+- [Istio-ingressgateway](../istio-ingressgateway)
 
 ## Parameters
 

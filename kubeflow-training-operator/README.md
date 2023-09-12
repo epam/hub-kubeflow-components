@@ -29,8 +29,8 @@ hubctl stack deploy -c kubeflow-training-operator
 ## Requirements
 
 - Kubernetes
-- [kustomize](https://kustomize.io) CLI.
-- [kubeflow-common](../kubeflow-common)
+- [Kustomize](https://kustomize.io) 
+- [Kubeflow-common](../kubeflow-common)
 
 ## Parameters
 

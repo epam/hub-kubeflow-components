@@ -30,7 +30,7 @@ hubctl stack deploy -c kubeflow-tf-training
 ## Requirements
 
 - Kubernetes
-- [kustomize](https://kustomize.io) CLI.
+- [Kustomize](https://kustomize.io)
 
 ## Parameters
 

@@ -36,8 +36,8 @@ hubctl stack deploy -c s3-bucket
 
 ## Requirements
 
-* [aws](https://aws.amazon.com/)
-* [terraform](https://www.terraform.io/)
+* [AWS](https://aws.amazon.com/)
+* [Terraform](https://www.terraform.io/)
 
 ## Parameters
 
@@ -86,6 +86,6 @@ The outputs are written in the file output.tf
 
 ## See also
 
-* Amazon S3: <https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html>
-* Variables and Outputs Terraform: <https://developer.hashicorp.com/terraform/language/values>
-* AWS S3 bucket Terraform module: <https://registry.terraform.io/modules/terraform-aws-modules/s3-bucket/aws/latest>
+* [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html)
+* [Variables and Outputs Terraform](https://developer.hashicorp.com/terraform/language/values)
+* [AWS S3 bucket Terraform module](https://registry.terraform.io/modules/terraform-aws-modules/s3-bucket/aws/latest)

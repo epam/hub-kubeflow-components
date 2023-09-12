@@ -60,8 +60,3 @@ outputs:
 templates:
   files:
     - "*.template"
-
-lifecycle:
-  verbs:
-  - deploy
-  - undeploy

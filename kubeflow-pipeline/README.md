@@ -1,4 +1,4 @@
-# Pipelines
+# Kubeflow Pipelines
 
 [Kubeflow](https://www.kubeflow.org/) is a machine learning (ML) toolkit that is dedicated to making deployments of ML
 workflows on Kubernetes simple, portable, and scalable.

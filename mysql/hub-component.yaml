@@ -70,9 +70,3 @@ templates:
   extra:
   - kind: go
     files: ["*.gotemplate"]
-
-lifecycle:
-  verbs:
-  - deploy
-  - undeploy
-  - backup

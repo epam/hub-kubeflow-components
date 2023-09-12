@@ -29,7 +29,7 @@ hubctl stack deploy -c kubeflow-jupyter
 ## Requirements
 
 - Kubernetes
-- [kustomize](https://kustomize.io) CLI.
+- [Kustomize](https://kustomize.io) 
 - [Istio Ingress Gateway](../istio-ingressgateway)
 - [Kubeflow common](../kubeflow-common)
 - [Kubeflow profiles](../kubeflow-profiles)

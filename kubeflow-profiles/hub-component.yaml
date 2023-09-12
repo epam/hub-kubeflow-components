@@ -31,8 +31,3 @@ templates:
   files:
     - "*.template"
 
-lifecycle:
-  verbs:
-    - deploy
-    - undeploy
-    - backup

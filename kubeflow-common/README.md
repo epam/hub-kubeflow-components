@@ -33,8 +33,7 @@ hubctl stack deploy -c kubeflow-common
 - Kubernetes Cluster
 - Istio
 - Istio Ingress Gateway
-- [kustomize](https://kustomize.io/)
-- or [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [Kustomize](https://kustomize.io/) or [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
 ## Parameters
 

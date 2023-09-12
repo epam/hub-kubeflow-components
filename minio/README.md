@@ -2,13 +2,10 @@
 
 MinIO is a Kubernetes-native object store designed to S3 compatible storage for cloud-native workloads
 
-## Dependencies
-
-* [Helm](https://helm.sh/docs/intro/install/)
-
 ## Requirements
 
 * Kubernetes
+* [Helm](https://helm.sh/docs/intro/install/)
 
 ## Parameters
 

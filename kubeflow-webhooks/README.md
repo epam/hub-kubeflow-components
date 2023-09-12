@@ -32,8 +32,8 @@ hubctl stack deploy -c kubeflow-webhooks
 
 ## Requirements
 
-- Requires [kustomize](https://kustomize.io)
-- [kubeflow-common](../kubeflow-common)
+- [Kustomize](https://kustomize.io)
+- [Kubeflow-common](../kubeflow-common)
 
 ## Parameters
 

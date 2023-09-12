@@ -29,7 +29,7 @@ hubctl stack deploy -c kubeflow-katib
 ## Requirements
 
 - Kubernetes
-- [Kustomize](https://kustomize.io) CLI
+- [Kustomize](https://kustomize.io)
 - [Kubeflow-common](../kubeflow-common)
 - [MySQL](../mysql)
 

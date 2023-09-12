@@ -27,10 +27,10 @@ hubctl stack deploy -c kubeflow-volumes
 
 ## Requirements
 
-- Requires [kustomize](https://kustomize.io)
-- [kubeflow-common](../kubeflow-common)
-- [kubeflow-profiles](../kubeflow-profiles)
-- [istio-ingressgateway](../istio-ingressgateway)
+- [Kustomize](https://kustomize.io)
+- [Kubeflow-common](../kubeflow-common)
+- [Kubeflow-profiles](../kubeflow-profiles)
+- [Istio-ingressgateway](../istio-ingressgateway)
 
 ## Parameters
 
