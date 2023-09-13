@@ -5,8 +5,10 @@ The helm based component deploys cloud native certificate management for Kuberne
 
 ## TL;DR
 
-To deploy this component add the following stanza to your 'hub.yaml' file:
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
+
 ```yaml
+components:
 - name: cert-manager
   source:
     dir: components/cert-manager
@@ -16,6 +18,7 @@ To deploy this component add the following stanza to your 'hub.yaml' file:
 ```
 
 To initiate the deployment, run the following commands:
+
 ```bash
 hubctl stack init
 hubctl stack configure
@@ -57,7 +60,7 @@ If `kubernetes.serviceAccount` is not specified, the component will create a new
 
 ### Add Lets Encrypt Issuer
 
-Cert-manager have been deployed in the cluster without any specific configuration. It shoudl be added as the deployment hooks in the `hub.yaml`. Following example shows how to add a Lets Encrypt Cluster Issuer that uses Google Cloud DNS for DNS01 challenge.
+Cert-manager have been deployed in the cluster without any specific configuration. It should be added as the deployment hooks in the `hub.yaml`. Following example shows how to add a Lets Encrypt Cluster Issuer that uses Google Cloud DNS for DNS01 challenge.
 
 Create a file `bin/cert-manager-post-deploy.sh` with the following content:
 
@@ -82,7 +85,7 @@ spec:
 EOF
 ```
 
-> Note: `GOOGLE_PROJECT` is a whell known environment variable set in the `.env` file stacks that requires `gcp`.
+> Note: `GOOGLE_PROJECT` is a well known environment variable set in the `.env` file stacks that requires `gcp`.
 
 Add execution rights to the `bin/cert-manager-post-deploy.sh` file
 
@@ -122,4 +125,4 @@ EOF
 ## See also
 
 * [Cert-manager](https://cert-manager.io/docs/)
-* [Exterman DNS Component](https://github.com/epam/hub-kubeflow-components/tree/develop/external-dns)
+* [External DNS Component](https://github.com/epam/hub-kubeflow-components/tree/develop/external-dns)

@@ -71,7 +71,7 @@ Deployment follows to the following algorithm:
 1. The `pre-deploy` script will use AWS parameters such as `aws-region` and `aws-profile` to checking the connection to
    AWS and presence of Route 53 hosted zone for `HUB_DOMAIN_NAME`. To do this, you need to add a hubctl `extensions`
    section for `deploy` `before`: `- aws` in  `hub.yaml`.
-3. Then start `s3-bucket` deployment
+2. Then start `s3-bucket` deployment
 
 ## Outputs parameters from Terraform
 
@@ -79,9 +79,9 @@ The following component level parameters has been defined `hub-component.yaml`
 
 The outputs are written in the file output.tf
 
-| Name                 | Description                                                       | Default Value                                         |
-|:---------------------|:------------------------------------------------------------------|:------------------------------------------------------|
-| `s3_bucket_region`   | The AWS region this bucket resides in                             | module.s3_bucket.s3_bucket_region                     |
+| Name                 | Description                                                       | Default Value                                                |
+|:---------------------|:------------------------------------------------------------------|:-------------------------------------------------------------|
+| `s3_bucket_region`   | The AWS region this bucket resides in                             | module.s3_bucket.s3_bucket_region                            |
 | `s3_bucket_endpoint` | The endpoint is the URL of the entry point for an AWS web service | http://s3.${module.s3_bucket.s3_bucket_region}.amazonaws.com |
 
 ## See also

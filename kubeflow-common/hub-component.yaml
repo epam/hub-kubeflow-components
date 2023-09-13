@@ -9,8 +9,10 @@ parameters:
   - name: kubernetes.namespace
     env: NAMESPACE
     value: kubeflow
+
   - name: kubeflow.version
     value: v1.6.1
+
   - name: ingress.hosts
   - name: istio.ingressGateway.labels
     value: >- 

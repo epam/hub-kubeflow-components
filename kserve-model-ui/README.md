@@ -8,7 +8,10 @@ The web app is also exposing information from the underlying Knative resources, 
 
 ## TL;DR
 
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
+
 ```yaml
+components:
   - name: kserve-model-ui
     source:
       dir: components/kserve-model-ui
@@ -18,6 +21,7 @@ The web app is also exposing information from the underlying Knative resources, 
 ```
 
 To initiate the deployment, run the following commands:
+
 ```bash
 hubctl stack init
 hubctl stack configure

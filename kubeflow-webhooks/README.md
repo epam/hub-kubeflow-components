@@ -4,7 +4,7 @@ Admission webhook controller in general, intercepts requests to the Kubernetes A
 validate the requests. Here the admission webhook is implemented to modify pods based on the available PodDefaults. When
 a pod creation request is received, the admission webhook looks up the available PodDefaults which match the pod's
 label. It then, mutates the Pod spec according to PodDefault's spec. For the above PodDefault, when a pod creation
-request comes which has the label `add-gcp-secret:"true"', it appends the volume and volumeMounts to the pod as
+request comes which has the label `add-gcp-secret:"true"`, it appends the volume and volumeMounts to the pod as
 described in the PodDefault spec.
 
 ## TL;DR

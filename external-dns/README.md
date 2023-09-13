@@ -4,7 +4,10 @@ ExternalDNS synchronizes exposed Kubernetes Services and Ingresses with DNS prov
 
 ## TL;DR
 
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
+
 ```yaml
+components:
   - name: external-dns
     source:
       dir: components/external-dns
@@ -14,6 +17,7 @@ ExternalDNS synchronizes exposed Kubernetes Services and Ingresses with DNS prov
 ```
 
 To initiate the deployment, run the following commands:
+
 ```bash
 hubctl stack init
 hubctl stack configure

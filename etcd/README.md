@@ -6,7 +6,10 @@ Etcd is used by Kubernetes as the backing store for all cluster data. However, e
 
 ## TL;DR
 
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
+
 ```yaml
+components:
   - name: etcd
     source:
       dir: components/etcd
@@ -16,6 +19,7 @@ Etcd is used by Kubernetes as the backing store for all cluster data. However, e
 ```
 
 To initiate the deployment, run the following commands:
+
 ```bash
 hubctl stack init
 hubctl stack configure

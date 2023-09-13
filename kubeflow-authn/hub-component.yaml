@@ -23,6 +23,7 @@ parameters:
   value: 10Gi  
 - name: istio.ingressGateway.labels
   parameters:
+
 - name: kubeflow
   parameters:
   - name: version

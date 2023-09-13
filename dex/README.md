@@ -6,7 +6,10 @@ Dex acts as a portal to other identity providers through [“connectors.”](htt
 
 ## TL;DR
 
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
+
 ```yaml
+components:
 - name: dex
   source:
     dir: components/dex
@@ -16,6 +19,7 @@ Dex acts as a portal to other identity providers through [“connectors.”](htt
 ```
 
 To initiate the deployment, run the following commands:
+
 ```bash
 hubctl stack init
 hubctl stack configure
@@ -66,7 +70,7 @@ The following component level parameters can be set in `hub-component.yaml`:
 The component has the following directory structure:
 ```text
 ./
-├── hub-component.yaml      # Component definition file
+├── hub-component.yaml      # configuration and parameters file of Hub component
 └── values.yaml.gotemplate  # Helm chart values file
 ```
 

@@ -67,6 +67,6 @@ The component has the following directory structure:
 ## See Also
 
 - Katib [official documentation](https://www.kubeflow.org/docs/components/katib/overview/)
-- Project source code on [Github](https://github.com/kubeflow/katib)
+- Project source code on [GitHub](https://github.com/kubeflow/katib)
 - Learn more about AutoML
   at [fast.ai](https://www.fast.ai/2018/07/16/auto-ml2/), [Google Cloud](https://cloud.google.com/automl), [Microsoft Azure](https://docs.microsoft.com/en-us/azure/machine-learning/concept-automated-ml#automl-in-azure-machine-learning), [Amazon SageMaker](https://aws.amazon.com/blogs/aws/amazon-sagemaker-autopilot-fully-managed-automatic-machine-learning/)

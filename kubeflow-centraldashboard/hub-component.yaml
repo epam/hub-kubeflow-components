@@ -5,14 +5,13 @@ requires:
   - kubernetes
 
 parameters:
-  - name: kubeflow
-    parameters:
-      - name: namespace
-        value: kubeflow
-        env: NAMESPACE
-      - name: version
-        value: v1.6.1
-        env: VERSION
+  - name: kubernetes.namespace
+    value: kubeflow
+    env: NAMESPACE
+
+  - name: kubeflow.version
+    value: v1.6.1
+    env: VERSION
 
   - name: kustomize
     parameters:

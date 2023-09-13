@@ -1,16 +1,16 @@
 # Kubeflow Common
 
-The Kubeflow Common component defines primarilly common Kubenretes roles for Kubeflow applications. Kubeflow is heavily relying on aggregating roles, so it can be used from the user's profile (namespace).
+The Kubeflow Common component defines primarily common Kubernetes roles for Kubeflow applications. Kubeflow is heavily
+relying on aggregating roles, so it can be used from the user's profile (namespace).
 
-Additionally this component defines an Istio Gateway. This gateway is used to expose all Kubeflow applications.
-
-## TL;DR
-
-To deploy this component add the following stanza to your `hub.yaml`
+Additionally, this component defines an Istio Gateway. This gateway is used to expose all Kubeflow applications.
 
 ## TL;DR
+
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
 
 ```yaml
+components:
   - name: kubeflow-common
     source:
       dir: components/kubeflow-common
@@ -37,15 +37,15 @@ hubctl stack deploy -c kubeflow-common
 
 ## Parameters
 
-| Name  | Description | Default Value | Required |
-|:------|:------------|:-------------:|:--------:|
-| `ingress.hosts`| Whitespace separated list of kubeflow hosts to configure Istio Gateway. Empty means `*` will be used| |
-| `kubernetes.namespace` | Kubernetes namespace | `kubeflow` |
-| `istio.ingressGateway.labels` | Whitespace separated list of `key=value` labels to use as a Istio Gateway selector for the Gateway | `x` |
-| `kubeflow.version`     | Version of Kubeflow | `v1.6.1`|
-| `kubeflow.crd`     | URL links to the metacontroller and applicaiton CRDs | `URL` | x |
-| `kubeflow.tarball.url`     | URL to kubeflow manifests that correspond to the `kubeflow.version`| [github](https://github.com/kubeflow/manifests/archive/v1.6.1.tar.gz) |          |
-| `kubeflow.tarball.subpath` | Location of cluster roles in the kubernetes manifests tarball | see [hub-component.yaml](./hub-component.yaml) |  |
+| Name                          | Description                                                                                          |                             Default Value                             | Required |
+|:------------------------------|:-----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------:|:--------:|
+| `kubernetes.namespace`        | Kubernetes namespace for this component                                                              |                              `kubeflow`                               |
+| `ingress.hosts`               | Whitespace separated list of kubeflow hosts to configure Istio Gateway. Empty means `*` will be used |                                                                       |
+| `istio.ingressGateway.labels` | Whitespace separated list of `key=value` labels to use as a Istio Gateway selector for the Gateway   |                                  `x`                                  |
+| `kubeflow.version`            | Kubeflow version                                                                                  |                               `v1.6.1`                                |
+| `kubeflow.crd`                | URL links to the metacontroller and application CRDs                                                 |                                 `URL`                                 |    x     |
+| `kubeflow.tarball.url`        | URL to kubeflow manifests that correspond to the `kubeflow.version`                                  | [github](https://github.com/kubeflow/manifests/archive/v1.6.1.tar.gz) |          |
+| `kubeflow.tarball.subpath`    | Location of cluster roles in the kubernetes manifests tarball                                        |            see [hub-component.yaml](./hub-component.yaml)             |          |
 
 ## Implementation Details
 
@@ -53,15 +53,16 @@ The component has the following directory structure:
 
 ```text
 ./
-├── gateway.yaml.gotemplate         # Istio gateway for all kubeflow apps
-├── hub-component.yaml              # Parameters definitions
-└── kustomization.yaml.gotemplate   # Kustomize file for ths component
+├── gateway.yaml.gotemplate         # istio gateway for all kubeflow apps
+├── hub-component.yaml              # parameters definitions
+└── kustomization.yaml.gotemplate   # kustomize file for ths component
 ```
 
 Deployment follows to the following algorithm:
 
 1. Hubctl will download tarball and extract cluster-roles into `kustomize` directory.
-2. It will also install `metacontroller` and `application` CRDs. Metacontroller is not used anymore. however some Kubeflow apps are still declare some of these resources.
+2. It will also install `metacontroller` and `application` CRDs. Metacontroller is not used anymore. however some
+   Kubeflow apps are still declare some of these resources.
 3. Pass deployment to the `kustomize.yaml` file
 
 ## See also

@@ -5,13 +5,12 @@ requires:
   - kubernetes
 
 parameters:
-  - name: kubernetes
-    parameters:
-      - name: namespace
-        env: NAMESPACE
-      - name: version
-        value: v1.5.0
-        env: VERSION
+  - name: kubernetes.namespace
+    env: NAMESPACE
+
+  - name: kubebench.version
+    value: v1.5.0
+    env: VERSION
 
   - name: kustomize
     parameters:

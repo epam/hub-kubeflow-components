@@ -4,7 +4,10 @@ Kube-bench is valuable for organizations that want to ensure that their Kubernet
 
 ## TL;DR
 
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
+
 ```yaml
+components:
   - name: kubebench
     source:
       dir: components/kubebench
@@ -14,6 +17,7 @@ Kube-bench is valuable for organizations that want to ensure that their Kubernet
 ```
 
 To initiate the deployment, run the following commands:
+
 ```bash
 hubctl stack init
 hubctl stack configure
@@ -32,7 +36,7 @@ hubctl stack deploy -c kubebench
 | Name                    | Description                                            | Default Value                                                                 | Required |
 |-------------------------|--------------------------------------------------------|-------------------------------------------------------------------------------|:--------:|
 | `kubernetes.namespace`  | Target Kubernetes namespace for this component         | `kubeflow`                                                                    |          |
-| `kubernetes.version`    | Version (branch) of Tensorboard app to be used         | `v1.5.0`                                                                      |          |
+| `kubebench.version`     | Version (branch) of Tensorboard app to be used         | `v1.5.0`                                                                      |          |
 | `kustomize.tarball.url` | URL to the tarball distribution with kustomize scripts | "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubernetes.version}" |          |
 | `kustomize.subpath`     | Path inside tarball for kustomize scripts              | apps/kfserving/upstream                                                       |          |
 

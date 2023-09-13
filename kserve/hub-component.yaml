@@ -5,15 +5,14 @@ requires:
   - kubernetes
 
 parameters:
-  - name: kubernetes
-    parameters:
-      - name: namespace
-        value: kserve
-        env: NAMESPACE
-      - name: version
-        value: v0.10.0
+  - name: kubernetes.namespace
+    value: kserve
+    env: NAMESPACE
+
   - name: kserve
     parameters:
+      - name: version
+        value: v0.10.0
       - name: deploymentMode
         env: DEPLOYMENT_MODE
         brief: |

@@ -4,7 +4,10 @@ Istio is an open-source platform that provides a set of tools for managing, secu
 
 ## TL;DR
 
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
+
 ```yaml
+components:
   - name: istio-base
     source:
       dir: components/istio-base
@@ -14,6 +17,7 @@ Istio is an open-source platform that provides a set of tools for managing, secu
 ```
 
 To initiate the deployment, run the following commands:
+
 ```bash
 hubctl stack init
 hubctl stack configure

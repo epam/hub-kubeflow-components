@@ -29,7 +29,7 @@ hubctl stack deploy -c kubeflow-jupyter
 ## Requirements
 
 - Kubernetes
-- [Kustomize](https://kustomize.io) 
+- [Kustomize](https://kustomize.io)
 - [Istio Ingress Gateway](../istio-ingressgateway)
 - [Kubeflow common](../kubeflow-common)
 - [Kubeflow profiles](../kubeflow-profiles)
@@ -39,24 +39,24 @@ hubctl stack deploy -c kubeflow-jupyter
 
 The following component level parameters has been defined `hub-component.yaml`:
 
-| Name | Description | Default Value | Required |
-|:-----|:------------|:--------------|:--------:|
-| `kubernetes.namespace`  | Kubernetes namespace for this component                   | `kubeflow` | |
-| `kubeflow.version`      | Kubeflow version | `v1.6.1`| |
-| `kustomize.tarball.url` | URL to kubeflow tarball archive | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)|          |
-| `kustomize.tarball.subpath` | Tarball archive subpath where kustomize files are located | [jupyter-web-app](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/jupyter-web-app/upstream) [notebook-controller](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/notebook-controller/upstream) |          |
-| `kustomize.tarball.dir` | Instructs hubctl to use a specific directory relative to it should extract tarball | `.` |
-| `storage.class` | PV storage class. Empty means default see [spawner config](https://github.com/kubeflow/manifests/blob/v1.5.1/apps/jupyter/jupyter-web-app/upstream/base/configs/spawner_ui_config.yaml#L84) | | |
+| Name                        | Description                                                                                                                                                                                 | Default Value                                                                                                                                                                                                                 | Required |
+|:----------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`      | Kubernetes namespace for this component                                                                                                                                                     | `kubeflow`                                                                                                                                                                                                                    |          |
+| `kubeflow.version`          | Kubeflow version                                                                                                                                                                            | `v1.6.1`                                                                                                                                                                                                                      |          |
+| `kustomize.tarball.url`     | URL to kubeflow tarball archive                                                                                                                                                             | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master)                                                                                                                                                        |          |
+| `kustomize.tarball.subpath` | Tarball archive subpath where kustomize files are located                                                                                                                                   | [jupyter-web-app](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/jupyter-web-app/upstream) [notebook-controller](https://github.com/kubeflow/manifests/tree/master/apps/jupyter/notebook-controller/upstream) |          |
+| `kustomize.tarball.dir`     | Instructs hubctl to use a specific directory relative to it should extract tarball                                                                                                          | `.`                                                                                                                                                                                                                           |
+| `storage.class`             | PV storage class. Empty means default see [spawner config](https://github.com/kubeflow/manifests/blob/v1.5.1/apps/jupyter/jupyter-web-app/upstream/base/configs/spawner_ui_config.yaml#L84) |                                                                                                                                                                                                                               |          |
 
 ## Implementation Details
 
-This component will deploy two services of the Jupyter notebbok
+This component will deploy two services of the Jupyter notebook
 
 - [jupyter-web-app](jupyter-web-app) - a web application
-- [notebook-controller](notebook-controller) - a BFF (backend-for-frontend) of this applicaiton.
+- [notebook-controller](notebook-controller) - a BFF (backend-for-frontend) of this application.
 
 Notebook creation form can be customized
-in [jupyter-web-app/spawner_ui_config.yaml](components/kubeflow-jupyter/jupyter-web-app/spawner_ui_config.yaml.template)
+in [jupyter-web-app/spawner_ui_config.yaml](jupyter-web-app/configs/spawner_ui_config.yaml.template)
 file.
 
 > There was a special update to the notebook to allow user select GPUs from a dropdown.

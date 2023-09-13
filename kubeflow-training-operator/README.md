@@ -57,4 +57,4 @@ This component uses Kustomize extension and follows common design guidelines for
 
 ## See Also
 
-* Kubeflow training operator [github](https://github.com/kubeflow/training-operator)
+* Kubeflow training operator [GitHub](https://github.com/kubeflow/training-operator)

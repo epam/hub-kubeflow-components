@@ -5,16 +5,14 @@ requires:
   - kubernetes
 
 parameters:
-  - name: kubernetes
-    parameters:
-      - name: version
-        value: v1.9.2
-      - name: namespace
-        value: knative-serving
-        env: NAMESPACE
+  - name: kubernetes.namespace
+    value: knative-serving
+    env: NAMESPACE
 
   - name: knative
     parameters:
+      - name: version
+        value: v1.9.2
       - name: autoscaling.scaleToZero
         value: "true"
       - name: autoscaling.scaleToZeroGracePeriod
@@ -64,14 +62,14 @@ parameters:
     parameters:
       - name: crd
         env: CRD
-        value: https://github.com/knative/serving/releases/download/knative-${kubernetes.version}/serving-crds.yaml
+        value: https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-crds.yaml
       - name: resources
         env: HUB_KUSTOMIZE_RESOURCES
         value: >-
-          https://github.com/knative/serving/releases/download/knative-${kubernetes.version}/serving-core.yaml
-          https://github.com/knative/net-istio/releases/download/knative-${kubernetes.version}/net-istio.yaml
-          https://github.com/knative/serving/releases/download/knative-${kubernetes.version}/serving-hpa.yaml
-          https://github.com/knative/net-certmanager/releases/download/knative-${kubernetes.version}/release.yaml
+          https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-core.yaml
+          https://github.com/knative/net-istio/releases/download/knative-${knative.version}/net-istio.yaml
+          https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-hpa.yaml
+          https://github.com/knative/net-certmanager/releases/download/knative-${knative.version}/release.yaml
 
 outputs:
   - name: knative.networking.ingressClass

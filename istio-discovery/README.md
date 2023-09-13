@@ -4,7 +4,10 @@ Istiod provides service discovery, configuration and certificate management. Ist
 
 ## TL;DR
 
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
+
 ```yaml
+components:
   - name: istio-discovery
     source:
       dir: components/istio-discovery
@@ -14,6 +17,7 @@ Istiod provides service discovery, configuration and certificate management. Ist
 ```
 
 To initiate the deployment, run the following commands:
+
 ```bash
 hubctl stack init
 hubctl stack configure
