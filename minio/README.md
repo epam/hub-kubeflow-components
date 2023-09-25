@@ -49,7 +49,7 @@ To initiate the deployment, run the following commands:
 hubctl stack init
 hubctl stack configure
 # * Setting parameters for configuration
-hubctl stack deploy -c kubeflow-webhooks
+hubctl stack deploy -c minio
 ```
 
 ## Parameters
