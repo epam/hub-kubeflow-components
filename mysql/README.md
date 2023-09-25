@@ -3,6 +3,55 @@
 [MySQL](https://www.mysql.com/) is a fast, reliable, scalable, and easy to use open source relational database system.
 Designed to handle mission-critical, heavy-load production applications.
 
+## TL;DR
+
+To define this component within your stack. Add the followings to your `hub.yaml` file
+
+* Include the configuration of Kubernetes
+
+```yaml
+extensions:
+  configure:
+    - kubernetes
+```
+
+* Define mysql component under the `components` section
+
+```yaml
+components:
+  - name: mysql
+    source:
+      dir: components/mysql
+      git:
+        remote: https://github.com/epam/kubeflow-components.git
+        subDir: mysql
+```
+
+* Define parameters under the `parameters` section
+
+```yaml
+parameters:
+  - name: mysql
+    parameters:
+      - name: rootPassword
+        value: default
+      - name: database
+        value: default
+      - name: username
+        value: default
+      - name: password
+        value: default
+```
+
+To initiate the deployment, run the following commands:
+
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration
+hubctl stack deploy -c mysql
+```
+
 ## Requirements
 
 Before you can deploy this component, the following requirements must be met:
