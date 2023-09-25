@@ -96,6 +96,9 @@ The component has the following directory structure:
 └── values.yaml.gotemplate          # helm chart value template
 ```
 
+This component will be installed using Helm. By default, we rely on Bitnami distribution of helm chart as a quality
+helm chart with lots of improvements and hardening.
+
 ### Minio Mode
 
 Parameter `minio.mode` is a `cel` expression: it can be either `distributed` or `standalone` depending on the value

@@ -85,13 +85,16 @@ The following component level parameters has been defined `hub-component.yaml`
 
 ## Implementation Details
 
-The component uses helm chart from bitnami to deploy a PostgreSQL
+The component has the following directory structure:
 
 ```text
 ./
 ├── hub-component.yaml          # parameters definitions
 └── values.yaml.template        # base helm values template
 ```
+
+This component will be installed using Helm. By default, we rely on Bitnami distribution of helm chart as a quality
+helm chart with lots of improvements and hardening.
 
 ## See Also
 
