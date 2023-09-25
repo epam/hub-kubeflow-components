@@ -5,7 +5,17 @@ ACID-compliant, it supports foreign keys, joins, views, triggers and stored proc
 
 ## TL;DR
 
-To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
+To define this component within your stack. Add the followings to your `hub.yaml` file
+
+* Include the configuration of Kubernetes
+
+```yaml
+extensions:
+  configure:
+    - kubernetes
+```
+
+* Define postgresql component under the `components` section
 
 ```yaml
 components:
@@ -14,7 +24,23 @@ components:
       dir: components/postgresql
       git:
         remote: https://github.com/epam/kubeflow-components.git
-        subDir: postgresql 
+        subDir: postgresql
+```
+
+* Define parameters under the `parameters` section
+
+```yaml
+parameters:
+  - name: postgresql
+    parameters:
+      - name: user
+        value: default
+      - name: password
+        value: default
+      - name: database
+        value: default
+      - name: adminPassword
+        value: default
 ```
 
 To initiate the deployment, run the following commands:
@@ -35,10 +61,10 @@ The following component level parameters has been defined `hub-component.yaml`
 | `kubernetes.namespace`       |                                    | `postgresql`                                  |          |
 | `storage.class`              |                                    |                                               |          |
 | `postgresql.port`            | Postgresql database port           | `5432`                                        |          |
-| `postgresql.user`            | Postgresql database user           |                                               |          |
-| `postgresql.password`        | Postgresql database password       |                                               |          |
-| `postgresql.database`        | Postgresql database name           |                                               |          |
-| `postgresql.adminPassword`   | Postgresql database admin password |                                               |          |
+| `postgresql.user`            | Postgresql database user           |                                               |   `x`    |
+| `postgresql.password`        | Postgresql database password       |                                               |   `x`    |
+| `postgresql.database`        | Postgresql database name           |                                               |   `x`    |
+| `postgresql.adminPassword`   | Postgresql database admin password |                                               |   `x`    |
 | `postgresql.volumeSize`      | Storage size                       | `8Gi`                                         |          |
 | `postgresql.extra.databases` | Extra databases                    |                                               |          |
 | `helm.repo`                  | Helm chart repository URL          | [bitnami](https://charts.bitnami.com/bitnami) |          |
