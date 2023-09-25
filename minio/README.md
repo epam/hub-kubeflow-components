@@ -38,7 +38,7 @@ parameters:
   - name: bucket
     parameters:
       - name: accessKey
-        value: MINIO_ACCEESS_KEY
+        value: MINIO_ACCESS_KEY
       - name: secretKey
         value: MINIO_SECRET_KEY
 ```
