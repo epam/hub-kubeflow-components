@@ -13,7 +13,19 @@ bucket resources in your AWS account.
 
 ## TL:DR
 
-To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
+To define this component within your stack. Add the followings to your `hub.yaml` file
+
+* Include the initialization and configuration of AWS
+
+```yaml
+extensions:
+   init:
+      - aws
+   configure:
+      - aws
+```
+
+* Define s3 component under the `components` section
 
 ```yaml
 components:
@@ -25,10 +37,19 @@ components:
         subDir: s3-bucket
 ```
 
+* Define parameters under the `parameters` section
+
+```yaml
+parameters:
+  - name: bucket.name                                # parameter of the bucket name
+    fromEnv: HUB_STACK_NAME                          # environment variable HUB_STACK_NAME is a name of the stack. It is a unique stack identifier
+```
+
 To initiate the deployment, run the following commands:
 
 ```bash
 hubctl stack init
+# * Setting AWS_PROFILE, AWS_REGION variables
 hubctl stack configure
 # * Setting parameters for configuration
 hubctl stack deploy -c s3-bucket
@@ -45,7 +66,7 @@ The following component level parameters has been defined `hub-component.yaml`
 
 | Name            | Description                                                                                 | Default Value  | Required |
 |-----------------|---------------------------------------------------------------------------------------------|----------------|:--------:|
-| `bucket.name`   | Value for the S3 bucket name parameter from hub stack name. This name must be unique for S3 | HUB_STACK_NAME |          |
+| `bucket.name`   | Value for the S3 bucket name parameter from hub stack name. This name must be unique for S3 |                |   `x`    |
 | `bucket.acl `   | Parameter of the Access control list (ACL) of the bucket                                    | `private`      |          |
 | `bucket.region` | Parameter of the AWS bucket region                                                          | {cloud.region} |          |
 | `cloud.region`  | AWS region that uses hubctl                                                                 | `eu-central-1` |   `x`    |
