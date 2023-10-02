@@ -15,7 +15,7 @@ parameters:
     value: kube-system
     env: NAMESPACE
   - name: serviceAccount
-    empty: allow"
+    empty: allow
   - name: relicas
     value: 1
   - name: cainjetor.replicas
