@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if test -n "$INGRESS_CLASS" \
+     -a -n "$(kubectl get ingressclass -o jsonpath='{.items[?(@.metadata.name=="'"$INGRESS_CLASS"'")].metadata.name}')"; then
+  echo "IngressClass $INGRESS_CLASS already exists"
+  cat <<EOF > values-generated.yaml
+controller:
+  ingress:
+    create: false
+EOF
+fi

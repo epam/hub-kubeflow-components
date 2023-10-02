@@ -1,31 +1,50 @@
-# https://github.com/nginxinc/kubernetes-ingress/blob/main/deployments/helm-chart/values.yaml
+# https://github.com/nginxinc/kubernetes-ingress/blob/main/charts/nginx-ingress/values.yaml
+{{ $opts := .nginx.controller.opts | splitList " " | compact -}}
 controller:
-  kind: deployment
+  kind: {{ .nginx.controller.kind | lower }} # or daemonset
+  logLevel: 1
+  replicaCount: {{.kubernetes.replicas}}
+  {{- if .ingress.class }}
+  ingressClass:
+    create: true
+    name: "{{.ingress.class}}"
+    setAsDefaultIngress: {{ eq .ingress.defaultClass .ingress.class }}
+  {{- end }}
+  service:
+    externalTrafficPolicy: "{{.kubernetes.service.externalTrafficPolicy}}"
+    type: "{{.kubernetes.service.type}}"
+    {{- if .kubernetes.service.annotations }}
+    annotations:
+      {{- range .kubernetes.service.annotations | splitList " "  }}
+      {{. | splitList "=" | first}}: {{ . | splitList "=" | last}}
+      {{- end}}
+    {{- end }}
+    {{- if .kubernetes.service.loadBalancerSourceRanges }}    
+    loadBalancerSourceRanges: {{.kubernetes.service.loadBalancerSourceRanges | splitList " " | compact | toJson }}
+    {{- end }}
+  enableCustomResources:  {{ or ($opts | has "customresources")  ($opts | has "externaldns") ($opts | has "certmanager") ($opts | has "tlspassthrough") }}
+  enableSnippets: {{ $opts | has "snippets" }}
+  enableCertManager: {{ $opts | has "certmanager" }}
+  enableExternalDNS: {{ $opts | has "externaldns" }}
+  enableTLSPassthrough: {{ $opts | has "tlspassthrough" }}
+  enableOIDC: {{ $opts | has "oidc" }}
+  nginxplus: {{ $opts | has "nginxplus" }}
   appprotect:
     ## Enable the App Protect module in the Ingress Controller.
-    enable: false
-  logLevel: 1
-  image:
-    repository: "{{.nginx.image}}"
-    tag: "{{.nginx.imageTag}}"
-  replicaCount: {{.nginx.replicaCount}}
-  ingressClass: "{{.ingress.class}}"
-  setAsDefaultIngress: {{.ingress.isDefault}}
-  enableSnippets: {{.nginx.enableSnippets}}
-  service:
-    externalTrafficPolicy: "{{.nginx.externalTrafficPolicy}}" 
-    type: "{{.nginx.serviceType}}" 
-{{- if .nginx.loadBalancerSourceRanges }}    
-    loadBalancerSourceRanges: 
-{{- range .nginx.loadBalancerSourceRanges | split | compact }}
-    - "{{.}}"
-{{- end }}    
-{{- end }}
-{{- if .nlb.backendPortHttp }} 
-    httpPort: 
-      nodePort: {{.nlb.backendPortHttp}}
-{{- end }}
-{{- if .nlb.backendPortHttps }}        
-    httpsPort: 
-      nodePort: {{.nlb.backendPortHttps}}
-{{- end }}
+    enable: {{ $opts | has "appprotect" }}
+
+{{- if .kubernetes.requests | or .kubernetes.limits }} 
+resources:
+  {{- if .kubernetes.requests }} 
+  requests:
+    {{- range .kubernetes.requests | splitList " "  }}
+    {{. | splitList "=" | first}}: {{ . | splitList "=" | last}}
+    {{- end}}
+  {{- end }}
+  {{- if .kubernetes.limits }} 
+  limits:
+    {{- range .kubernetes.limits | splitList " "  }}
+    {{. | splitList "=" | first}}: {{ . | splitList "=" | last}}
+    {{- end}}
+  {{- end }}
+{{- end}}
