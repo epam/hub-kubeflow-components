@@ -1,47 +1,33 @@
 # https://github.com/bitnami/charts/blob/main/bitnami/cert-manager/values.yaml
+{{ $sa := eq .kubernetes.serviceAccount "" -}}
+{{ $webhookReplicas :=  .kubernetes.webhook.replicas | or "0" | toString -}}
+{{ $cainjectorReplicas :=  .kubernetes.cainjector.replicas | or "0" | toString -}}
 ---
 installCRDs: false
-
 global:
   rbac:
     create: true
   leaderElection:
     namespace: "{{.kubernetes.namespace}}"
-
-replicaCount: 1
-image:
-  repository: quay.io/jetstack/cert-manager-controller
-  pullPolicy: IfNotPresent
-
+replicaCount: {{.kubernetes.replicas}}
 clusterResourceNamespace: ""
-
 ingressShim:
-  defaultIssuerName: "{{.hub.componentName}}"
+  defaultIssuerName: "{{.certmanager.issuer.name}}"
   defaultIssuerKind: "ClusterIssuer"
   defaultIssuerGroup: "cert-manager.io"
-
-serviceAccount:
-  create: true
-  automountServiceAccountToken: true
-
+webhook:
+  enabled: {{ $webhookReplicas | eq "0"}}
+  replicaCount: {{ $webhookReplicas }}
+  serviceAccount:
+    create: {{ $sa }}
+    automountServiceAccountToken: true
+    name: {{ .kubernetes.serviceAccount }}
+cainjector:
+  enabled: {{ $cainjectorReplicas | eq "0"}}
+  replicaCount: {{ $cainjectorReplicas }}
+  serviceAccount:
+    create: {{ $sa }}
+    automountServiceAccountToken: true
+    name: {{ .kubernetes.serviceAccount }}
 prometheus:
   enabled: false
-
-webhook:
-  image:
-    repository: quay.io/jetstack/cert-manager-webhook
-    pullPolicy: IfNotPresent
-
-  serviceAccount:
-    create: true
-    automountServiceAccountToken: true
-
-cainjector:
-  enabled: truem
-  image:
-    repository: quay.io/jetstack/cert-manager-cainjector
-    pullPolicy: IfNotPresent
-
-  serviceAccount:
-    create: true
-    automountServiceAccountToken: true

@@ -1,27 +1,22 @@
 # see: https://github.com/bitnami/charts/blob/master/bitnami/external-dns/values.yaml
-sources:
-# - service
-- ingress
-# - crd
-
+sources: {{.externalDns.sources | splitList " " | compact | toJson }}
+domainFilters: {{ .externalDns.domainFilters | splitList " " | compact | toJson }}
 txtOwnerId: "{{.externalDns.txtOwnerId}}"
-domainFilters:
-{{- range .externalDns.domainFilters | split | compact}}
-- "{{.}}"
-{{- end}}
-
-interval: "{{.externalDns.syncIntervalSeconds}}s"
-policy: {{.externalDns.syncPolicy}}
-
+interval: "{{.externalDns.syncInterval}}"
+policy: "{{.externalDns.syncPolicy}}"
+txtPrefix: "{{ .externalDns.txtPrefix }}"
 serviceAccount:
 {{- if .kubernetes.serviceAccount}}
-    name: "{{.kubernetes.serviceAccount}}"
     create: false
+    name: "{{.kubernetes.serviceAccount}}"
 {{- else}}
-    name: "{{.hub.componentName}}"
     create: true
+    name: "{{.hub.componentName}}"
 {{- end}}
 
-provider: google
-google:
-  project: "{{.projectId}}"
+{{- if .cloud.kind | eq "aws" }}
+provider: aws
+aws:
+  region: "{{ .cloud.region }}"
+  preferCNAME: true
+{{end -}}
