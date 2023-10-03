@@ -1,18 +1,18 @@
 # https://github.com/nginxinc/kubernetes-ingress/blob/main/charts/nginx-ingress/values.yaml
-{{ $opts := .nginx.controller.opts | splitList " " | compact -}}
+{{ $features := .nginx.controller.features | splitList " " | compact -}}
 controller:
   kind: {{ .nginx.controller.kind | lower }} # or daemonset
   logLevel: 1
   replicaCount: {{.kubernetes.replicas}}
   {{- if .ingress.class }}
   ingressClass:
-    create: true
-    name: "{{.ingress.class}}"
+    create:              true
+    name:                "{{.ingress.class}}"
     setAsDefaultIngress: {{ eq .ingress.defaultClass .ingress.class }}
   {{- end }}
   service:
     externalTrafficPolicy: "{{.kubernetes.service.externalTrafficPolicy}}"
-    type: "{{.kubernetes.service.type}}"
+    type:                  "{{.kubernetes.service.type}}"
     {{- if .kubernetes.service.annotations }}
     annotations:
       {{- range .kubernetes.service.annotations | splitList " "  }}
@@ -22,16 +22,16 @@ controller:
     {{- if .kubernetes.service.loadBalancerSourceRanges }}    
     loadBalancerSourceRanges: {{.kubernetes.service.loadBalancerSourceRanges | splitList " " | compact | toJson }}
     {{- end }}
-  enableCustomResources:  {{ or ($opts | has "customresources")  ($opts | has "externaldns") ($opts | has "certmanager") ($opts | has "tlspassthrough") }}
-  enableSnippets: {{ $opts | has "snippets" }}
-  enableCertManager: {{ $opts | has "certmanager" }}
-  enableExternalDNS: {{ $opts | has "externaldns" }}
-  enableTLSPassthrough: {{ $opts | has "tlspassthrough" }}
-  enableOIDC: {{ $opts | has "oidc" }}
-  nginxplus: {{ $opts | has "nginxplus" }}
+  enableCustomResources: {{ or ($features | has "customresources")  ($features | has "externaldns") ($features | has "certmanager") ($features | has "tlspassthrough") }}
+  enableSnippets:        {{ $features | has "snippets" }}
+  enableCertManager:     {{ $features | has "certmanager" }}
+  enableExternalDNS:     {{ $features | has "externaldns" }}
+  enableTLSPassthrough:  {{ $features | has "tlspassthrough" }}
+  enableOIDC:            {{ $features | has "oidc" }}
+  nginxplus:             {{ $features | has "nginxplus" }}
   appprotect:
     ## Enable the App Protect module in the Ingress Controller.
-    enable: {{ $opts | has "appprotect" }}
+    enable: {{ $features | has "appprotect" }}
 
 {{- if .kubernetes.requests | or .kubernetes.limits }} 
 resources:
