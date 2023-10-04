@@ -29,7 +29,7 @@ parameters:
     value: v1.13.1
     env: CHART_VERSION
   - name: issuer.name
-    value: ${hub.componentName}
+    empty: allow
     
 - name: helm
   parameters:
@@ -46,4 +46,4 @@ parameters:
 templates:
   kind: go
   files:
-  - "*.template"
+  - "*.gotemplate"

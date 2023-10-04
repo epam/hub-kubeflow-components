@@ -11,10 +11,12 @@ global:
     namespace: "{{ .kubernetes.namespace }}"
 replicaCount: {{ .kubernetes.replicas }}
 clusterResourceNamespace: ""
+{{- if .certmanager.issuer.name }}
 ingressShim:
   defaultIssuerName: "{{ .certmanager.issuer.name }}"
   defaultIssuerKind: "ClusterIssuer"
   defaultIssuerGroup: "cert-manager.io"
+{{- end }}
 webhook:
   enabled: {{ $webhookReplicas | eq "0" }}
   replicaCount: {{ $webhookReplicas }}
