@@ -33,3 +33,6 @@ cainjector:
     name: {{ .kubernetes.serviceAccount }}
 prometheus:
   enabled: false
+serviceAccount:
+  create: {{ $sa }}
+  name: {{ .kubernetes.serviceAccount }}  
