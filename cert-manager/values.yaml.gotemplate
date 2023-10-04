@@ -1,7 +1,7 @@
 # https://github.com/bitnami/charts/blob/main/bitnami/cert-manager/values.yaml
 {{ $sa := eq .kubernetes.serviceAccount "" -}}
-{{ $webhookReplicas :=  .kubernetes.webhook.replicas | or "0" | toString -}}
-{{ $cainjectorReplicas :=  .kubernetes.cainjector.replicas | or "0" | toString -}}
+{{ $webhookReplicas := or .kubernetes.webhook.replicas "0" | toString -}}
+{{ $cainjectorReplicas := or .kubernetes.cainjector.replicas "0" | toString -}}
 ---
 installCRDs: false
 global:
@@ -18,14 +18,14 @@ ingressShim:
   defaultIssuerGroup: "cert-manager.io"
 {{- end }}
 webhook:
-  enabled: {{ $webhookReplicas | eq "0" }}
+  enabled: {{ $webhookReplicas | ne "0" }}
   replicaCount: {{ $webhookReplicas }}
   serviceAccount:
     create: {{ $sa }}
     automountServiceAccountToken: true
     name: {{ .kubernetes.serviceAccount }}
 cainjector:
-  enabled: {{ $cainjectorReplicas | eq "0"}}
+  enabled: {{ $cainjectorReplicas | ne "0" }}
   replicaCount: {{ $cainjectorReplicas }}
   serviceAccount:
     create: {{ $sa }}

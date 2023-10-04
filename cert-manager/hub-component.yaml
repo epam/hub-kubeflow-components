@@ -16,9 +16,9 @@ parameters:
     env: NAMESPACE
   - name: serviceAccount
     empty: allow
-  - name: relicas
+  - name: replicas
     value: 1
-  - name: cainjetor.replicas
+  - name: cainjector.replicas
     value: 1
   - name: webhook.replicas
     value: 1
