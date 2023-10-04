@@ -26,6 +26,10 @@ parameters:
     env: NAMESPACE
   - name: replicas
     value: 1
+  - name: minReplicas
+    empty: allow
+  - name: maxReplicas
+    empty: allow
   - name: service.type
     value: LoadBalancer
   - name: requests
@@ -54,6 +58,9 @@ parameters:
   - name: chart
     value: "nginx-ingress"
     env: HELM_CHART
+  - name: fullName
+    value: "${hub.componentName}"
+    empty: allow
   - name: repo
     value: https://helm.nginx.com/stable
     env: HELM_REPO

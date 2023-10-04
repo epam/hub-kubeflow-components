@@ -1,5 +1,9 @@
 # https://github.com/nginxinc/kubernetes-ingress/blob/main/charts/nginx-ingress/values.yaml
+fullnameOverride: "{{ .helm.fullName }}"
 {{ $features := .nginx.controller.features | splitList " " | compact -}}
+{{ $autoscaling := or ($features | has "autoscaling") .kubernetes.minReplicas .kubernetes.maxReplicas "" -}}
+{{ $requests := .kubernetes.requests -}}
+{{ $limits := .kubernetes.limits -}}
 controller:
   kind: {{ .nginx.controller.kind | lower }} # or daemonset
   logLevel: 1
@@ -22,6 +26,13 @@ controller:
     {{- if .kubernetes.service.loadBalancerSourceRanges }}    
     loadBalancerSourceRanges: {{.kubernetes.service.loadBalancerSourceRanges | splitList " " | compact | toJson }}
     {{- end }}
+  {{- if $autoscaling }}
+  autoscaling:
+    enabled: true
+    minReplicas: {{or .kubernetes.minReplicas .kubernetes.replicas}}
+    maxReplicas: {{or .kubernetes.maxReplicas .kubernetes.replicas}}    
+    {{ $limits = or $limits $requests }}
+  {{- end }}
   enableCustomResources: {{ or ($features | has "customresources")  ($features | has "externaldns") ($features | has "certmanager") ($features | has "tlspassthrough") }}
   enableSnippets:        {{ $features | has "snippets" }}
   enableCertManager:     {{ $features | has "certmanager" }}
@@ -33,17 +44,17 @@ controller:
     ## Enable the App Protect module in the Ingress Controller.
     enable: {{ $features | has "appprotect" }}
 
-{{- if .kubernetes.requests | or .kubernetes.limits }} 
+{{- if or $requests or $limits }} 
 resources:
-  {{- if .kubernetes.requests }} 
+  {{- if $requests }} 
   requests:
-    {{- range .kubernetes.requests | splitList " "  }}
+    {{- range $requests | splitList " "  }}
     {{. | splitList "=" | first}}: {{ . | splitList "=" | last}}
     {{- end}}
   {{- end }}
-  {{- if .kubernetes.limits }} 
+  {{- if $limits }} 
   limits:
-    {{- range .kubernetes.limits | splitList " "  }}
+    {{- range $limits | splitList " "  }}
     {{. | splitList "=" | first}}: {{ . | splitList "=" | last}}
     {{- end}}
   {{- end }}
