@@ -70,7 +70,8 @@ parameters:
   - name: valuesFile
     value: values.yaml
     env: CHART_VALUES_FILE
-ouptuts:
+
+outputs:
 - name: ingress.class
 - name: ingress.defaultClass
 
