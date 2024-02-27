@@ -1,38 +1,55 @@
-# https://github.com/bitnami/charts/blob/main/bitnami/cert-manager/values.yaml
-{{ $sa := eq .kubernetes.serviceAccount "" -}}
-{{ $webhookReplicas := or .kubernetes.webhook.replicas "0" | toString -}}
-{{ $cainjectorReplicas := or .kubernetes.cainjector.replicas "0" | toString -}}
----
+# https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
+{{- $sa := eq .kubernetes.serviceAccount "" -}}
 installCRDs: false
+
 global:
   rbac:
     create: true
   leaderElection:
     namespace: "{{ .kubernetes.namespace }}"
-replicaCount: {{ .kubernetes.replicas }}
+
+replicaCount: {{ .kubernetes.controller.replicas }}
+image:
+  repository: "{{.certmanager.controller.image.repository}}"
+  tag: "{{.certmanager.controller.image.tag}}"
+  pullPolicy: IfNotPresent
+
 clusterResourceNamespace: ""
-{{- if .certmanager.issuer.name }}
-ingressShim:
-  defaultIssuerName: "{{ .certmanager.issuer.name }}"
-  defaultIssuerKind: "ClusterIssuer"
-  defaultIssuerGroup: "cert-manager.io"
-{{- end }}
-webhook:
-  enabled: {{ $webhookReplicas | ne "0" }}
-  replicaCount: {{ $webhookReplicas }}
-  serviceAccount:
-    create: {{ $sa }}
-    automountServiceAccountToken: true
-    name: {{ .kubernetes.serviceAccount }}
-cainjector:
-  enabled: {{ $cainjectorReplicas | ne "0" }}
-  replicaCount: {{ $cainjectorReplicas }}
-  serviceAccount:
-    create: {{ $sa }}
-    automountServiceAccountToken: true
-    name: {{ .kubernetes.serviceAccount }}
-prometheus:
-  enabled: false
+
 serviceAccount:
   create: {{ $sa }}
-  name: {{ .kubernetes.serviceAccount }}  
+  name: "{{ .kubernetes.serviceAccount }}"
+
+prometheus:
+  enabled: false
+
+webhook:
+  enabled: {{ gt .kubernetes.webhook.replicas 0 }}
+  replicaCount: {{ .kubernetes.webhook.replicas }}
+  image:
+    repository: "{{.certmanager.webhook.image.repository}}"
+    tag: "{{.certmanager.webhook.image.tag}}"
+    pullPolicy: IfNotPresent
+  serviceAccount:
+    create: {{ $sa }}
+    name: "{{ .kubernetes.serviceAccount }}"
+
+cainjector:
+  enabled: {{ gt .kubernetes.cainjector.replicas 0 }}
+  replicaCount: {{ .kubernetes.cainjector.replicas }}
+  image:
+    repository: "{{.certmanager.cainjector.image.repository}}"
+    tag: "{{.certmanager.cainjector.image.tag}}"
+    pullPolicy: IfNotPresent
+  serviceAccount:
+    create: {{ $sa }}
+    name: "{{ .kubernetes.serviceAccount }}"
+
+startupapicheck:
+  image:
+    repository: "{{.certmanager.startupapicheck.image.repository}}"
+    tag: "{{.certmanager.startupapicheck.image.tag}}"
+    pullPolicy: IfNotPresent
+  serviceAccount:
+    create: {{ $sa }}
+    name: "{{ .kubernetes.serviceAccount }}"
