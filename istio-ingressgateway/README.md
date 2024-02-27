@@ -13,7 +13,7 @@ components:
     source:
       dir: components/istio-ingressgateway
       git:
-        remote: https://github.com/epam/kubeflow-components.git
+        remote: https://github.com/epam/hub-kubeflow-components.git
         subDir: istio-ingressgateway
 ```
 
@@ -22,40 +22,46 @@ To initiate the deployment, run the following commands:
 ```bash
 hubctl stack init
 hubctl stack configure
-# * Setting parameters for configuration 
-hubctl stack deploy -c istio-ingressgateway
+# * Setting parameters for configuration
+hubctl stack deploy istio-ingressgateway
 ```
 
 ## Requirements
 
-- [Helm](https://helm.sh/docs/intro/install/)
-- Kubernetes
-- [Istio Discovery](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
-- Optional: Kubernetes Ingress Controller (
-  e.g. [nginx](https://github.com/epam/hub-kubeflow-components/tree/develop/nginx-ingress))
+* [Helm]
+* [Kubernetes]
+* [Istio Discovery]
+* Optional: Kubernetes Ingress Controller (e.g. [nginx])
 
 ## Parameters
 
 This component consumes following parameters
 
-| Name                     | Description                                | Default Value                                              | Required |
-|--------------------------|--------------------------------------------|------------------------------------------------------------|:--------:|
-| `ingress.protocol`       | Ingress traffic protocol (schema)          | `http`                                                     |          |
-| `ingress.class`          | Name of ingress class in kubernetes        |                                                            |          |
-| `ingress.hosts`          | Whitespace separated list of ingress hosts |                                                            |          |
-| `kubernetes.namespace`   | Kubernetes namespace                       | `istio-system`                                             |          |
-| `kubernetes.replicas`    | Amount of replicas                         | `1`                                                        |          |
-| `kubernetes.serviceType` | Kubernetes types of services               | `ClusterIP`                                                |          |
-| `helm.chart`             | Helm chart name                            | `gateway`                                                  |          |
-| `helm.repo`              | Helm chart repository URL                  | [URL](https://istio-release.storage.googleapis.com/charts) |          |
-| `helm.version`           | Helm chart version                         | `1.15.0`                                                   |          |
+| Name                                       | Description                                             | Default Value                                              |
+|:-------------------------------------------|:--------------------------------------------------------|:-----------------------------------------------------------|
+| `istio.version`                            | Istio version                                           | `1.16.7`                                                   |
+| `istio.gateway.autoscaling.enabled`        | Enable Istio gateway autoscaling                        | `true`                                                     |
+| `istio.gateway.autoscaling.minReplicas`    | Istio gateway autoscaling minimum number of replicas    | `1`                                                        |
+| `istio.gateway.autoscaling.maxReplicas`    | Istio gateway autoscaling maximum number of replicas    | `5`                                                        |
+| `istio.gateway.autoscaling.cpuUtilization` | Istio gateway autoscaling CPU utilization in percentage | `80`                                                       |
+| `ingress.protocol`                         | Ingress traffic protocol (schema)                       | `http`                                                     |
+| `ingress.class`                            | Name of ingress class in kubernetes                     |                                                            |
+| `ingress.hosts`                            | Whitespace separated list of ingress hosts              |                                                            |
+| `kubernetes.namespace`                     | Kubernetes namespace                                    | `istio-system`                                             |
+| `kubernetes.labels`                        | Kubernetes resources labels                             | `istio=${hub.componentName}`, `app=${hub.componentName}`   |
+| `kubernetes.limits`                        | Kubernetes deployment resources limits                  | `cpu=1800m`, `memory=256Mi`                                |
+| `kubernetes.requests`                      | Kubernetes deployment resources requests                | `cpu=100m`, `memory=128Mi`                                 |
+| `kubernetes.replicas`                      | Amount of replicas                                      | `1`                                                        |
+| `kubernetes.serviceType`                   | Kubernetes service type                                 | `ClusterIP`                                                |
+| `helm.chart`                               | Helm chart name                                         | `gateway`                                                  |
+| `helm.repo`                                | Helm chart repository URL                               | [istio helm repo]                                          |
 
-### Outputs
+## Outputs
 
 This component produces following outputs
 
-| Name                          | Description                                                                           | Value                  |
-|-------------------------------|---------------------------------------------------------------------------------------|------------------------|
+| Name                          | Description                                                                            | Value                  |
+|:------------------------------|:---------------------------------------------------------------------------------------|:-----------------------|
 | `istio.ingressGateway.labels` | Forward `kubernetes.labels` to avoid possible `kubeflow.labels` used by the components | `${kubernetes.labels}` |
 
 ## Implementation Details
@@ -68,7 +74,7 @@ The component has the following directory structure:
 ├── ingress.yaml.gotemplate     # istio ingress definition template
 ├── post-deploy                 # script that is executed after deploy of the current component
 ├── post-undeploy               # script that is executed after undeploy of the current component
-└── values.yaml.template        # hubctl template of helm chart values
+└── values.yaml.gotemplate      # hubctl template of helm chart values
 ```
 
 Deployment follows to the following algorithm:
@@ -135,3 +141,8 @@ discover ingress gateway.
 * [Istio Base](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
 * [Nginx](https://github.com/epam/hub-kubeflow-components/tree/main/nginx-ingress): ingress controller
 
+[Helm]: https://helm.sh/docs/intro/install/
+[Kubernetes]: https://kubernetes.io/
+[Istio Discovery]: https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery
+[nginx]: https://github.com/epam/hub-kubeflow-components/tree/develop/nginx-ingress
+[istio helm repo]: https://istio-release.storage.googleapis.com/charts

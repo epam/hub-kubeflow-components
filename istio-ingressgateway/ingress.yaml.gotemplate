@@ -1,25 +1,27 @@
-{{$hosts := .ingress.hosts | split | compact }}
-{{$component := .hub.componentName }}
+{{- $hosts := .ingress.hosts | split | compact -}}
+{{- $component := .hub.componentName -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{$component}}"
-{{if or (eq .ingress.protocol "https") (eq .ingress.class "nginx")}}
+{{- if or (eq .ingress.protocol "https") (eq .ingress.class "nginx")}}
   annotations:
-{{if eq .ingress.protocol "https"}}
+{{- if eq .ingress.protocol "https"}}
+    kubernetes.io/tls-acme: "true"
+{{- if eq .ingress.class "nginx"}}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
-    kubernetes.io/tls-acme: "true"
-{{end}}
-{{end}}
+{{- end -}}
+{{- end -}}
+{{- end}}
 spec:
-{{if ne .ingress.class ""}}
+{{- if ne .ingress.class ""}}
   ingressClassName: "{{.ingress.class}}"
-{{end}}
-{{- if .ingress.hosts }}
+{{- end}}
+{{- if .ingress.hosts}}
   rules:
 {{- range $hosts}}
-  - host: '{{.}}'
+  - host: "{{.}}"
     http:
       paths:
       - backend:
@@ -31,10 +33,10 @@ spec:
         pathType: Prefix
 {{- end}}
 {{- end}}
-{{if eq .ingress.protocol "https"}}
+{{- if eq .ingress.protocol "https"}}
   tls:
 {{- range $hosts}}
-    - hosts: [{{.}}]
+    - hosts: ["{{.}}"]
       secretName: "{{. | formatSubdomain}}-tls"
-{{- end }}
-{{end}}
+{{- end -}}
+{{- end -}}
