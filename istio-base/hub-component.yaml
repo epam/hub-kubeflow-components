@@ -1,4 +1,3 @@
----
 version: 1
 kind: component
 
@@ -13,17 +12,18 @@ parameters:
         value: istio-system
         env: NAMESPACE
 
+  - name: istio.version
+    value: 1.16.7
+    env: HELM_CHART_VERSION
+
   - name: helm
     parameters:
       - name: repo
         value: https://istio-release.storage.googleapis.com/charts
         env: HELM_REPO
       - name: chart
+        value: base
         env: HELM_CHART
-        value: "base"
-      - name: version
-        value: 1.15.0
-        env: CHART_VERSION
 
 templates:
   files:
