@@ -1,4 +1,3 @@
----
 version: 1
 kind: component
 
@@ -13,22 +12,53 @@ parameters:
         value: istio-system
         env: NAMESPACE
 
+  - name: istio
+    parameters:
+      - name: version
+        value: 1.16.7
+        env: HELM_CHART_VERSION
+      - name: image.repository
+        value: docker.io/istio
+      - name: telemetry.enabled
+        value: true
+      - name: pilot.autoscaling
+        parameters:
+          - name: enabled
+            value: true
+          - name: minReplicas
+            value: 1
+          - name: maxReplicas
+            value: 5
+          - name: cpuUtilization
+            brief: Target CPU utilication in percentage
+            value: 80
+      - name: pilot.limits
+        value:
+          - "cpu: 200m"
+          - "memory: 256Mi"
+      - name: pilot.requests
+        value:
+          - "cpu: 100m"
+          - "memory: 128Mi"
+      - name: sidecar.limits
+        value:
+          - "cpu: 200m"
+          - "memory: 256Mi"
+      - name: sidecar.requests
+        value:
+          - "cpu: 100m"
+          - "memory: 128Mi"
+
   - name: helm
     parameters:
-      - name: chart
-        value: "istiod"
-        env: HELM_CHART
       - name: repo
-        empty: allow
         value: https://istio-release.storage.googleapis.com/charts
         env: HELM_REPO
-      - name: version
-        value: 1.15.0
-        env: HELM_CHART_VERSION
-      - name: valuesFile
-        value: values.yaml
-        env: CHART_VALUES_FILE
+      - name: chart
+        value: istiod
+        env: HELM_CHART
 
 templates:
+  kind: go
   files:
-    - "*.template"
+    - "*.gotemplate"

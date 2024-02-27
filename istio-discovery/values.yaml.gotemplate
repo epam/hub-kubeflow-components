@@ -1,17 +1,35 @@
 # See all values here: https://github.com/istio/istio/blob/master/manifests/charts/istio-control/istio-discovery/values.yaml
 pilot:
+  autoscaleEnabled: {{.istio.pilot.autoscaling.enabled}}
+
+  autoscaleMin: {{.istio.pilot.autoscaling.minReplicas}}
+  autoscaleMax: {{.istio.pilot.autoscaling.maxReplicas}}
+
+  cpu:
+    targetAverageUtilization: {{.istio.pilot.autoscaling.cpuUtilization}}
+{{- if or .istio.pilot.requests .istio.pilot.limits}}
   # Resources for a small pilot install
   resources:
+  {{- if or .istio.pilot.requests}}
     requests:
-      cpu: 100m
-      memory: 128Mi
+    {{- range .istio.pilot.requests}}
+      {{.}}
+    {{- end}}
+  {{- end}}
+  {{- if or .istio.pilot.limits}}
+    limits:
+    {{- range .istio.pilot.limits}}
+      {{.}}
+    {{- end}}
+  {{- end}}
+{{- end}}
 
 telemetry:
-  enabled: false
+  enabled: {{.istio.telemetry.enabled}}
   v2:
     # For Null VM case now.
     # This also enables metadata exchange.
-    enabled: false
+    enabled: {{.istio.telemetry.enabled}}
 
 # meshConfig defines runtime configuration of components, including Istiod and istio-agent behavior
 # See https://istio.io/docs/reference/config/istio.mesh.v1alpha1/ for all available options
@@ -20,12 +38,12 @@ meshConfig:
 
 global:
   # Used to locate istiod.
-  istioNamespace: ${kubernetes.namespace}
+  istioNamespace: "{{.kubernetes.namespace}}"
 
   # Default hub for Istio images.
-  hub: docker.io/istio
+  hub: "{{.istio.image.repository}}"
   # Default tag for Istio images.
-  tag: ${helm.version}
+  tag: "{{.istio.version}}"
 
   # Specify image pull policy if default behavior isn't desired.
   # Default behavior: latest images will be Always else IfNotPresent.
@@ -40,14 +58,22 @@ global:
     # Expected values are: trace|debug|info|warning|error|critical|off
     logLevel: warning
 
+  {{- if or .istio.sidecar.requests .istio.sidecar.limits}}
     # Resources for the sidecar.
     resources:
+    {{- if or .istio.sidecar.requests}}
       requests:
-        cpu: 100m
-        memory: 16Mi
+      {{- range .istio.sidecar.requests}}
+        {{.}}
+      {{- end}}
+    {{- end}}
+    {{- if or .istio.sidecar.limits}}
       limits:
-        cpu: 2000m
-        memory: 1024Mi
+      {{- range .istio.sidecar.limits}}
+        {{.}}
+      {{- end}}
+    {{- end}}
+  {{- end}}
 
   # Use the Mesh Control Protocol (MCP) for configuring Istiod. Requires an MCP source.
   useMCP: true
