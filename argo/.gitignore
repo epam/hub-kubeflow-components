@@ -1,2 +1,3 @@
-/values*.yaml
-/resources/*.yaml
+resources/*.yaml
+*.yaml
+!hub-component.yaml

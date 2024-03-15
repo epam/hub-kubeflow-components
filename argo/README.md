@@ -19,7 +19,7 @@ components:
     source:
       dir: components/argo
       git:
-        remote: https://github.com/epam/kubeflow-components.git
+        remote: https://github.com/epam/hub-kubeflow-components.git
         subDir: argo
 ```
 
@@ -28,42 +28,52 @@ To initiate the deployment, run the following commands:
 ```bash
 hubctl stack init
 hubctl stack configure
-# * Setting parameters for configuration 
-hubctl stack deploy -c argo
+# * Setting parameters for configuration
+hubctl stack deploy argo
 ```
 
 ## Requirements
 
-- [Helm](https://helm.sh/docs/intro/install/)
-- S3 Compatible store (S3, GCS or MinIO)
-- Azure Container Storage (not S3 compatible but can be used as alternative to S3)
+* [Helm](https://helm.sh/docs/intro/install/)
+* S3 Compatible store (S3, GCS or MinIO)
+* Azure Container Storage (not S3 compatible but can be used as alternative to S3)
 
 ## Parameters
 
 The following component level parameters can be set in `hub-component.yaml`:
 
-| Name                                 | Description                                                                                                         |                  Default Value                   |                                           Required                                           |
-|:-------------------------------------|:--------------------------------------------------------------------------------------------------------------------|:------------------------------------------------:|:--------------------------------------------------------------------------------------------:|
-| `kubernetes.namespace`               | Kubernetes namespace where Argo is provisioned                                                                      |                      `argo`                      |
-| `argo.version`                       | Argo version                                                                                                        |                     `v3.4.3`                     |
-| `argo.workflowNamespace`             | Default namespace for argo workflows                                                                                |            `${kubernetes.namespace}`             |
-| `argo.server.authMode`               | Whitespace separated list of Argo auth modes                                                                        |                 `client server`                  |
-| `helm.repo`                          | Helm chart repository                                                                                               | [argoproj](https://argoproj.github.io/argo-helm) |
-| `helm.chart`                         | Helm chart name                                                                                                     |                 `argo-workflows`                 |
-| `helm.version`                       | Helm version                                                                                                        |                    `v1.11.1`                     |
-| `helm.baseValuesFile`                | Instructs hubctl to reuse values file from helm chart as base                                                       |                  `values.yaml`                   |
-| `helm.crd`                           | URL to install CRDs                                                                                                 |                  `values.yaml`                   | [github](https://github.com/argoproj/argo-workflows/tree/master/manifests/base/crds/minimal) |
-| `ingress.protocol`                   | Ingress traffic protocol (scheme)                                                                                   |                      `http`                      |
-| `ingress.hosts`                      | Whitespace separated list of hosts for ingress. Empty means no ingress should be created                            |                                                  |
-| `bucket.name`                        | S3 Bucket name to be used as Argo artifact storage. Empty means: do not use s3 storage                              |                                                  |
-| `bucket.endpoint`                    | Fully qualified URL for S3 bucket service, this URL should include scheme, host and port (e.g. `http://minio:9000`) |                                                  |
-| `bucket.region`                      | S3 bucket region                                                                                                    |      `us-east-1` (default region for minio)      |
-| `bucket.accessKey`                   | Static access key for S3 bucket                                                                                     |                                                  |
-| `bucket.secretKey`                   | Static secret key for the S3 bucket                                                                                 |                                                  |
-| `azure.storageAccount.name`          | Account name of Azure storage. Empty means do not use azure storage account for Ago artifact store                  |                                                  |
-| `azure.storageAccount.containerName` | Container name of Azure storage                                                                                     |                                                  |
-| `azure.storageAccount.accessKey`     | Access key of Azure storage                                                                                         |                                                  |
-| `hub.backup.file`                    | Local path to backup file                                                                                           |                                                  |
+| Name                                   | Description                                                                                                         | Default Value                                                                                |
+|:---------------------------------------|:--------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------|
+| `kubernetes.namespace`                 | Kubernetes namespace where Argo is provisioned                                                                      | `argo`                                                                                       |
+| `argo.caBundleSecretName`              | Kubernetes secret name that stores CA bundle (optional)                                                             |                                                                                              |
+| `argo.version`                         | Argo version                                                                                                        | `v3.3.10`                                                                                    |
+| `argo.image.registry`                  | Argo docker images registry                                                                                         | `v3.3.10`                                                                                    |
+| `argo.image.tag`                       | Argo docker images version                                                                                          | `${argo.version}`                                                                            |
+| `argo.controller.image.repository`     | Argo controller docker image repository                                                                             | `argoproj/workflow-controller`                                                               |
+| `argo.executor.image.repository`       | Argo executor docker image repository                                                                               | `argoproj/argoexec`                                                                          |
+| `argo.server.image.repository`         | Argo server docker image repository                                                                                 | `argoproj/argocli`                                                                           |
+| `argo.server.authMode`                 | Default list of argo auths modes                                                                                    | `client server`                                                                              |
+| `argo.server.workflowNamespaces`       | Default list of namespaces for argo workflows                                                                       | `${kubernetes.namespace}`                                                                    |
+| `argo.server.server.oidc.issuer`       | OIDC issuer URL                                                                                                     |                                                                                              |
+| `argo.server.server.oidc.redirectUrl`  | OIDC redirect URL                                                                                                   | `${ingress.protocol}://${ingress.hosts}/oauth2/callback`                                     |
+| `argo.server.server.oidc.clientId`     | OIDC client id to store in secret                                                                                   | `${hub.componentName}-sso`                                                                   |
+| `argo.server.server.oidc.clientSecret` | OIDC client secret to store in secret                                                                               |                                                                                              |
+| `argo.server.server.oidc.secretName`   | Kubernetes secret name that stores OIDC client id and secret                                                        | `${hub.componentName}-serve-sso`                                                             |
+| `helm.repo`                            | Helm chart repository                                                                                               | [argo-helm](https://argoproj.github.io/argo-helm)                                            |
+| `helm.chart`                           | Helm chart name                                                                                                     | `argo-workflows`                                                                             |
+| `helm.version`                         | Helm version                                                                                                        | `v0.33.1`                                                                                    |
+| `helm.crd`                             | URL to install CRDs                                                                                                 | [github](https://github.com/argoproj/argo-workflows/tree/master/manifests/base/crds/minimal) |
+| `ingress.protocol`                     | Ingress traffic protocol (scheme)                                                                                   | `http`                                                                                       |
+| `ingress.hosts`                        | Whitespace separated list of hosts for ingress. Empty means no ingress should be created                            |                                                                                              |
+| `bucket.name`                          | S3 Bucket name to be used as Argo artifact storage. Empty means: do not use s3 storage                              |                                                                                              |
+| `bucket.endpoint`                      | Fully qualified URL for S3 bucket service, this URL should include scheme, host and port (e.g. `http://minio:9000`) |                                                                                              |
+| `bucket.region`                        | S3 bucket region                                                                                                    | `us-east-1` (default region for minio)                                                       |
+| `bucket.accessKey`                     | Static access key for S3 bucket                                                                                     |                                                                                              |
+| `bucket.secretKey`                     | Static secret key for the S3 bucket                                                                                 |                                                                                              |
+| `azure.storageAccount.name`            | Account name of Azure storage. Empty means do not use azure storage account for Ago artifact store                  |                                                                                              |
+| `azure.storageAccount.containerName`   | Container name of Azure storage                                                                                     |                                                                                              |
+| `azure.storageAccount.accessKey`       | Access key of Azure storage                                                                                         |                                                                                              |
+| `hub.backup.file`                      | Local path to backup file                                                                                           |                                                                                              |
 
 ## Implementation Details
 
@@ -71,7 +81,9 @@ The Argo Workflows Component has the following directory structure:
 
 ```text
 ./
-├── resources/                      # Kubernetes resources that managed outside of Helm
+└── resources/                      # Kubernetes resources that managed outside of Helm
+    ├── bucket-cred.yaml.gotemplate # Secret to store bucket access and secret keys
+    └── oidc-secret.yaml.template   # Secret to store OIDC client id and client secret
 ├── hub-component.yaml              # configuration and parameters file of Hub component
 ├── values.yaml.gotemplate          # gotemplate of Helm's values.yaml file
 ├── values-s3.yaml.gotemplate       # contains values for s3 artifact storage configuration
@@ -110,7 +122,7 @@ image you need to add a hook `bin/argo-executor` and add execution rights to it.
 
 ```bash
 #!/bin/sh -e
-cat <<EOF > values-generated.yaml
+cat <<EOF > "$HUB_COMPONENT_DIR/values-generated.yaml"
 executor:
   image:
     registry: "quay.io"
@@ -134,7 +146,7 @@ components:
 ### Additional Values
 
 This component used helm chart hosted by Argo project. You can find all available values in
-the [helm value](https://github.com/argoproj/argo-helm/blob/main/charts/argo-workflows/values.yaml).
+the [helm value](https://github.com/argoproj/argo-helm/blob/argo-workflows-0.33.1/charts/argo-workflows/values.yaml).
 
 To define extra values, use deployment hook from the article [above](#customize-argo-image)
 

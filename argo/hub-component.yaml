@@ -22,24 +22,50 @@ parameters:
 
   - name: argo
     parameters:
-      - name: workflowNamespace
-        value: ${kubernetes.namespace}
+      - name: caBundleSecretName
+        empty: allow
+        env: ROOT_CA_SECRET_NAME
       - name: version
         value: v3.3.10
+      - name: image.registry
+        value: quay.io
+      - name: image.tag
+        value: ${argo.version}
+      - name: controller.image.repository
+        value: argoproj/workflow-controller
+      - name: executor.image.repository
+        value: argoproj/argoexec
+      - name: server.image.repository
+        value: argoproj/argocli
       - name: server.authMode
-        value: >- 
-          server
-          client
+        value:
+          - server
+          - client
+      - name: server.oidc
+        parameters:
+          - name: issuer
+            empty: allow
+          - name: clientId
+            value: ${hub.componentName}-sso
+          - name: clientSecret
+          - name: regirectUrl
+            value: ${ingress.protocol}://${ingress.hosts}/oauth2/callback
+          - name: secretName
+            value: ${hub.componentName}-serve-sso
+      - name: server.workflowNamespaces
+        value:
+          - ${kubernetes.namespace}
+
   - name: bucket
     empty: allow
     parameters:
+      - name: name
+        env: BUCKET_NAME
       - name: endpoint
       - name: region
         value: us-east-1
       - name: accessKey
       - name: secretKey
-      - name: name
-        env: BUCKET_NAME
 
   - name: azure.storageAccount
     empty: allow
@@ -48,7 +74,6 @@ parameters:
         env: AZURE_STORAGE_ACCOUNT_NAME
       - name: containerName
       - name: accessKey
-
 
   - name: helm
     parameters:
@@ -61,9 +86,6 @@ parameters:
       - name: version
         value: 0.33.1
         env: HELM_CHART_VERSION
-      - name: valuesFile
-        value: values.yaml
-        env: CHART_VALUES_FILE
       - name: crd
         env: CRD
         value: >-
@@ -81,6 +103,7 @@ parameters:
 templates:
   files:
     - "*.template"
+    - "resources/*.template"
   extra:
     - kind: go
       files:

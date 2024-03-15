@@ -1,18 +1,16 @@
-useDefaultArtifactRepo: true
-useStaticCredentials: {{.bucket.accessKey | ne "" -}}
-{{$endpoint := .bucket.endpoint | urlParse}}
+useStaticCredentials: {{ne .bucket.accessKey "" -}}
+{{if and .bucket.name -}}
 artifactRepository:
-  archiveLogs: false
-{{if and .bucket.name -}}  
+{{- $endpoint := .bucket.endpoint | urlParse}}
   s3:
     accessKeySecret:
-      name: {{.hub.componentName}}-artifacts
+      name: "{{.hub.componentName}}-artifacts"
       key: accesskey
     secretKeySecret:
-      name: {{.hub.componentName}}-artifacts
+      name: "{{.hub.componentName}}-artifacts"
       key: secretkey
-    insecure: {{ $endpoint.scheme | ne "https" }}
-    bucket: {{.bucket.name}}
-    endpoint: {{$endpoint.host}}
-    region: {{.bucket.region}}
+    insecure: {{ne $endpoint.scheme "https" }}
+    bucket: "{{.bucket.name}}"
+    endpoint: "{{$endpoint.host}}"
+    region: "{{.bucket.region}}"
 {{- end}}

@@ -17,4 +17,4 @@ END
   exit 1
 fi
 
-$kubectl apply -f "resources/bucket-creds.yaml"
+$kubectl apply -f "resources/"

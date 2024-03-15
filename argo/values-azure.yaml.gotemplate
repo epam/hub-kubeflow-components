@@ -1,11 +1,10 @@
+{{- if .azure.storageAccount.name }}
 artifactRepository:
-  archiveLogs: false
-{{- if and .azure.storageAccount.name }}    
-  azure: 
-    endpoint: https://{{.azure.storageAccount.name}}.blob.core.windows.net
-    container: {{.azure.storageAccount.containerName}}
+  azure:
+    endpoint: "https://{{.azure.storageAccount.name}}.blob.core.windows.net"
+    container: "{{.azure.storageAccount.containerName}}"
     useSDKCreds: false
     accountKeySecret:
-      name: {{.hub.componentName}}-artifacts
-      key: accesskey  
+      name: "{{.hub.componentName}}-artifacts"
+      key: accesskey
 {{- end }}
