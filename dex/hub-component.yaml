@@ -1,4 +1,3 @@
----
 version: 1
 kind: component
 
@@ -14,16 +13,22 @@ parameters:
         env: INGRESS_PROTOCOL
       - name: class
         empty: allow
-      - name: ssoUrlPrefix
-        value: dex
       - name: hosts
         empty: allow
 
   - name: kubernetes
     parameters:
       - name: namespace
-        value: kube-system
+        value: dex
         env: NAMESPACE
+      - name: limits
+        value:
+          - "cpu: 100m"
+          - "memory: 128Mi"
+      - name: requests
+        value:
+          - "cpu: 50m"
+          - "memory: 64Mi"
 
   - name: dex
     parameters:
@@ -67,6 +72,23 @@ parameters:
               - name: issuer
               - name: clientId
               - name: clientSecret
+
+          - name: microsoft
+            empty: allow
+            parameters:
+            - name: clientID
+              empty: allow
+            - name: clientSecret
+              empty: allow
+            - name: redirectURI
+              value: ${dex.issuer}/callback
+            - name: tenant
+            - name: scopes
+              empty: allow
+            - name: groups
+              empty: allow
+            - name: emailToLowercase
+              value: true
 
   - name: helm
     parameters:
