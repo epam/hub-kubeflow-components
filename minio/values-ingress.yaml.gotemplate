@@ -1,17 +1,10 @@
-{{$hosts := .ingress.hosts | split | compact }}
-{{- if eq .ingress.hosts ""}}
+{{- $hosts := .ingress.hosts | split | compact }}
 consoleIngress:
-  enabled: false
-{{- else}}
-consoleIngress:
-  enabled: true
+  enabled: {{ne .ingress.hosts ""}}
   {{- if or (eq .ingress.protocol "https") .ingress.class}}
   annotations:
     {{- if eq .ingress.protocol "https"}}
     kubernetes.io/tls-acme: "true"
-    {{- end}}
-    {{- if ne .ingress.class ""}}
-    kubernetes.io/ingress.class: "{{.ingress.class}}"
     {{- end}}
     {{- if eq .ingress.class "nginx"}}
       {{- if eq .ingress.protocol "https"}}
@@ -28,6 +21,9 @@ consoleIngress:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "{{.nginx.readTimeout}}"
     {{- end}}
   {{- end}}
+{{- if ne .ingress.class ""}}
+  ingressClassName: "{{.ingress.class}}"
+{{- end}}
   path: /
   {{- if .ingress.hosts }}
   hosts:
@@ -40,6 +36,5 @@ consoleIngress:
 {{- range $hosts}}
     - hosts: [{{.}}]
       secretName: "{{. | formatSubdomain}}-tls"
-{{- end}}
 {{- end}}
 {{- end}}

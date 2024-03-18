@@ -1,2 +1,2 @@
-/values.yaml
-/values-ingress.yaml
+*.yaml
+!hub-component.yaml

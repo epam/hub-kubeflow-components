@@ -1,16 +1,19 @@
 # see all values here: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
 image:
-  repository: {{.docker.image}}
-  tag: {{.docker.tag}}
+  repository: "{{.minio.server.image}}"
+  tag: "{{.minio.server.tag}}"
   pullPolicy: IfNotPresent
 
 mcImage:
-  repository: {{.docker.mcImage}}
-  tag: {{.docker.mcTag}}
+  repository: "{{.minio.client.image}}"
+  tag: "{{.minio.client.tag}}"
   pullPolicy: IfNotPresent
 
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
-mode: {{.minio.mode}}
+mode: "{{.minio.mode}}"
+
+rootUser: "{{.bucket.accessKey}}"
+rootPassword: "{{.bucket.secretKey}}"
 
 replicas: {{.kubernetes.replicas}}
 persistence:
@@ -21,22 +24,16 @@ persistence:
 {{- if .storage.class}}
   storageClass: "{{.storage.class}}"
 {{- end}}
-  VolumeName: ""
-  accessMode: ReadWriteOnce
 {{- if .storage.size}}
-  size: {{.storage.size}}
+  size: "{{.storage.size}}"
 {{- end}}
 
-users:
-- accessKey: "{{.bucket.accessKey}}"
-  secretKey: "{{.bucket.secretKey}}"
-  policy: consoleAdmin
+users: []
 
 buckets:
-- name: {{.bucket.name}}
-  policy: {{.bucket.acl}}
+- name: "{{.bucket.name}}"
+  policy: "{{.bucket.acl}}"
   purge: false
-  # versioning: false
 
 {{- if .kubernetes.requests}}
 resources:
