@@ -8,4 +8,4 @@ global:
 
 persistence:
   storageClass: "${storage.class}"
-  size: ${etcd.volumeSize}
+  size: ${storage.volumeSize}

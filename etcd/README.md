@@ -14,7 +14,7 @@ components:
     source:
       dir: components/etcd
       git:
-        remote: https://github.com/epam/kubeflow-components.git
+        remote: https://github.com/epam/hub-kubeflow-components.git
         subDir: etcd
 ```
 
@@ -23,21 +23,21 @@ To initiate the deployment, run the following commands:
 ```bash
 hubctl stack init
 hubctl stack configure
-# * Setting parameters for configuration 
-hubctl stack deploy -c etcd
+# * Setting parameters for configuration
+hubctl stack deploy etcd
 ```
 
 ## Requirements
 
-- [Helm](https://helm.sh/docs/intro/install/)
-- Kubernetes
+* [Helm](https://helm.sh/docs/intro/install/)
+* Kubernetes
 
 ## Parameters
 
 The following component level parameters can be set in `hub-component.yaml`:
 
 | Name                   | Description                                               | Default Value                                | Required |
-|------------------------|-----------------------------------------------------------|----------------------------------------------|:--------:|
+|:-----------------------|:----------------------------------------------------------|:---------------------------------------------|:--------:|
 | `kubernetes.namespace` | Target namespace to install etcd                          | `etcd`                                       |          |
 | `etcd.rootPassword`    | Root password                                             |                                              |   `x`    |
 | `etcd.volumeSize`      | PVC size for etcd storage                                 | `8Gi`                                        |          |
@@ -45,6 +45,13 @@ The following component level parameters can be set in `hub-component.yaml`:
 | `helm.repo`            | Helm chart repository                                     | [charts](https://charts.bitnami.com/bitnami) |          |
 | `helm.chart`           | Helm chart name                                           | `etcd`                                       |          |
 | `helm.baseValuesFile`  | Instructs which file from the helm to use as values basis | `values.yaml`                                |          |
+
+## Outputs
+
+| Name        | Description   | Default Value                                      |
+|:------------|:--------------|:---------------------------------------------------|
+| `etcd.host` | ETCD endpoint | `${hub.componentName}.${kubernetes.namespace}.svc` |
+| `etcd.port` | ETCD port     | `2379`                                             |
 
 ## Implementation Details
 
@@ -54,10 +61,10 @@ This component is using helm chart from [bitnami](https://charts.bitnami.com/bit
 ./
 ├── hub-component.yaml    # manifest file of the component with configuration and parameters
 └── values.yaml.template  # hubctl template of helm chart values
-
 ```
 
 Deployment follows to the following algorithm:
+
 1. At the beginning hubctl need to create a Kubernetes cluster and other dependency components.
 2. Then start deployment
 
