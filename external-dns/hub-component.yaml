@@ -1,4 +1,3 @@
----
 version: 1
 kind: component
 
@@ -8,7 +7,6 @@ requires:
 
 parameters:
 - name: dns.domain
-- name: hub.componentName
 - name: hub.deploymentId
 - name: cloud
   empty: allow
@@ -17,7 +15,7 @@ parameters:
   - name: region
 
 - name: kubernetes
-  parameters: 
+  parameters:
   - name: namespace
     value: kube-system
     env: NAMESPACE
@@ -50,10 +48,8 @@ parameters:
   - name: version
     value: 6.26.1
     env: CHART_VERSION
-  - name: baseValues
-    value: values.yaml
-    env: CHART_VALUES_FILE
 
 templates:
   kind: go
-  files: ["*.gotemplate"]
+  files:
+    - "*.gotemplate"
