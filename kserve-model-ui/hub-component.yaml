@@ -30,10 +30,12 @@ parameters:
       - name: paths
         value: /kserve-endpoints/
 
-  - name: istio.namespace
-    value: istio-system
-  - name: istio.gateways
-    value: knative-serving/knative-ingress-gateway
+  - name: istio
+    parameters:
+      - name: namespace
+        value: istio-system
+      - name: gateways
+        value: knative-serving/knative-ingress-gateway
 
   - name: kustomize
     parameters:
