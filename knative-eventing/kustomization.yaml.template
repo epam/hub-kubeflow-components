@@ -5,7 +5,7 @@ namespace: ${kubernetes.namespace}
 
 resources:
 - kustomize/eventing-core.yaml
-# - kustomize/in-memory-channel.yaml
+- kustomize/in-memory-channel.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
