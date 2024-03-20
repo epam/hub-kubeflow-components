@@ -15,7 +15,7 @@ components:
     source:
       dir: components/kubeflow-common
       git:
-        remote: https://github.com/epam/kubeflow-components.git
+        remote: https://github.com/epam/hub-kubeflow-components.git
         subDir: kubeflow-common
 ```
 
@@ -24,28 +24,28 @@ To initiate the deployment, run the following commands:
 ```bash
 hubctl stack init
 hubctl stack configure
-# * Setting parameters for configuration 
-hubctl stack deploy -c kubeflow-common
+# * Setting parameters for configuration
+hubctl stack deploy kubeflow-common
 ```
 
 ## Requirements
 
-- Kubernetes Cluster
-- Istio
-- Istio Ingress Gateway
-- [Kustomize](https://kustomize.io/) or [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+* Kubernetes
+* Istio
+* Istio Ingress Gateway
+* [Kustomize](https://kustomize.io/) or [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
 ## Parameters
 
-| Name                          | Description                                                                                          |                             Default Value                             | Required |
-|:------------------------------|:-----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------:|:--------:|
-| `kubernetes.namespace`        | Kubernetes namespace for this component                                                              |                              `kubeflow`                               |
-| `ingress.hosts`               | Whitespace separated list of kubeflow hosts to configure Istio Gateway. Empty means `*` will be used |                                                                       |
-| `istio.ingressGateway.labels` | Whitespace separated list of `key=value` labels to use as a Istio Gateway selector for the Gateway   |                                  `x`                                  |
-| `kubeflow.version`            | Kubeflow version                                                                                  |                               `v1.6.1`                                |
-| `kubeflow.crd`                | URL links to the metacontroller and application CRDs                                                 |                                 `URL`                                 |    x     |
-| `kubeflow.tarball.url`        | URL to kubeflow manifests that correspond to the `kubeflow.version`                                  | [github](https://github.com/kubeflow/manifests/archive/v1.6.1.tar.gz) |          |
-| `kubeflow.tarball.subpath`    | Location of cluster roles in the kubernetes manifests tarball                                        |            see [hub-component.yaml](./hub-component.yaml)             |          |
+| Name                          | Description                                                                                          | Default Value                                                                                      |
+|:------------------------------|:-----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|
+| `kubernetes.namespace`        | Kubernetes namespace for this component                                                              | `kubeflow`                                                                                         |
+| `ingress.hosts`               | Whitespace separated list of kubeflow hosts to configure Istio Gateway. Empty means `*` will be used |                                                                                                    |
+| `istio.ingressGateway.labels` | Whitespace separated list of `key=value` labels to use as a Istio Gateway selector for the Gateway   | `x`                                                                                                |
+| `kubeflow.version`            | Kubeflow version                                                                                     | `v1.6.1`                                                                                           |
+| `kubeflow.crd`                | URL links to the metacontroller and application CRDs                                                 | `URL`                                                                                              |
+| `kubeflow.tarball.url`        | URL to kubeflow manifests that correspond to the `kubeflow.version`                                  | [github](https://github.com/kubeflow/manifests/archive/v1.6.1.tar.gz)                              |
+| `kubeflow.tarball.subpath`    | Location of cluster roles in the kubernetes manifests tarball                                        | `common/kubeflow-roles/base`, `common/istio-1-14/kubeflow-istio-resources/base/cluster-roles.yaml` |
 
 ## Implementation Details
 
@@ -67,6 +67,6 @@ Deployment follows to the following algorithm:
 
 ## See also
 
-- [Default Kubeflow ClusterRoles](https://github.com/kubeflow/manifests/tree/v1.2-branch/kubeflow-roles)
-- [Kubernetes Application controller](https://github.com/kubernetes-sigs/application)
-- [Istio Ingress Gateways](https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/)
+* [Default Kubeflow ClusterRoles](https://github.com/kubeflow/manifests/blob/v1.6-branch/common/kubeflow-roles/base/cluster-roles.yaml)
+* [Kubernetes Application controller](https://github.com/kubernetes-sigs/application)
+* [Istio Ingress Gateways](https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/)

@@ -1,4 +1,3 @@
----
 version: 1
 kind: component
 
@@ -14,14 +13,16 @@ parameters:
     value: v1.6.1
 
   - name: ingress.hosts
+
   - name: istio.ingressGateway.labels
-    value: >- 
+    value: >-
       app=istio-ingressgateway
       istio=ingressgateway
     brief: |
-      Labels to discover the ingress gateway. 
-      Defined as whitespace separated key=value pairs 
+      Labels to discover the ingress gateway.
+      Defined as whitespace separated key=value pairs
       e.g. "app=istio-ingressgateway istio=ingressgateway"
+
   - name: kustomize
     parameters:
       - name: crd
@@ -37,6 +38,7 @@ parameters:
         value: >-
           common/kubeflow-roles/base
           common/istio-1-14/kubeflow-istio-resources/base/cluster-roles.yaml
+
 templates:
   kind: go
   files:
