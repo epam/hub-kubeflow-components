@@ -6,6 +6,7 @@ requires:
 
 parameters:
   - name: kubernetes.namespace
+    value: kubeflow
     env: NAMESPACE
 
   - name: kubebench.version
@@ -20,3 +21,7 @@ parameters:
       - name: subpath
         value: apps/kubebench/upstream
         env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+
+templates:
+  files:
+    - "*.template"
