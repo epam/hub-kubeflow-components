@@ -1,13 +1,12 @@
 # Knative Serving
 
-Knative Serving builds on Kubernetes to support deploying and serving of serverless applications and functions. Serving
-is easy to get started with and scales to support advanced scenarios. The Knative Serving project provides middleware
-primitives that enable: rapid deployment, autoscaling, routing, network programming and ingress, monitoring, and domain
-mappings.
+Knative Serving builds on Kubernetes to support deploying and serving of serverless applications and functions.
+Serving is easy to get started with and scales to support advanced scenarios.
+The Knative Serving project provides middleware primitives that enable: rapid deployment, autoscaling, routing, network programming and ingress, monitoring, and domain mappings.
 
 ## TL;DR
 
-To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
+To define this component within your stack, add the following code to the `components` section of your `hub.yaml`file
 
 ```yaml
 components:
@@ -15,7 +14,7 @@ components:
     source:
       dir: components/knative-serving
       git:
-        remote: https://github.com/epam/kubeflow-components.git
+        remote: https://github.com/epam/hub-kubeflow-components.git
         subDir: knative-serving
 ```
 
@@ -24,8 +23,8 @@ To initiate the deployment, run the following commands:
 ```bash
 hubctl stack init
 hubctl stack configure
-# * Setting parameters for configuration 
-hubctl stack deploy -c knative-serving
+# * Setting parameters for configuration
+hubctl stack deploy knative-serving
 ```
 
 ## Requirements
@@ -38,29 +37,38 @@ hubctl stack deploy -c knative-serving
 
 ## Parameters
 
-| Name                                               | Description                                                                                                       | Default Value                                                                                          | Required |
-|----------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`                             | Kubernetes namespace                                                                                              | `knative-serving`                                                                                      |          |
-| `knative.version`                                  | Knative Version of kustomize serving                                                                              | `v1.9.2`                                                                                               |          |
-| `knative.autoscaling.scaleToZero`                  | Enable scale to zero [behavior](https://knative.dev/docs/serving/autoscaling/scale-to-zero/#enable-scale-to-zero) | `true`                                                                                                 |          |
-| `knative.autoscaling.scaleToZeroGracePeriod`       | Enable scale to zero period                                                                                       | `5m`                                                                                                   |          |
-| `knative.autoscaling.stableWindow`                 | Behavior for stable mode see [details](https://knative.dev/docs/serving/autoscaling/kpa-specific/#modes)          | `180s`                                                                                                 |          |
-| `knative.autoscaling.initialScale`                 | Initial replicas                                                                                                  | `1`                                                                                                    |          |
-| `knative.autoscaling.minScale`                     | Min scale replicas                                                                                                | `0`                                                                                                    |          |
-| `knative.autoscaling.maxScale`                     | Max scale replicas                                                                                                | `0`                                                                                                    |          |
-| `knative.podspec.nodeSchedulling`                  | `enabled` or `disabled` enables support for node scheduling. Cannot be safely disabled once enabled               | `disabled`                                                                                             |          |
-| `knative.networking.autocreateClusterDomainClaims` | Enables `ClusterDomainlaims` publishing                                                                           | `true`                                                                                                 |          |
-| `knative.networking.autoTLS`                       | Enables auto tls configuration                                                                                    | `Disabled`                                                                                             |          |
-| `knative.networking.ingresClass`                   | Configures knative service ingress class                                                                          | `istio.ingress.networking.knative.dev`                                                                 |          |
-| `knative.networking.certificateClass`              | Configures certificates if TLS enabled                                                                            | `cert-manager.certificate.networking.knative.dev`                                                      |          |
-| `knative.hpa`                                      | If `enabled` then install optional `hpa` configuration                                                            | `disabled`                                                                                             |          |
-| `knative.istio`                                    | If `enabled` then install optional `istio` configuration                                                          | `enabled`                                                                                              |          |
-| `istio.namespace`                                  | Only affected when `kantive.istio=enabled`. Point to istio-namespace                                              | `istio-system`                                                                                         |          |
-| `istio.ingressGateway`                             | Only affected when `kantive.istio=enabled`. Service name of istio ingress gateway                                 |                                                                                                        |          |
-| `ingress.hosts`                                    | If defines then enables external domain configuration                                                             | `svc.cluster.local`                                                                                    |          |
-| `ingress.protocol`                                 | `http` or `https` external domain configuration                                                                   | `http`                                                                                                 |          |
-| `kustomize.crd`                                    | Version specific CRD to download CRDs                                                                             | `https://github.com/knative/serving/releases/download/knative-${kubernetes.version}/serving-crds.yaml` |          |
-| `kustomize.resources`                              | Kubernetes resources to be downloaded to `./kustomize` directory                                                  | `URLs`                                                                                                 |          |
+| Name                                               | Description                                                                                                                  | Default Value                                                                                          |
+|:---------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------|
+| `kubernetes.namespace`                             | Kubernetes namespace                                                                                                         | `knative-serving`                                                                                      |
+| `knative.version`                                  | Knative Version of kustomize serving                                                                                         | `v1.9.2`                                                                                               |
+| `knative.autoscaling.scaleToZero`                  | Enable scale to zero [behavior](https://knative.dev/docs/serving/autoscaling/scale-to-zero/#enable-scale-to-zero)            | `true`                                                                                                 |
+| `knative.autoscaling.scaleToZeroGracePeriod`       | Enable scale to zero period                                                                                                  | `5m`                                                                                                   |
+| `knative.autoscaling.stableWindow`                 | Behavior for stable mode see [details](https://knative.dev/docs/serving/autoscaling/kpa-specific/#modes)                     | `180s`                                                                                                 |
+| `knative.autoscaling.initialScale`                 | Initial replicas                                                                                                             | `1`                                                                                                    |
+| `knative.autoscaling.minScale`                     | Min scale replicas                                                                                                           | `0`                                                                                                    |
+| `knative.autoscaling.maxScale`                     | Max scale replicas                                                                                                           | `0`                                                                                                    |
+| `knative.podspec.nodeSchedulling`                  | `enabled` or `disabled` enables support for node scheduling. Cannot be safely disabled once enabled                          | `disabled`                                                                                             |
+| `knative.networking.autocreateClusterDomainClaims` | Enables `ClusterDomainlaims` publishing                                                                                      | `true`                                                                                                 |
+| `knative.networking.autoTLS`                       | Enables auto tls configuration                                                                                               | `Disabled`                                                                                             |
+| `knative.networking.ingresClass`                   | Configures knative service ingress class                                                                                     | `istio.ingress.networking.knative.dev`                                                                 |
+| `knative.networking.certificateClass`              | Configures certificates if TLS enabled                                                                                       | `cert-manager.certificate.networking.knative.dev`                                                      |
+| `knative.hpa`                                      | If `enabled` then install optional `hpa` configuration                                                                       | `disabled`                                                                                             |
+| `knative.istio`                                    | If `enabled` then install optional `istio` configuration                                                                     | `enabled`                                                                                              |
+| `istio.namespace`                                  | Only affected when `kantive.istio=enabled`. Point to istio-namespace                                                         | `istio-system`                                                                                         |
+| `istio.ingressGateway`                             | Only affected when `kantive.istio=enabled`. Istio ingress gateway `istio` label value to select gateway for external traffic |                                                                                                        |
+| `istio.localGateway`                               | Only affected when `kantive.istio=enabled`. Istio ingress gateway `istio` label value to select gateway for internal traffic |                                                                                                        |
+| `ingress.hosts`                                    | If defines then enables external domain configuration                                                                        | `svc.cluster.local`                                                                                    |
+| `ingress.protocol`                                 | `http` or `https` external domain configuration                                                                              | `http`                                                                                                 |
+| `kustomize.crd`                                    | Version specific CRD to download CRDs                                                                                        | `https://github.com/knative/serving/releases/download/knative-${kubernetes.version}/serving-crds.yaml` |
+| `kustomize.resources`                              | Kubernetes resources to be downloaded to `./kustomize` directory                                                             | `URLs`                                                                                                 |
+
+## Outputs
+
+| Name                                 | Description                            | Default Value                                     |
+|:-------------------------------------|:---------------------------------------|:--------------------------------------------------|
+| `knative.networking.ingressClass`    | Knative serving ingress class          | `istio.ingress.networking.knative.dev`            |
+| `knative.networking.gateway.ingress` | Knative serving external istio gateway | `${kubernetes.namespace}/knative-ingress-gateway` |
+| `knative.networking.gateway.local`   | Knative serving internal istio gateway | `${kubernetes.namespace}/knative-local-gateway`   |
 
 ## Implementation Details
 
@@ -73,9 +81,9 @@ The component has the following directory structure:
 │   └── kustomization.yaml.template               # Template for kustomize to drive cert-manager overlay
 ├── istio
 │   ├── kustomization.yaml.template               # Template for kustomize to drive istio overlay
-│   └── peer-auth.yaml                            # Peer authentication policy            
+│   └── peer-auth.yaml                            # Peer authentication policy
 ├── hub-component.yaml                            # Component definition
-├── kustomization.yaml.template                   # Template for kustomize file that will drive the deployment
+├── kustomization.yaml.gotemplate                 # Template for kustomize file that will drive the deployment
 └── pre-deploy                                    # Pre deploy script (see implementation details)
 ```
 
