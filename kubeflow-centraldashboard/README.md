@@ -5,7 +5,7 @@ panel for managing various ML-related tasks and resources.
 
 ## TL;DR
 
-To define this component within your stack, add the following code to the `components` section of your  `hub.yaml`file
+To define this component within your stack, add the following code to the `components` section of your `hub.yaml`file
 
 ```yaml
 components:
@@ -13,7 +13,7 @@ components:
     source:
       dir: components/kubeflow-centraldashboard
       git:
-        remote: https://github.com/epam/kubeflow-components.git
+        remote: https://github.com/epam/hub-kubeflow-components.git
         subDir: kubeflow-centraldashboard
 ```
 
@@ -22,24 +22,24 @@ To initiate the deployment, run the following commands:
 ```bash
 hubctl stack init
 hubctl stack configure
-# * Setting parameters for configuration 
-hubctl stack deploy -c  kubeflow-centraldashboard
+# * Setting parameters for configuration
+hubctl stack deploy kubeflow-centraldashboard
 ```
 
 ## Requirements
 
-- [Helm](https://helm.sh/docs/intro/install/)
-- Kubernetes
-- [Kustomize](https://kustomize.io)
+* [Helm](https://helm.sh/docs/intro/install/)
+* Kubernetes
+* [Kustomize](https://kustomize.io)
 
 ## Parameters
 
-| Name                    | Description                                               | Default Value                                                               | Required |
-|-------------------------|-----------------------------------------------------------|-----------------------------------------------------------------------------|:--------:|
-| `kubernetes.namespace`  | Kubernetes namespace for this component                   |                                                                             |          |
-| `kubeflow.version`      | Version of Kubeflow                                       | `v1.6.1`                                                                    |          |
-| `kustomize.tarball.url` | URL to kubeflow tarball archive                           | `https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}` |          |
-| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | `apps/centraldashboard/upstream`                                            |          |
+| Name                    | Description                                               | Default Value                                                               |
+|:------------------------|:----------------------------------------------------------|:----------------------------------------------------------------------------|
+| `kubernetes.namespace`  | Kubernetes namespace for this component                   | `kubeflow`                                                                  |
+| `kubeflow.version`      | Version of Kubeflow                                       | `v1.6.1`                                                                    |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive                           | `https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}` |
+| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | `apps/centraldashboard/upstream`                                            |
 
 ## Implementation Details
 
@@ -47,9 +47,9 @@ The component has the following directory structure:
 
 ```text
 ./
-├── hub-component.yaml                  # parameters definitions
-├── kustomization.yaml.template         # kustomize file for ths component
-└── centraldashboard-config             # customize central dashboard links
+├── hub-component.yaml            # parameters definitions
+├── kustomization.yaml.template   # kustomize file for ths component
+└── centraldashboard-config.yaml  # customize central dashboard links
 ```
 
 Deployment follows to the following algorithm:
