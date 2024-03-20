@@ -17,7 +17,7 @@ components:
     source:
       dir: components/kserve
       git:
-        remote: https://github.com/epam/kubeflow-components.git
+        remote: https://github.com/epam/hub-kubeflow-components.git
         subDir: kserve
 ```
 
@@ -26,33 +26,36 @@ To initiate the deployment, run the following commands:
 ```bash
 hubctl stack init
 hubctl stack configure
-# * Setting parameters for configuration 
-hubctl stack deploy -c kserve
+# * Setting parameters for configuration
+hubctl stack deploy kserve
 ```
 
 ## Requirements
 
-- [Helm](https://helm.sh/docs/intro/install/)
-- Kubernetes
-- [Kustomize](https://kustomize.io)
-- [Cert Manager](https://github.com/epam/hub-kubeflow-components/tree/develop/cert-manager)
-- Istio (required for Serverless mode)
-- [Knative-Serving](https://github.com/epam/hub-kubeflow-components/tree/develop/knative-serving): (required for
+* [Helm](https://helm.sh/docs/intro/install/)
+* Kubernetes
+* [Kustomize](https://kustomize.io)
+* [Cert Manager](https://github.com/epam/hub-kubeflow-components/tree/develop/cert-manager)
+* Istio (required for Serverless mode)
+* [Knative-Serving](https://github.com/epam/hub-kubeflow-components/tree/develop/knative-serving): (required for
   Serverless mode)
 
 ## Parameters
 
-| Name                    | Description                                                                         | Default Value   | Required |
-|-------------------------|-------------------------------------------------------------------------------------|-----------------|:--------:|
-| `kubernetes.namespace`  | Target Kubernetes namespace for this component                                      | `kserve`        |   `x`    |
-| `kserve.version`        | Version of the application                                                          | `v0.10.0`       |   `x`    |
-| `kserve.deploymentMode` | Currently supported `Serverless` or `RawDeployment`                                 | `RawDeployment` |   `x`    |
-| `ingress.class`         | Kubernetes ingress class to configure ingress traffic                               |                 |          |
-| `ingress.protocol`      | Ingress traffic protocol (schema)                                                   | `http`          |          |
-| `ingress.hosts`         | List of ingress hosts (Note: only first will be used)                               |                 |          |
-| `bucket.endpoint`       | Default bucket configuration                                                        |                 |          |
-| `bucket.region`         | Default bucket region                                                               |                 |          |
-| `kustomize.resources`   | List of kserve resources to be downloaded and installed as part of kustomize script | URL             |   `x`    |
+| Name                                 | Description                                                                         | Default Value     | Required |
+|:-------------------------------------|:------------------------------------------------------------------------------------|:------------------|:--------:|
+| `kubernetes.namespace`               | Target Kubernetes namespace for this component                                      | `kserve`          |   `x`    |
+| `kserve.version`                     | Version of the application                                                          | `v0.10.0`         |   `x`    |
+| `kserve.deploymentMode`              | Currently supported `Serverless` or `RawDeployment`                                 | `RawDeployment`   |   `x`    |
+| `knative.namespace`                  | Knative serving namesapce                                                           | `knative-serving` |          |
+| `knative.networking.gateway.ingress` | Knative serving external istio gateway                                              |                   |          |
+| `knative.networking.gateway.local`   | Knative serving internal istio gateway                                              |                   |          |
+| `ingress.class`                      | Kubernetes ingress class to configure ingress traffic                               |                   |          |
+| `ingress.protocol`                   | Ingress traffic protocol (schema)                                                   | `http`            |          |
+| `ingress.hosts`                      | List of ingress hosts (Note: only first will be used)                               |                   |          |
+| `bucket.endpoint`                    | Default bucket configuration                                                        |                   |          |
+| `bucket.region`                      | Default bucket region                                                               |                   |          |
+| `kustomize.resources`                | List of kserve resources to be downloaded and installed as part of kustomize script | `URL`             |   `x`    |
 
 ## Implementation Details
 
@@ -60,9 +63,9 @@ hubctl stack deploy -c kserve
 ./
 ├── kustomize                         # target directory to download kserve resources
 ├── rawdeployment                     # overlay for RawDeployment kserve deployment mode
-│      └── kustomization.yaml.template
-├── serverless                        # overlay for Serverless kserve 
-│      └── kustomization.yaml.template
+│   └── kustomization.yaml.template   # template for kustomize script to drive raw deployment
+├── serverless                        # overlay for Serverless kserve
+│   └── kustomization.yaml.template   # template for kustomize script to drive serveless deployment
 ├── hub-component.yaml                # hub manifest file
 ├── kustomization.yaml.template       # template for kustomize script to drive main deployment
 ├── pre-deploy                        # adds overlays to kustomize.yaml

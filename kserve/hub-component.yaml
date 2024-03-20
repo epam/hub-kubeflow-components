@@ -19,18 +19,20 @@ parameters:
           Possible values RawDeployment or Serverless
           See more: https://github.com/kserve/kserve#standalone-installation
         value: RawDeployment
+
   - name: knative
     parameters:
       - name: namespace
         value: knative-serving
       - name: networking.gateway.ingress
         brief: |
-          Name of istio gateway for ingress traffic to knative services 
+          Name of istio gateway for ingress traffic to knative services
           in the format: <namespace>/<gateway>
       - name: networking.gateway.local
         brief: |
-          Name of istio gateway for local traffic to knative services 
+          Name of istio gateway for local traffic to knative services
           in the format: <namespace>/<gateway>
+
   - name: ingress
     empty: allow
     parameters:
@@ -38,11 +40,13 @@ parameters:
       - name: class
       - name: protocol
         value: http
+
   - name: bucket
     empty: allow
     parameters:
       - name: endpoint
       - name: region
+
   - name: istio
     empty: allow
     parameters:
