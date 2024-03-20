@@ -1,5 +1,4 @@
-/notebook-controller/upstream
-/jupyter-web-app/upstream
+kustomize/
 *.yaml
 !hub-component.yaml
-!/jupyter-web-app/configs/logos-configmap.yaml
+!jupyter-web-app/configs/logos-configmap.yaml
