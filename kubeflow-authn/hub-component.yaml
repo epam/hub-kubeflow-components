@@ -1,4 +1,3 @@
----
 version: 1
 kind: component
 
@@ -6,52 +5,60 @@ requires:
   - kubernetes
 
 parameters:
-# Kubeflow protocol and host
-- name: ingress.protocol
-  value: http
-- name: ingress.hosts
-- name: oidc.issuer
+  # Kubeflow protocol and host
+  - name: ingress
+    parameters:
+      - name: protocol
+        value: http
+      - name: hosts
 
-# OIDC auth url, must be external to the cluster
-- name: kubeflow.authn.oidcAuthUrl
-  value: ${oidc.issuer}/auth
-  
-- name: kubernetes.namespace
-  value: istio-system
-  env: NAMESPACE
-- name: storage.size
-  value: 10Gi  
-- name: istio.ingressGateway.labels
-  parameters:
+  - name: oidc.issuer
 
-- name: kubeflow
-  parameters:
-  - name: version
-    value: v1.6.1
-    env: VERSION
-  - name: authn.oidcProvider
-    value: ${oidc.issuer}      
-  - name: authn.oidcRedirectURI
-    value: ${ingress.protocol}://${ingress.hosts}/login/oidc
-    env: OIDC_REDIRECT_URI
-  - name: authn.oidcClientId
-    value: kubeflow-client
-    env: OIDC_CLIENT_ID
-  - name: authn.afterLogin
-    value: ${ingress.protocol}://${ingress.hosts}
-  - name: authn.oidcSecret
-    value: OpenID connect client mutual trust secret between oidc and Kubeflow
-    env: OIDC_SECRET
-  - name: authn.sessionMaxAge
-    value: 86400  
-- name: kustomize.tarball.url
-  value: "https://github.com/kubeflow/manifests/archive/${kubeflow.version}.tar.gz"
-  env: HUB_KUSTOMIZE_TARBALL_URL
-- name: kustomize.subpath
-  value: common/oidc-authservice/base
-  env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+  - name: kubernetes.namespace
+    value: istio-system
+    env: NAMESPACE
+
+  - name: storage.size
+    value: 10Gi
+
+  - name: istio.ingressGateway.labels
+
+  - name: kubeflow
+    parameters:
+      - name: version
+        value: v1.6.1
+        env: VERSION
+      - name: authn
+        parameters:
+          - name: afterLogin
+            value: ${ingress.protocol}://${ingress.hosts}
+            # OIDC auth url, must be external to the cluster
+          - name: oidcAuthUrl
+            value: ${oidc.issuer}/auth
+          - name: oidcProvider
+            value: ${oidc.issuer}
+          - name: oidcRedirectURI
+            value: ${ingress.protocol}://${ingress.hosts}/login/oidc
+            env: OIDC_REDIRECT_URI
+          - name: oidcClientId
+            value: kubeflow-client
+            env: OIDC_CLIENT_ID
+          - name: oidcSecret
+            value: OpenID connect client mutual trust secret between oidc and Kubeflow
+            env: OIDC_SECRET
+          - name: sessionMaxAge
+            value: 86400
+
+  - name: kustomize
+    parameters:
+      - name: tarball.url
+        value: "https://github.com/kubeflow/manifests/archive/${kubeflow.version}.tar.gz"
+        env: HUB_KUSTOMIZE_TARBALL_URL
+      - name: subpath
+        value: common/oidc-authservice/base
+        env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 templates:
   kind: go
   files:
-  - "*.gotemplate"
+    - "*.gotemplate"

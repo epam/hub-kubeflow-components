@@ -1,7 +1,6 @@
 # Kubeflow Authn
 
-This is a rewrite for [ambassador-auth-oidc](https://github.com/ajmyyra/ambassador-auth-oidc) to serve authentication
-requests for Kubeflow.
+An [AuthService](https://github.com/arrikto/oidc-authservice) is an HTTP Server that an API Gateway (eg Ambassador, Envoy) asks if an incoming request is authorized.
 
 In the nutshell this component installs an Istio EnvoyFilter that intercepts all HTTP requests to Kubeflow and validates
 the user session by checking session cookie:
@@ -20,7 +19,7 @@ components:
     source:
       dir: components/kubeflow-authn
       git:
-        remote: https://github.com/epam/kubeflow-components.git
+        remote: https://github.com/epam/hub-kubeflow-components.git
         subDir: kubeflow-authn
     depends:
       - dex
@@ -33,7 +32,8 @@ To initiate the deployment, run the following commands:
 ```bash
 hubctl stack init
 hubctl stack configure
-hubctl stack deploy -c "kubeflow-authn"
+# * Setting parameters for configuration
+hubctl stack deploy kubeflow-authn
 ```
 
 ## Requirements
@@ -42,31 +42,31 @@ hubctl stack deploy -c "kubeflow-authn"
 * [Helm](https://helm.sh/docs/intro/install/)
 * [Istio](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-discovery)
 * [Istio Ingress Gateway](https://github.com/epam/hub-kubeflow-components/tree/develop/istio-ingressgateway)
-* Kubernetes Ingress Controller (
-  e.g. [nginx](https://github.com/epam/hub-kubeflow-components/tree/develop/nginx-ingress))
+* Kubernetes Ingress Controller (e.g. [nginx](https://github.com/epam/hub-kubeflow-components/tree/develop/nginx-ingress))
 * OIDC Provider (e.g. [Dex](https://github.com/epam/hub-kubeflow-components/tree/develop/dex))
 
 ## Parameters
 
 The following component level parameters has been defined for this component:
 
-| Name                             | Description                                                                                            | Default Value     | Required |
-|----------------------------------|--------------------------------------------------------------------------------------------------------|-------------------|:--------:|
-| `ingress.protocol`               | HTTP or HTTPS schema                                                                                   | `https`           |   `x`    |
-| `ingress.hosts`                  | Whitespace separated list of ingress hosts. However first will be used for OIDC auth flow              |                   |          |
-| `oidc.issuer`                    | OIDC auth URL (Dex)                                                                                    |                   |   `x`    |
-| `kubeflow.authn.oidcProvider`    | Kubeflow OIDC auth URL                                                                                 | `${oidc.issuer}`  |   `x`    |
-| `kubeflow.authn.oidcSecret`      | Hard to guess OIDC secret passphrase between Kubeflow and Dex (recommended: randomly generated string) |                   |   `x`    |
-| `kubeflow.authn.sessionMaxAge`   | Max age (in seconds) for user session                                                                  | `86400`           |          |
-| `kubernetes.namespace`           | Namespace where envoy filter will be created                                                           | `istio-system`    |   `x`    |
-| `kubeflow.version`               | Kubeflow version                                                                                       | `v1.6.1`          |          |
-| `kubeflow.authn.oidcProvider`    | TBD                                                                                                    |                   |          |
-| `kubeflow.authn.oidcAuthUrl`     | TBD                                                                                                    |                   |   `x`    |
-| `kubeflow.authn.oidcRedirectURI` | TBD                                                                                                    |                   |   `x`    |
-| `kubeflow.authn.afterLogin`      | TBD                                                                                                    |                   |   `x`    |
-| `kubeflow.authn.oidcClientId`    | TBD                                                                                                    | `kubeflow-client` |   `x`    |
-| `kubeflow.authn.sessionMaxAge`   | Auth session max age                                                                                   | `86400`           |   `x`    |
-| `storage.volumeSize`             | PV volue size to be allocated for authn replica                                                        | `10Gi`            |   `x`    |
+| Name                             | Description                                                                                               | Default Value                                                                 | Required |
+|:---------------------------------|:----------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------|:--------:|
+| `ingress.protocol`               | HTTP or HTTPS schema                                                                                      | `http`                                                                        |   `x`    |
+| `ingress.hosts`                  | Whitespace separated list of ingress hosts. However first will be used for OIDC auth flow                 |                                                                               |          |
+| `oidc.issuer`                    | OIDC auth URL (Dex)                                                                                       |                                                                               |   `x`    |
+| `istio.ingressGateway.labels`    | Labels to select Istio ingress gateway and create Envoy Filter                                            |                                                                               |   `x`    |
+| `kubernetes.namespace`           | Namespace where envoy filter will be created                                                              | `istio-system`                                                                |   `x`    |
+| `storage.volumeSize`             | PV volue size to be allocated for authn replica                                                           | `10Gi`                                                                        |   `x`    |
+| `kubeflow.version`               | Kubeflow version                                                                                          | `v1.6.1`                                                                      |          |
+| `kubeflow.authn.afterLogin`      | URL to redirect the user to after they login                                                              | `${ingress.protocol}://${ingress.hosts}`                                      |   `x`    |
+| `kubeflow.authn.oidcAuthUrl`     | AuthService will initiate an Authorization Code OIDC flow by hitting this URL                             | `${oidc.issuer}/auth`                                                         |   `x`    |
+| `kubeflow.authn.oidcProvider`    | Kubeflow OIDC auth URL                                                                                    | `${oidc.issuer}`                                                              |   `x`    |
+| `kubeflow.authn.oidcRedirectURI` | AuthService will pass this URL to the OIDC provider when initiating an OIDC flow                          | `${ingress.protocol}://${ingress.hosts}/login/oidc`                           |   `x`    |
+| `kubeflow.authn.oidcClientId`    | AuthService will use this Client ID when it needs to contact your OIDC provider and initiate an OIDC flow | `kubeflow-client`                                                             |   `x`    |
+| `kubeflow.authn.oidcSecret`      | AuthService will use this Client Secret to authenticate itself against your OIDC provider                 |                                                                               |   `x`    |
+| `kubeflow.authn.sessionMaxAge`   | Time in seconds after which user sessions expire                                                          | `86400`                                                                       |          |
+| `kustomize.tarball.url`          | URL to the tarball distribution with kustomize scripts                                                    | `https://codeload.github.com/kubeflow/manifests/tar.gz/${kubernetes.version}` |          |
+| `kustomize.subpath`              | Path inside tarball for kustomize scripts                                                                 | `common/oidc-authservice/base`                                                |          |
 
 ## Implementation Details
 
@@ -117,7 +117,7 @@ spec:
             - create
             - oidc
             - "--skip-exit-code"
-            - "--host=dex.example.com"
+            - "--host=dex.dex.svc.cluster.local"
             - "--client-id=${OIDC_CLIENT_ID}"
             - "--client-secret=${OIDC_SECRET}"
             - "--name=${OIDC_CLIENT_ID}"
