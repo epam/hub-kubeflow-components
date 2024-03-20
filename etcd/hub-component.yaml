@@ -1,46 +1,49 @@
----
 version: 1
 kind: component
 
 requires:
-- kubernetes
-- helm
+  - kubernetes
+  - helm
 
 provides:
-- ingress
+  - ingress
 
 parameters:
-- name: etcd
-  parameters:
-  - name: namespace
-    env: NAMESPACE
-    value: etcd
-  - name: rootPassword
-  - name: volumeSize
-    value: 8Gi
-- name: storage.class
-  empty: allow    
-- name: helm
-  parameters:
-  - name: chart
-    value: "etcd"
-    env: HELM_CHART
-  - name: repo
-    value: https://charts.bitnami.com/bitnami
-    env: HELM_REPO
-  - name: version
-    value: 8.3.0
-    env: HELM_CHART_VERSION
-  - name: baseValuesFile
-    value: values.yaml
-    env: CHART_VALUES_FILE
+  - name: kubernetes
+    parameters:
+      - name: namespace
+        env: NAMESPACE
+        value: etcd
+
+  - name: etcd
+    parameters:
+      - name: rootPassword
+
+  - name: storage
+    parameters:
+      - name: class
+        empty: allow
+      - name: volumeSize
+        value: 8Gi
+
+  - name: helm
+    parameters:
+      - name: chart
+        value: "etcd"
+        env: HELM_CHART
+      - name: repo
+        value: https://charts.bitnami.com/bitnami
+        env: HELM_REPO
+      - name: version
+        value: 8.3.0
+        env: HELM_CHART_VERSION
 
 outputs:
-- name: etcd.host
-  value: ${hub.componentName}.${etcd.namespace}.svc
-- name: etcd.port
-  value: 2379
+  - name: etcd.host
+    value: ${hub.componentName}.${kubernetes.namespace}.svc
+  - name: etcd.port
+    value: 2379
 
 templates:
   files:
-  - '*.template'
+    - "*.template"

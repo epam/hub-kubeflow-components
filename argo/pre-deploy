@@ -1,11 +1,20 @@
-#!/bin/sh
+#!/bin/sh -e
 
-# shellcheck disable=SC2154,SC2250
-kubectl="kubectl --context=${HUB_DOMAIN_NAME} --namespace=${NAMESPACE}"
+kubectl="kubectl --context=$HUB_DOMAIN_NAME --namespace=$NAMESPACE"
 
-$kubectl apply -f "resources/bucket-creds.yaml"
+if test -n "$AZURE_STORAGE_ACCOUNT_NAME" && test -n "$BUCKET_NAME"; then
+  color e <<END
+Error conflicting configuration
+You cannot use both S3 compatible and Azure Storage Account
+END
+  exit 1
+elif test -z "$AZURE_STORAGE_ACCOUNT_NAME" && test -z "$BUCKET_NAME"; then
+  color e <<END
+Error: artivact store is not configured
 
-if test -n "${AZURE_STORAGE_ACCOUNT_NAME}" && test -n "${BUCKET_HOST}"; then
-  echo "WARNING: Both Azure Storage Account and S3 compatible storage connection details has been discovered."
-  echo "Azure Storage Account connection will be used."
+Please set either AZURE_STORAGE_ACCOUNT_NAME or BUCKET_NAME
+END
+  exit 1
 fi
+
+$kubectl apply -f "resources/"

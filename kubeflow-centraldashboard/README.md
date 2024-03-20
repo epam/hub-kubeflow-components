@@ -1,11 +1,45 @@
-# Central Dashboard
+# Kubeflow Central Dashboard
 
-## Overview of the Kubeflow Central Dashboard
+The Kubeflow Central Dashboard is a central web-based interface within the Kubeflow ecosystem that serves as a control
+panel for managing various ML-related tasks and resources.
 
-[Central Dashboard](https://www.kubeflow.org/docs/components/central-dash/overview/) is Kubeflow landing page. It provides following functionality:
+## TL;DR
 
-* Web UI to access all Kubeflow components
-* User registration flow
+To define this component within your stack, add the following code to the `components` section of your `hub.yaml`file
+
+```yaml
+components:
+  - name: kubeflow-centraldashboard
+    source:
+      dir: components/kubeflow-centraldashboard
+      git:
+        remote: https://github.com/epam/hub-kubeflow-components.git
+        subDir: kubeflow-centraldashboard
+```
+
+To initiate the deployment, run the following commands:
+
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration
+hubctl stack deploy kubeflow-centraldashboard
+```
+
+## Requirements
+
+* [Helm](https://helm.sh/docs/intro/install/)
+* Kubernetes
+* [Kustomize](https://kustomize.io)
+
+## Parameters
+
+| Name                    | Description                                               | Default Value                                                               |
+|:------------------------|:----------------------------------------------------------|:----------------------------------------------------------------------------|
+| `kubernetes.namespace`  | Kubernetes namespace for this component                   | `kubeflow`                                                                  |
+| `kubeflow.version`      | Version of Kubeflow                                       | `v1.6.1`                                                                    |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive                           | `https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}` |
+| `kustomize.subpath`     | Tarball archive subpath where kustomize files are located | `apps/centraldashboard/upstream`                                            |
 
 ## Implementation Details
 
@@ -13,32 +47,26 @@ The component has the following directory structure:
 
 ```text
 ./
-├── hub-component.yaml                  # Parameters definitions
-├── kustomization.yaml.template         # Kustomize file for ths component
-└── centraldashboard-config             # Customize central dashboard links
+├── hub-component.yaml            # parameters definitions
+├── kustomization.yaml.template   # kustomize file for ths component
+└── centraldashboard-config.yaml  # customize central dashboard links
 ```
 
-The component uses an offical Kubeflow distribution Kustomize [scripts](https://github.com/kubeflow/manifests/) and applies patches and additional resources described in [kustomize.yaml](https://github.com/agilestacks/kubeflow-components/blob/main/kubeflow-centraldashboard/kustomization.yaml.template) file.
+Deployment follows to the following algorithm:
 
-Where [pre-deploy](https://github.com/agilestacks/kubeflow-components/blob/main/kubeflow-centraldashboard/pre-deploy) script has been responsible for download tarball from Kubeflow official distribution website.
-
-This component contains a special parameters to enable image pull from private docker registry
-
-By default in the Kubeflow user id has been a valid email address. This is not the case for Intel, where user id is an `IDSID` parameter (from LDAP) which is not an email address. To allow this, we had to relax a user field validation in Add Contributor UI screen
-
-## Parameters
-
-The following component level parameters has been defined `hub-component.yaml`
-
-| Name | Description | Default Value |
-| :--- | :---        | :---          |
-| `component.kubeflow.name` | Target Kubernetes resources name for this component | |
-| `component.kubeflow.namespace` | Target Kubernetes namespace for this component | |
-| `component.kubeflow.version` | Version of Kubeflow | `v1.6.1` |
-| `component.kubeflow.centraldashboard.kustomize.tarball` | URL to kubeflow tarball archive | `https://codeload.github.com/kubeflow/manifests/tar.gz/${component.kubeflow.version}` |
-| `component.kubeflow.centraldashboard.kustomize.subpath` | Tarball archive subpath where kustomize files are located | `apps/centraldashboard/upstream` |
+1. The component uses an official Kubeflow distribution Kustomize [scripts](https://github.com/kubeflow/manifests/) and
+   applies patches and additional resources described
+   in [kustomize.yaml](https://github.com/agilestacks/kubeflow-components/blob/main/kubeflow-centraldashboard/kustomization.yaml.template)
+   file.
+2. Where [pre-deploy](https://github.com/agilestacks/kubeflow-components/blob/main/kubeflow-centraldashboard/pre-deploy)
+   script has been responsible for download tarball from Kubeflow official distribution website.
+3. This component contains a special parameters to enable image pull from private docker registry
+4. By default, in the Kubeflow user id has been a valid email address. This is not the case for Intel, where user id is
+   an `IDSID` parameter (from LDAP) which is not an email address. To allow this, we had to relax a user field
+   validation in Add Contributor UI screen
+5. Then start deployment
 
 ## See Also
 
 * Central Dashboard [official documentation](https://www.kubeflow.org/docs/components/central-dash/overview/)
-* Project source code on [Github](https://github.com/kubeflow/kubeflow/tree/master/components/centraldashboard)
+* Project source code on [GitHub](https://github.com/kubeflow/kubeflow/tree/master/components/centraldashboard)

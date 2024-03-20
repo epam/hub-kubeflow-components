@@ -1,0 +1,46 @@
+# Name allows overriding the release name. Generally this should not be set
+name: "{{.hub.componentName}}"
+
+replicaCount: {{.kubernetes.replicas}}
+
+kind: Deployment
+
+rbac:
+  # If enabled, roles will be created to enable accessing certificates from Gateways. This is not needed
+  # when using http://gateway-api.org/.
+  enabled: true
+
+serviceAccount:
+  # If set, a service account will be created. Otherwise, the default is used
+  create: true
+
+service:
+  # Type of service. Set to "None" to disable the service entirely
+  type: "{{.kubernetes.serviceType}}"
+{{if or .kubernetes.requests .kubernetes.limits }}
+resources:
+{{- if .kubernetes.requests }}
+  requests:
+{{- range .kubernetes.requests}}
+    {{.}}
+{{- end}}
+{{- end}}
+{{- if .kubernetes.limits }}
+  limits:
+{{- range .kubernetes.limits}}
+    {{.}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{if .kubernetes.labels }}
+labels:
+{{- range .kubernetes.labels | splitList " "}}
+  {{. | replace "=" ": "}}
+{{- end}}
+{{- end}}
+
+autoscaling:
+  enabled: {{.istio.gateway.autoscaling.enabled}}
+  minReplicas: {{.istio.gateway.autoscaling.minReplicas}}
+  maxReplicas: {{.istio.gateway.autoscaling.maxReplicas}}
+  targetCPUUtilizationPercentage: {{.istio.gateway.autoscaling.cpuUtilization}}

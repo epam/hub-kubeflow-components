@@ -1,3 +1,4 @@
-/kustomize
+kustomize/
+*.yaml
 !hub-component.yaml
-/kustomization.yaml
+!centraldashboard-config.yaml

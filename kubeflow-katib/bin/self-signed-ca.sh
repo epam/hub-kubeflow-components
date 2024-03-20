@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 
 # Inspired by https://kubernetes.io/docs/tasks/administer-cluster/certificates/#openssl
 

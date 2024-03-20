@@ -1,3 +1,4 @@
-/resources/istio-patch.yaml
-/kustomize
-/kustomization.yaml
+resources/*.yaml
+kustomize/
+*.yaml
+!hub-component.yaml

@@ -1,6 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: ${kubeflow.namespace}
+namespace: ${kubernetes.namespace}
 commonLabels:
   kustomize.component: ${hub.componentName}
   app.kubernetes.io/component: ${hub.componentName}
@@ -9,8 +9,8 @@ commonLabels:
   app.kubernetes.io/part-of: "kubeflow"
 
 resources:
-- kustomize/installs/multi-user
-- kustomize/application
+- kustomize/base/installs/multi-user
+- kustomize/base/application
 - resources/default-editor.yaml
 
 configMapGenerator:
@@ -62,7 +62,7 @@ patchesJson6902:
     version: v1alpha3
     kind: DestinationRule
     name: ml-pipeline.*
-    namespace: ${kubeflow.namespace}
+    namespace: ${kubernetes.namespace}
 
 images:
 - name: gcr.io/ml-pipeline/metadata-envoy

@@ -1,5 +1,3 @@
-##
-## MySQL Authentication parameters
 auth:
   createDatabase: true
   rootPassword: "${mysql.rootPassword}"
@@ -8,8 +6,8 @@ auth:
   password: "${mysql.password}"
 
   ## ref: https://github.com/bitnami/bitnami-docker-mysql#setting-up-a-replication-cluster
-  replicationUser: replicator
-  replicationPassword: ""
+#  replicationUser: replicator
+#  replicationPassword: ""
 
-  forcePassword: false
-  usePasswordFiles: false
+#  forcePassword: false
+#  usePasswordFiles: false

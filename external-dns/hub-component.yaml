@@ -1,15 +1,21 @@
----
 version: 1
 kind: component
 
 requires:
-  - helm
+- helm
+- kubernetes
 
 parameters:
+- name: dns.domain
 - name: hub.deploymentId
+- name: cloud
+  empty: allow
+  parameters:
+  - name: kind
+  - name: region
 
 - name: kubernetes
-  parameters: 
+  parameters:
   - name: namespace
     value: kube-system
     env: NAMESPACE
@@ -19,13 +25,14 @@ parameters:
 
 - name: externalDns
   parameters:
+  - name: sources
+    value: ingress
   - name: txtOwnerId
     value: ${hub.deploymentId}
-  - name: syncIntervalSeconds
-    value: 30
-    # This envvar has been used in the delete hook
-    # see: https://github.com/epam/hub-google-stacks/blob/main/gke-with-demo-app/.hub/gcp-external-dns/delete-dns-admin-sa#L3
-    env: SYNC_INTERVAL
+  - name: txtPrefix
+    value: "hub-"
+  - name: syncInterval
+    value: 1m
   - name: syncPolicy
     value: upsert-only
   - name: domainFilters
@@ -39,12 +46,10 @@ parameters:
     env: HELM_CHART
     value: "external-dns"
   - name: version
-    value: 6.10.2
+    value: 6.26.1
     env: CHART_VERSION
-  - name: baseValues
-    value: values.yaml
-    env: CHART_VALUES_FILE
 
 templates:
   kind: go
-  files: ["*.gotemplate"]
+  files:
+    - "*.gotemplate"

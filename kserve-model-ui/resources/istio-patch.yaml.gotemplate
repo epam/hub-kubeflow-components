@@ -25,7 +25,7 @@ spec:
     # {{end}}
     route:
     - destination:
-        host: kserve-models-web-app.{{.kserve.namespace}}.svc.cluster.local
+        host: kserve-models-web-app.{{.kubernetes.namespace}}.svc.cluster.local
         port:
           number: 80
       weight: 100

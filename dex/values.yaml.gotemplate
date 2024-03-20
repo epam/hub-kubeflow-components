@@ -1,6 +1,5 @@
-{{$hosts := .ingress.hosts | split | compact}}
-{{$component := .hub.componentName}}
-
+{{- $hosts := default "" .ingress.hosts | split | compact -}}
+{{- $component := .hub.componentName -}}
 replicaCount: 1
 
 image:
@@ -16,6 +15,11 @@ grpc:
 configSecret:
   create: true
 
+envFrom:
+  - configMapRef:
+      name: dex-custom-env-vars
+      optional: true
+
 config:
   issuer: "{{.dex.issuer}}"
 
@@ -29,16 +33,36 @@ config:
 
   grpc:
     addr: 0.0.0.0:5557
-    # tlsCert: /etc/dex-grpc-server-secret/tls-cert
-    # tlsKey: /etc/dex-grpc-server-secret/tls-key
-    # tlsClientCA: /etc/dex-grpc-server-secret/ca-cert
 
   oauth2:
     skipApprovalScreen: true
 
-{{if or .dex.connectors.ldap.host .dex.connectors.okta.issuer}}
+{{- if or (or .dex.connectors.ldap.host .dex.connectors.okta.issuer) (and .dex.connectors.microsoft.clientID .dex.connectors.microsoft.clientSecret)}}
   connectors:
-{{if .dex.connectors.ldap.host}}
+{{- if and .dex.connectors.microsoft.clientID .dex.connectors.microsoft.clientSecret}}
+    - type: microsoft
+      id: microsoft
+      name: Microsoft
+      config:
+        clientID: "{{.dex.connectors.microsoft.clientID}}"
+        clientSecret: "{{.dex.connectors.microsoft.clientSecret}}"
+        redirectURI: "{{.dex.connectors.microsoft.redirectURI}}"
+        tenant: "{{.dex.connectors.microsoft.tenant}}"
+        {{- if .dex.connectors.microsoft.groups}}
+        groups:
+        {{- range .dex.connectors.microsoft.groups}}
+        - "{{.}}"
+        {{- end}}
+        {{- end}}
+        {{- if .dex.connectors.microsoft.scopes}}
+        scopes:
+        {{- range .dex.connectors.microsoft.scopes}}
+        - "{{.}}"
+        {{- end}}
+        {{- end}}
+        emailToLowercase: {{.dex.connectors.microsoft.emailToLowercase}}
+{{- end}}
+{{- if .dex.connectors.ldap.host}}
     - type: ldap
       id: ldap
       name: LDAP
@@ -47,10 +71,10 @@ config:
         insecureNoSSL: true
         usernamePrompt: '{{.dex.connectors.ldap.usernamePrompt}}'
         bindDN: '{{.dex.connectors.ldap.dn}}'
-{{if .dex.connectors.ldap.password}}
+{{- if .dex.connectors.ldap.password}}
         bindPW: '{{.dex.connectors.ldap.password}}'
-{{end}}
-{{if .dex.connectors.ldap.search.dn}}
+{{- end}}
+{{- if .dex.connectors.ldap.search.dn}}
         userSearch:
           baseDN: '{{.dex.connectors.ldap.search.dn}}'
           filter: '{{.dex.connectors.ldap.search.filter}}'
@@ -58,14 +82,14 @@ config:
           idAttr: '{{.dex.connectors.ldap.search.idAttr}}'
           emailAttr: 'mail'
           nameAttr: '{{.dex.connectors.ldap.search.usernameAttr}}'
-{{end}}
-{{if .dex.connectors.ldap.groupSearch.dn}}
+{{- end}}
+{{- if .dex.connectors.ldap.groupSearch.dn}}
       groupSearch:
         baseDN: '{{.dex.connectors.ldap.groupSearch.dn}}'
         filter: '(objectClass=group)'
-{{end}}
-{{end}}
-{{if .dex.connectors.okta.issuer}}
+{{- end}}
+{{- end}}
+{{- if .dex.connectors.okta.issuer}}
     - type: oidc
       id: okta
       name: Okta
@@ -73,35 +97,26 @@ config:
         issuer: "{{.dex.connectors.okta.issuer}}"
         clientID: "{{.dex.connectors.okta.clientId}}"
         clientSecret: "{{.dex.connectors.okta.clientSecret}}"
-        redirectURI: "{{.ingress.protocol}}://{{.dex.issuerFqdn}}/callback"
+        redirectURI: "{{.dex.issuer}}/callback"
         userInfoURI: "{{.dex.connectors.okta.issuer}}/oauth2/v1/userinfo"
         GetUserInfo: true
         insecureSkipEmailVerified: true
 {{end}}
 {{else}}
-  connectors: []
-{{end}}
 
-{{if and .dex.passwordDb.email .dex.passwordDb.password}}
+  connectors: []
+{{- end}}
+
+{{- if and .dex.passwordDb.email .dex.passwordDb.password}}
   enablePasswordDB: true
   staticPasswords:
     - email: '{{.dex.passwordDb.email}}'
       username: '{{.dex.passwordDb.email}}'
       hash: '{{.dex.passwordDb.password | bcrypt}}'
       userID: '{{.dex.passwordDb.email | b64enc}}'
-{{else}}
+{{- else}}
   enablePasswordDB: false
-{{end}}
-
-# volumes:
-#   - name: "dex-grpc-server-secret"
-#     secret:
-#       secretName: "dex-grpc-server-secret"
-
-# volumeMounts:
-#   - name: "dex-grpc-server-secret"
-#     mountPath: "/etc/dex-grpc-server-secret"
-#     readOnly: true
+{{- end}}
 
 envVars:
   - name: KUBERNETES_POD_NAMESPACE
@@ -114,12 +129,13 @@ podSecurityContext:
   runAsUser: 65534
 
 ingress:
-  enabled: true
+  enabled: {{not (empty $hosts)}}
+{{- if not (empty $hosts)}}
   className: "{{.ingress.class}}"
-{{if eq .ingress.protocol "https"}}
+{{- if eq .ingress.protocol "https"}}
   annotations:
     kubernetes.io/tls-acme: "true"
-{{else}}
+{{- else}}
   annotations: {}
 {{end}}
   hosts:
@@ -129,8 +145,7 @@ ingress:
         - path: /
           pathType: Prefix
 {{- end}}
-
-{{if eq .ingress.protocol "https"}}
+{{- if eq .ingress.protocol "https"}}
   tls:
     - hosts:
 {{- range $hosts}}
@@ -138,14 +153,23 @@ ingress:
 {{- end}}
       secretName: "{{$component | formatSubdomain}}-tls"
 {{end}}
+{{end -}}
 
+{{- if or .kubernetes.requests .kubernetes.limits}}
 resources:
+{{- if .kubernetes.requests }}
   requests:
-    cpu: 100m
-    memory: 128Mi
+{{- range .kubernetes.requests}}
+    {{.}}
+{{- end}}
+{{- end}}
+{{- if .kubernetes.limits }}
   limits:
-    cpu: 100m
-    memory: 128Mi
+{{- range .kubernetes.limits}}
+    {{.}}
+{{- end}}
+{{- end}}
+{{- end}}
 
 strategy:
   rollingUpdate:

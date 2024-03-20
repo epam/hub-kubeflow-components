@@ -11,58 +11,69 @@ provides:
 
 parameters:
 - name: hub.componentName
-- name: ingress.class
-  value: nginx
-- name: ingress.isDefault
-  value: true
+- name: ingress
+  parameters:
+  - name: class
+    value: nginx
+    env: INGRESS_CLASS
+  - name: defaultClass
+    value: "${ingress.class}"
 
 - name: kubernetes
   parameters: 
   - name: namespace
     value: kube-ingress
     env: NAMESPACE
-
-- name: nlb
-  parameters:
-  - name: name
-    empty: allow
-    env: NLB_NAME
-  - name: backendPortHttp
-    empty: allow
-  - name: backendPortHttps
-    empty: allow      
-
-- name: nginx
-  parameters:
-  - name: replicaCount
+  - name: replicas
     value: 1
-  - name: serviceType
-    value: LoadBalancer
-  - name: image
-    value: nginx/nginx-ingress
-  - name: imageTag
-    value: 3.0.1
-  - name: loadBalancerSourceRanges
+  - name: minReplicas
     empty: allow
-  - name: externalTrafficPolicy
+  - name: maxReplicas
+    empty: allow
+  - name: service.type
+    value: LoadBalancer
+  - name: requests
+    empty: allow
+    # these values are default in the helm chart
+    value: >-
+      cpu=100m
+      memory=128Mi
+  - name: limits
+    empty: allow
+  - name: service.externalTrafficPolicy
     value: Cluster
-  - name: enableSnippets
-    value: true
+  - name: service.loadBalancerSourceRanges
+    empty: allow
+  - name: service.annotations
+    empty: allow
+- name: nginx.controller
+  parameters: 
+  - name: features
+    value: snippets
+  - name: kind
+    value: deployment
 
 - name: helm
   parameters:
   - name: chart
     value: "nginx-ingress"
     env: HELM_CHART
+  - name: fullName
+    value: "${hub.componentName}"
+    empty: allow
   - name: repo
     value: https://helm.nginx.com/stable
     env: HELM_REPO
   - name: version
-    value: 0.16.1
+    value: 1.0.0
     env: HELM_CHART_VERSION
-  - name: baseValuesFile
+  - name: valuesFile
     value: values.yaml
     env: CHART_VALUES_FILE
+
+outputs:
+- name: ingress.class
+- name: ingress.defaultClass
 
 templates:
   kind: go

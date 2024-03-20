@@ -1,3 +1,2 @@
-/kubernetes/*.yaml
 *.yaml
 !hub-component.yaml

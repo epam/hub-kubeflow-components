@@ -1,2 +1,1 @@
-*.yaml
-!hub-component.yaml
+values.yaml

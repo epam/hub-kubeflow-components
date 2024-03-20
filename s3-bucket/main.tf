@@ -3,7 +3,7 @@ variable "name" {
 }
 
 locals {
-  s3_endpoint = "s3.${module.s3_bucket.s3_bucket_region}.amazonaws.com"
+  s3_endpoint = "http://s3.${module.s3_bucket.s3_bucket_region}.amazonaws.com"
 }
 
 variable "acl" {

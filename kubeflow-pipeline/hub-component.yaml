@@ -6,22 +6,29 @@ requires:
   - kubernetes
 
 parameters:
+  - name: kubernetes.namespace
+    env: NAMESPACE
+    value: kubeflow
 
   - name: kubeflow
     parameters:
-      - name: name
-        value: kubeflow-pipelines
-      - name: namespace
-        env: NAMESPACE
       - name: version
         value: v1.6.1
         env: VERSION
-
         # https://github.com/kubeflow/pipelines/issues/5117
         # Multi User featuring should correlate with DEPLOYMENT flag
         # For now DEPLOYMENT is just hard coded for Multi User case
       - name: pipelines.multiUser
         value: true
+
+  - name: kustomize.tarball.url
+    value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
+    env: HUB_KUSTOMIZE_TARBALL_URL
+  - name: kustomize.subpath
+    value: >-
+      apps/pipeline/upstream/base
+      apps/pipeline/upstream/third-party/metacontroller/base:crds/metacontroller
+    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
   - name: mysql
     parameters:
@@ -34,20 +41,12 @@ parameters:
 
   - name: bucket
     parameters:
-      - name: endpoint
+      - name: name
       - name: region
+        value: us-east-1
       - name: accessKey
       - name: secretKey
-      - name: host
-      - name: port
-      - name: name
-
-  - name: kustomize.tarball
-    value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
-    env: HUB_KUSTOMIZE_TARBALL_URL
-  - name: kustomize.subpath
-    value: "apps/pipeline/upstream/base: apps/pipeline/upstream/third-party/metacontroller/base:crds/metacontroller"
-    env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
+      - name: endpoint
 
 templates:
   files:

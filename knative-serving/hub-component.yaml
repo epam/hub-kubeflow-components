@@ -2,78 +2,81 @@ version: 1
 kind: component
 
 requires:
-- kubernetes
+  - kubernetes
 
 parameters:
-- name: knative
-  parameters:
-  - name: version
-    value: v1.9.2
-  - name: namespace
+  - name: kubernetes.namespace
     value: knative-serving
     env: NAMESPACE
-  - name: autoscaling.scaleToZero
-    value: "true"
-  - name: autoscaling.scaleToZeroGracePeriod
-    value: "5m"
-  - name: autoscaling.stableWindow
-    value: "180s"
-  - name: autoscaling.initialScale
-    value: "1"
-  - name: autoscaling.minScale
-    value: "0"
-  - name: autoscaling.maxScale
-    value: "0"
-  - name: networking.autocreateClusterDomainClaims
-    value: "true"
-  - name: networking.autoTLS
-    value: "Disabled"
-  - name: networking.ingressClass
-    value: istio.ingress.networking.knative.dev
-  - name: networking.certificateClass
-    value: cert-manager.certificate.networking.knative.dev
-  - name: podspec.nodeScheduling
-    value: "disabled"
-  - name: hpa
-    env: HPA_ENABLED
-    value: disabled
-  - name: istio
-    env: ISTIO_ENABLED
-    value: enabled
-- name: istio
-  empty: allow
-  parameters: 
-  - name: ingressGateway
-  - name: localGateway
-  - name: namespace
-    value: istio-system
-- name: ingress
-  empty: allow
-  parameters:
-  - name: protocol
-    value: http
-  - name: hosts
-    value: svc.cluster.local
 
-- name: kustomize
-  parameters:
-  - name: crd
-    env: CRD
-    value: https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-crds.yaml
-  - name: resources
-    env: HUB_KUSTOMIZE_RESOURCES
-    value: >-
-      https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-core.yaml
-      https://github.com/knative/net-istio/releases/download/knative-${knative.version}/net-istio.yaml
-      https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-hpa.yaml
-      https://github.com/knative/net-certmanager/releases/download/knative-${knative.version}/release.yaml
+  - name: knative
+    parameters:
+      - name: version
+        value: v1.9.2
+      - name: autoscaling.scaleToZero
+        value: "true"
+      - name: autoscaling.scaleToZeroGracePeriod
+        value: "5m"
+      - name: autoscaling.stableWindow
+        value: "180s"
+      - name: autoscaling.initialScale
+        value: "1"
+      - name: autoscaling.minScale
+        value: "0"
+      - name: autoscaling.maxScale
+        value: "0"
+      - name: networking.autocreateClusterDomainClaims
+        value: "true"
+      - name: networking.autoTLS
+        value: "Disabled"
+      - name: networking.ingressClass
+        value: istio.ingress.networking.knative.dev
+      - name: networking.certificateClass
+        value: cert-manager.certificate.networking.knative.dev
+      - name: podspec.nodeScheduling
+        value: "disabled"
+      - name: hpa
+        env: HPA_ENABLED
+        value: disabled
+      - name: istio
+        env: ISTIO_ENABLED
+        value: enabled
+
+  - name: istio
+    empty: allow
+    parameters:
+      - name: ingressGateway
+      - name: localGateway
+      - name: namespace
+        value: istio-system
+
+  - name: ingress
+    empty: allow
+    parameters:
+      - name: protocol
+        value: http
+      - name: hosts
+        value: svc.cluster.local
+
+  - name: kustomize
+    parameters:
+      - name: crd
+        env: CRD
+        value: https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-crds.yaml
+      - name: resources
+        env: HUB_KUSTOMIZE_RESOURCES
+        value: >-
+          https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-core.yaml
+          https://github.com/knative/net-istio/releases/download/knative-${knative.version}/net-istio.yaml
+          https://github.com/knative/serving/releases/download/knative-${knative.version}/serving-hpa.yaml
+          https://github.com/knative/net-certmanager/releases/download/knative-${knative.version}/release.yaml
 
 outputs:
-- name: knative.networking.ingressClass
-- name: knative.networking.gateway.ingress
-  value: "${knative.namespace}/knative-ingress-gateway"
-- name: knative.networking.gateway.local
-  value: "${knative.namespace}/knative-local-gateway"
+  - name: knative.networking.ingressClass
+  - name: knative.networking.gateway.ingress
+    value: "${kubernetes.namespace}/knative-ingress-gateway"
+  - name: knative.networking.gateway.local
+    value: "${kubernetes.namespace}/knative-local-gateway"
 
 templates:
   files:
@@ -83,4 +86,4 @@ templates:
   extra:
     - kind: go
       files:
-      - "*.gotemplate"
+        - "*.gotemplate"

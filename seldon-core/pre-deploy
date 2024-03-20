@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 
 TEMP="$(mktemp -d)"
 trap 'rm -rf $TEMP' EXIT

@@ -1,8 +1,46 @@
 # TensorFlow Training
 
-## Overview of the TensorFlow Training
+TFJob is a Kubernetes custom resource to
+run [TensorFlow training](https://www.kubeflow.org/docs/components/training/tftraining/) jobs on Kubernetes. The
+Kubeflow implementation of TFJob is in training-operator.
 
-TFJob is a Kubernetes custom resource to run [TensorFlow training](https://www.kubeflow.org/docs/components/training/tftraining/) jobs on Kubernetes. The Kubeflow implementation of TFJob is in training-operator.
+## TL;DR
+
+To define this component within your stack, add the following code to the `components` section of your  `hub.yaml` file
+
+```yaml
+components:
+  - name: kubeflow-tf-training
+    source:
+      dir: components/kubeflow-tf-training
+      git:
+        remote: https://github.com/epam/kubeflow-components.git
+        subDir: kubeflow-tf-training
+```
+
+To initiate the deployment, run the following commands:
+
+```bash
+hubctl stack init
+hubctl stack configure
+# * Setting parameters for configuration
+hubctl stack deploy -c kubeflow-tf-training
+```
+
+## Requirements
+
+- Kubernetes
+- [Kustomize](https://kustomize.io)
+
+## Parameters
+
+The following component level parameters has been defined `hub-component.yaml`
+
+| Name                    | Description                             | Default Value                                                          | Required |
+|-------------------------|-----------------------------------------|------------------------------------------------------------------------|:--------:|
+| `kubernetes.namespace`  | Kubernetes namespace for this component | `kubeflow`                                                             |          |
+| `kubeflow.version`      | Kubeflow version                        | `v1.2.0`                                                               |          |
+| `kustomize.tarball.url` | URL to kubeflow tarball archive         | [kubeflow manifest](https://github.com/kubeflow/manifests/tree/master) |          |
 
 ## Implementation Details
 
@@ -10,27 +48,15 @@ The component has the following directory structure:
 
 ```text
 ./
-├── crds                                  # Directory contains custom resource definition files
-│   └── tfjobs.yaml                       # CRD of TFJob kind
-├── hub-component.yaml                    # Parameters definitions
-├── kustomization.yaml.template           # Kustomize file for ths component
-├── pre-deploy                            # Script to download tarball from kubeflow distribution website
-└── pre-undeploy                          # Script to download tarball from kubeflow distribution website
+├── crds                              # directory contains custom resource definition files
+│   └── tfjobs.yaml                   # CRD of TFJob kind
+├── hub-component.yaml                # configuration and parameters file of Hub component
+├── kustomization.yaml.template       # main kustomize template file
+├── pre-deploy                        # script to download tarball from kubeflow distribution website
+└── pre-undeploy -> pre-deploy        # symlink to support undeploy
 ```
-
-## Parameters
-
-The following component level parameters has been defined `hub-component.yaml`
-
-| Name | Description | Default Value |
-| :--- | :---        | :---          |
-| `dns.domain` | Domain name of the kubeflow stack | |
-| `component.kubeflow.name` | Target Kubernetes resources name for this component | |
-| `component.kubeflow.namespace` | Target Kubernetes namespace for this component | |
-| `component.kubeflow.version` | Version of Kubeflow | `v1.2.0` |
-| `component.kubeflow.tarball` | URL to kubeflow tarball archive | `https://github.com/kubeflow/manifests/archive/${component.kubeflow.version}.tar.gz` |
 
 ## See also
 
 - TensorFlow training [overview](https://www.kubeflow.org/docs/components/training/tftraining/)
-- [TesorFlow](https://www.tensorflow.org/)
+- [TensorFlow](https://www.tensorflow.org/)

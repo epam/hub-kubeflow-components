@@ -1,0 +1,16 @@
+useStaticCredentials: {{ne .bucket.accessKey "" -}}
+{{if and .bucket.name -}}
+artifactRepository:
+{{- $endpoint := .bucket.endpoint | urlParse}}
+  s3:
+    accessKeySecret:
+      name: "{{.hub.componentName}}-artifacts"
+      key: accesskey
+    secretKeySecret:
+      name: "{{.hub.componentName}}-artifacts"
+      key: secretkey
+    insecure: {{ne $endpoint.scheme "https" }}
+    bucket: "{{.bucket.name}}"
+    endpoint: "{{$endpoint.host}}"
+    region: "{{.bucket.region}}"
+{{- end}}

@@ -1,4 +1,5 @@
-/kustomize
-/kustomization.yaml
-/rawdeployment/inferenceservice-config.yaml
-/serverless/inferenceservice-config.yaml
+kustomize/
+rawdeployment/*.yaml
+serverless/*.yaml
+*.yaml
+!hub-component.yaml

@@ -5,48 +5,51 @@ requires:
   - kubernetes
 
 parameters:
-- name: kserve
-  parameters:
-  - name: namespace
+  - name: kubernetes.namespace
     value: kserve
     env: NAMESPACE
-  - name: version
-    value: v0.10.0
-  - name: ui.disableAuth
-    value: "True"
-  - name: ui.path
-    value: /
-  - name: ui.secureCookies
-    value: "False"
 
-- name: ingress
-  empty: allow
-  parameters:
-  - name: hosts
-  - name: class
-  - name: protocol
-    value: http
-  - name: paths
-    value: /kserve-endpoints/
+  - name: kserve
+    parameters:
+      - name: version
+        value: v0.10.0
+      - name: ui.disableAuth
+        value: "True"
+      - name: ui.path
+        value: /
+      - name: ui.secureCookies
+        value: "False"
 
-- name: istio.namespace
-  value: istio-system
-- name: istio.gateways
-  value: knative-serving/knative-ingress-gateway
+  - name: ingress
+    empty: allow
+    parameters:
+      - name: hosts
+      - name: class
+      - name: protocol
+        value: http
+      - name: paths
+        value: /kserve-endpoints/
 
-- name: kustomize
-  parameters:
-  - name: tarball.url
-    value: https://github.com/kserve/models-web-app/archive/refs/tags/${kserve.version}.tar.gz
-    env: HUB_KUSTOMIZE_TARBALL_URL
-  - name: tarball.subpath
-    value: config/
-    env: HUB_KUSTOMIZE_TARBALL_SUBPATH
+  - name: istio
+    parameters:
+      - name: namespace
+        value: istio-system
+      - name: gateways
+        value: knative-serving/knative-ingress-gateway
+
+  - name: kustomize
+    parameters:
+      - name: tarball.url
+        value: https://github.com/kserve/models-web-app/archive/refs/tags/${kubernetes.version}.tar.gz
+        env: HUB_KUSTOMIZE_TARBALL_URL
+      - name: subpath
+        value: config/
+        env: HUB_KUSTOMIZE_TARBALL_SUBPATH
 
 templates:
   files:
-  - '*.template'
+    - "*.template"
   extra:
-  - kind: go
-    files:
-    - "resources/*.gotemplate"
+    - kind: go
+      files:
+        - "resources/*.gotemplate"

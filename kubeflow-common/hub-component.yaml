@@ -1,4 +1,3 @@
----
 version: 1
 kind: component
 
@@ -6,38 +5,41 @@ requires:
   - kubernetes
 
 parameters:
+  - name: kubernetes.namespace
+    env: NAMESPACE
+    value: kubeflow
+
+  - name: kubeflow.version
+    value: v1.6.1
+
   - name: ingress.hosts
-  
-  - name: istio
-    parameters: 
-    - name: namespace
-      value: istio-system
-    - name: ingressGateway
-      value: istio-ingressgateway
 
-  - name: kubeflow
-    parameters:
-      - name: namespace
-        env: NAMESPACE
-        value: kubeflow
-      - name: version
-        value: v1.6.1
-  - name: kustomize.tarball.url
-    value: "https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}"
-    env: HUB_KUSTOMIZE_TARBALL_URL
-
-  - name: kustomize.tarball.dirs
+  - name: istio.ingressGateway.labels
     value: >-
-      apps/pipeline/upstream/third-party/application/cluster-scoped:application
-      apps/pipeline/upstream/third-party/metacontroller/base/:metacontroller
-      common/kubeflow-roles/base:kubeflow-roles
-      common/istio-1-14/kubeflow-istio-resources/base:istio
-    env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
+      app=istio-ingressgateway
+      istio=ingressgateway
+    brief: |
+      Labels to discover the ingress gateway.
+      Defined as whitespace separated key=value pairs
+      e.g. "app=istio-ingressgateway istio=ingressgateway"
+
+  - name: kustomize
+    parameters:
+      - name: crd
+        env: CRD
+        value: >-
+          https://raw.githubusercontent.com/kubeflow/manifests/${kubeflow.version}/apps/pipeline/upstream/third-party/application/cluster-scoped/application-crd.yaml
+          https://raw.githubusercontent.com/kubeflow/manifests/${kubeflow.version}/apps/pipeline/upstream/third-party/metacontroller/base/crd.yaml
+      - name: tarball.url
+        env: HUB_KUSTOMIZE_TARBALL_URL
+        value: https://codeload.github.com/kubeflow/manifests/tar.gz/${kubeflow.version}
+      - name: tarball.subpath
+        env: HUB_KUSTOMIZE_TARBALL_SUBPATHS
+        value: >-
+          common/kubeflow-roles/base
+          common/istio-1-14/kubeflow-istio-resources/base/cluster-roles.yaml
 
 templates:
+  kind: go
   files:
-  - "*.template"
-  extra:
-  - kind: go
-    files:
-    - "*.gotemplate"
+  - "*.gotemplate"

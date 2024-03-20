@@ -1,11 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: ${kubeflow.namespace}
+namespace: ${kubernetes.namespace}
 commonLabels:
   app.kubernetes.io/component: jupyter-web-app
 
 resources:
-- kustomize/overlays/istio
+- upstream/overlays/istio
 
 patchesStrategicMerge:
 - configs/logos-configmap.yaml

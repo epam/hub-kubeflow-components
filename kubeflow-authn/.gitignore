@@ -1,4 +1,3 @@
-/add-oidc-job.yaml
-/kustomization.yaml
-/kustomize
-/envoy-filter.yaml
+kustomize/
+*.yaml
+!hub-component.yaml
